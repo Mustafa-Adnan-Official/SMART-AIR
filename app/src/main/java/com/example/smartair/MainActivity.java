@@ -34,26 +34,7 @@ public class MainActivity extends ComponentActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);   // uses your XML layout
 
-        // Init Firebase
-        auth = FirebaseAuth.getInstance();
-        db   = FirebaseFirestore.getInstance();
-
-        // Find the button in activity_main.xml
-        Button btnCreateParent = findViewById(R.id.btnCreateParentHardcoded);
-
-        // On click → run test
-        btnCreateParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createOrUpdateHardcodedParent();
-            }
-        });
-    }
 
     /**
      * Creates or updates a hard-coded parent:
