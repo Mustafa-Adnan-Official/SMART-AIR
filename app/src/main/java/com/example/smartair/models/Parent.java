@@ -1,60 +1,78 @@
 package com.example.smartair.models;
 
-import java.util.List;
+import com.google.firebase.Timestamp;
 
-/**
- * Firestore model for a Parent user.
- *
- * Firestore Path:
- *   parents/{parentUid}
- *
- * Fields expected in Firestore:
- *   - name: String
- *   - email: String
- *   - role: "parent"
- *   - parentAccessCode: String
- *   - createdAtMillis: long
- *   - childUID: List<String> (list of child UIDs linked to this parent)
- *
- * Notes:
- *   - Firestore requires: public fields + empty constructor.
- *   - You may add getters/setters later if you want stricter encapsulation.
- */
 public class Parent {
 
-    // --------------------
-    // Firestore-mapped fields
-    // --------------------
-    public String name;
-    public String email;
-    public String role;                // always "parent"
-    public String parentAccessCode;
-    public long createdAtMillis;
+    private String parentUid;          // same as FirebaseAuth UID
+    private String name;
+    private String email;
+    private String parentAccessCode;   // may be null until later requirement
+    private boolean onboarded;
+    private Timestamp createdAt;
 
-    // List of children linked to this parent
-    // This matches your Firestore "childUID" array exactly.
-    public List<String> childUID;
+    // Firestore requires empty constructor
+    public Parent() {}
 
-    // --------------------
-    // Empty constructor required by Firestore
-    // --------------------
-    public Parent() { }
-
-    // --------------------
-    // Convenience constructor for your own usage
-    // --------------------
-    public Parent(String name,
+    public Parent(String parentUid,
+                  String name,
                   String email,
-                  String role,
                   String parentAccessCode,
-                  long createdAtMillis,
-                  List<String> childUID) {
-
+                  boolean onboarded,
+                  Timestamp createdAt) {
+        this.parentUid = parentUid;
         this.name = name;
         this.email = email;
-        this.role = role;
         this.parentAccessCode = parentAccessCode;
-        this.createdAtMillis = createdAtMillis;
-        this.childUID = childUID;
+        this.onboarded = onboarded;
+        this.createdAt = createdAt;
+    }
+
+    public String getParentUid() {
+        return parentUid;
+    }
+
+    public void setParentUid(String parentUid) {
+        this.parentUid = parentUid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getParentAccessCode() {
+        return parentAccessCode;
+    }
+
+    public void setParentAccessCode(String parentAccessCode) {
+        this.parentAccessCode = parentAccessCode;
+    }
+
+    public boolean isOnboarded() {
+        return onboarded;
+    }
+
+    public void setOnboarded(boolean onboarded) {
+        this.onboarded = onboarded;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }
