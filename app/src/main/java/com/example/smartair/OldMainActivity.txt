@@ -29,7 +29,7 @@ import java.util.Map;
  *      2) If email already exists → sign in instead.
  *      3) In both cases, write parents/{uid} in Firestore.
  */
-public class MainActivity extends ComponentActivity {
+public class OldMainActivity extends ComponentActivity {
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -73,7 +73,7 @@ public class MainActivity extends ComponentActivity {
 
         // 1) Try to CREATE the Auth user
         auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(MainActivity.this,
+                .addOnCompleteListener(OldMainActivity.this,
                         new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -92,7 +92,7 @@ public class MainActivity extends ComponentActivity {
 
                                         auth.signInWithEmailAndPassword(email, password)
                                                 .addOnCompleteListener(
-                                                        MainActivity.this,
+                                                        OldMainActivity.this,
                                                         new OnCompleteListener<AuthResult>() {
                                                             @Override
                                                             public void onComplete(
@@ -106,7 +106,7 @@ public class MainActivity extends ComponentActivity {
                                                                     writeParentDoc(uid, name, email, pac);
                                                                 } else {
                                                                     Toast.makeText(
-                                                                            MainActivity.this,
+                                                                            OldMainActivity.this,
                                                                             "Sign-in failed: "
                                                                                     + signInTask.getException()
                                                                                     .getMessage(),
@@ -119,7 +119,7 @@ public class MainActivity extends ComponentActivity {
                                     } else {
                                         // Some other Auth error
                                         Toast.makeText(
-                                                MainActivity.this,
+                                                OldMainActivity.this,
                                                 "Auth error: " + e.getMessage(),
                                                 Toast.LENGTH_LONG
                                         ).show();
@@ -156,13 +156,13 @@ public class MainActivity extends ComponentActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(
-                                    MainActivity.this,
+                                    OldMainActivity.this,
                                     "Firestore parent doc written for UID: " + parentUid,
                                     Toast.LENGTH_LONG
                             ).show();
                         } else {
                             Toast.makeText(
-                                    MainActivity.this,
+                                    OldMainActivity.this,
                                     "Firestore error: "
                                             + task.getException().getMessage(),
                                     Toast.LENGTH_LONG
