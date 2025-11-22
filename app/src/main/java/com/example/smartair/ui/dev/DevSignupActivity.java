@@ -11,6 +11,14 @@ import com.example.smartair.R;
 import com.example.smartair.callbacks.AuthResultCallback;
 import com.example.smartair.services.AuthService;
 
+/**
+ * Purpose: Temporary dev/testing screen for quickly creating test parent/provider/child accounts.
+ * Layer: UI (dev only)
+ * Used For: Manual Firestore population during development.
+ *
+ * Note:
+ * - Not used in production. Safe to remove when no longer needed.
+ */
 public class DevSignupActivity extends AppCompatActivity {
 
     private AuthService authService;
@@ -19,7 +27,6 @@ public class DevSignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dev_signup);
-        Toast.makeText(this, "DevSignupActivity loaded", Toast.LENGTH_SHORT).show();
         authService = new AuthService();
 
         Button btnCreateParent           = findViewById(R.id.btnCreateParent);
@@ -27,33 +34,10 @@ public class DevSignupActivity extends AppCompatActivity {
         Button btnCreateChildIndependent = findViewById(R.id.btnCreateChildIndependent);
         Button btnCreateChildWithParent  = findViewById(R.id.btnCreateChildWithParent);
 
-        btnCreateParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTestParent();
-            }
-        });
-
-        btnCreateProvider.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTestProvider();
-            }
-        });
-
-        btnCreateChildIndependent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTestChildIndependent();
-            }
-        });
-
-        btnCreateChildWithParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTestChildWithParent();
-            }
-        });
+        btnCreateParent.setOnClickListener(v -> createTestParent());
+        btnCreateProvider.setOnClickListener(v -> createTestProvider());
+        btnCreateChildIndependent.setOnClickListener(v -> createTestChildIndependent());
+        btnCreateChildWithParent.setOnClickListener(v -> createTestChildWithParent());
     }
 
     private void createTestParent() {
@@ -64,20 +48,14 @@ public class DevSignupActivity extends AppCompatActivity {
                 new AuthResultCallback() {
                     @Override
                     public void onSuccess(String uid) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Parent created: " + uid,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Parent created: " + uid, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Parent error: " + errorMessage,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Parent error: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -92,20 +70,14 @@ public class DevSignupActivity extends AppCompatActivity {
                 new AuthResultCallback() {
                     @Override
                     public void onSuccess(String uid) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Provider created: " + uid,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Provider created: " + uid, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Provider error: " + errorMessage,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Provider error: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -119,53 +91,40 @@ public class DevSignupActivity extends AppCompatActivity {
                 new AuthResultCallback() {
                     @Override
                     public void onSuccess(String uid) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Child (indep) created: " + uid,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Child (indep) created: " + uid, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Child (indep) error: " + errorMessage,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Child (indep) error: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         );
     }
 
     private void createTestChildWithParent() {
-        // Use a PAC that you know exists on a parent in Firestore
+        // Replace with a real test PAC in Firestore when using this dev tool
         String testPac = "PA-7FQ2-91";
 
         authService.registerChildUnderParent(
                 "Dev Child (with parent)",
-                "Test123!",     // password for this dev child mode (stored app-side later if needed)
+                "Test123!",
                 testPac,
                 new AuthResultCallback() {
                     @Override
                     public void onSuccess(String childUid) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Child (with parent) created: " + childUid,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Child (with parent) created: " + childUid, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Toast.makeText(
-                                DevSignupActivity.this,
-                                "Child (with parent) error: " + errorMessage,
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(DevSignupActivity.this,
+                                "Child (with parent) error: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         );
     }
-
 }

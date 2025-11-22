@@ -1,20 +1,25 @@
 package com.example.smartair.ui.signup.mvp;
 
+/**
+ * Purpose: Defines the View ↔ Presenter contract for child signup.
+ * Layer: MVP (Signup)
+ */
 public interface ChildSignupContract {
 
     interface View {
-        // shared
+        // Child input
         String getChildName();
         String getChildPassword();
         boolean isParentConnectionEnabled();
 
-        // independent child
+        // Independent child
         String getChildEmail();
 
-        // child with parent
+        // Child under parent
         String getChildParentPAC();
         String getParentEmailForPAC();
 
+        // Errors
         void showNameError(String msg);
         void showEmailError(String msg);
         void showPACError(String msg);
@@ -23,6 +28,7 @@ public interface ChildSignupContract {
         void showLoading(boolean show);
         void showGenericError(String msg);
 
+        // Navigation
         void navigateToEmailVerificationScreen();
         void navigateToParentLinkedSuccessScreen();
     }

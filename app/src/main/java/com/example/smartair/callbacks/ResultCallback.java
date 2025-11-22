@@ -1,19 +1,15 @@
 package com.example.smartair.callbacks;
 
-/*
- * Generic callback for Firebase operations that DO return data.
- *
- * T is the type you expect back, e.g.:
- * - ResultCallback<Parent>
- * - ResultCallback<List<Child>>
- *
- * TODO:
- *  - Use this in service methods that need to pass back objects from Firestore:
- *      - Fetching children list for a parent
- *      - Fetching provider’s parents/children lists
- *      - Fetching a DailyReport, etc.
+/**
+ * Purpose: Generic callback for Firebase operations that return data.
+ * Layer: Model → Presenter
+ * Used For: Fetching objects/lists from Firestore.
  */
 public interface ResultCallback<T> {
+
+    /** Data successfully fetched. */
     void onSuccess(T result);
+
+    /** Data fetch failed. */
     void onError(Exception e);
 }

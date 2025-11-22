@@ -1,18 +1,15 @@
 package com.example.smartair.callbacks;
 
-/*
- * Generic callback for Firebase operations that don't return a value.
- *
- * You will use this when:
- * - Registering users (parent / child / provider)
- * - Writing reports, incidents, logs, etc.
- *
- * TODO:
- *  - Implement both methods where you call AccountService / ParentService / etc.
- *  - onSuccess(): do something in the Activity (e.g., show Toast, navigate)
- *  - onError(Exception e): show an error message.
+/**
+ * Purpose: Generic success/failure for write-only Firebase operations.
+ * Layer: Model → Presenter
+ * Used For: Creating/updating docs when no return value is needed.
  */
 public interface OperationCallback {
+
+    /** Write succeeded. */
     void onSuccess();
+
+    /** Write failed. */
     void onError(Exception e);
 }

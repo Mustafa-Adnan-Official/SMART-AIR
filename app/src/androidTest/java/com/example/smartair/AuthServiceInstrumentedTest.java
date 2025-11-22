@@ -35,7 +35,7 @@ public class AuthServiceInstrumentedTest {
     private AuthService authService;
     private FirebaseFirestore db;
 
-    // 🔧 CHANGE THESE TWO TO MATCH AN EXISTING PARENT IN FIRESTORE
+    // CHANGED THESE TWO TO MATCH AN EXISTING PARENT IN FIRESTORE MANUALLY FOR TESTING
     private static final String EXISTING_PARENT_PAC   = "PA-7FQ2-91";
     private static final String EXISTING_PARENT_EMAIL = "devparent+1763758724962@test.com";
     private static final String EXISTING_PARENT_PASSWORD  = "Test123!"; // whatever that parent’s real password is

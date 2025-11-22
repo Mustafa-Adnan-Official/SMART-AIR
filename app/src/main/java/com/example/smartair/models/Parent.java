@@ -2,16 +2,21 @@ package com.example.smartair.models;
 
 import com.google.firebase.Timestamp;
 
+/**
+ * Purpose: Represents a parent document stored in /parents/{parentUid}.
+ * Layer: Model
+ * Used For: Parent auth, linking children, and onboarding state.
+ */
 public class Parent {
 
-    private String parentUid;          // same as FirebaseAuth UID
+    private String parentUid;        // FirebaseAuth UID
     private String name;
     private String email;
-    private String parentAccessCode;   // may be null until later requirement
+    private String parentAccessCode; // may be null
     private boolean onboarded;
     private Timestamp createdAt;
 
-    // Firestore requires empty constructor
+    /** Required for Firebase deserialization. */
     public Parent() {}
 
     public Parent(String parentUid,

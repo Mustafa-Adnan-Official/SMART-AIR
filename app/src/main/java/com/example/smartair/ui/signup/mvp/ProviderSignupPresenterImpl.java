@@ -4,6 +4,10 @@ import com.example.smartair.callbacks.AuthResultCallback;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.utils.InputValidator;
 
+/**
+ * Purpose: Handles validation and signup logic for provider accounts.
+ * Layer: Presenter (Signup)
+ */
 public class ProviderSignupPresenterImpl implements ProviderSignupContract.Presenter {
 
     private ProviderSignupContract.View view;
@@ -53,7 +57,6 @@ public class ProviderSignupPresenterImpl implements ProviderSignupContract.Prese
             @Override
             public void onSuccess(String uid) {
                 if (view == null) return;
-
                 view.showLoading(false);
                 view.navigateToEmailVerificationScreen();
             }
@@ -61,7 +64,6 @@ public class ProviderSignupPresenterImpl implements ProviderSignupContract.Prese
             @Override
             public void onFailure(String errorMessage) {
                 if (view == null) return;
-
                 view.showLoading(false);
                 view.showGenericError(errorMessage);
             }

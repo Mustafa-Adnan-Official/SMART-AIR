@@ -23,6 +23,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Purpose: FirebaseAuth + Firestore service for registering users, logging in, and updating onboarding.
+ * Layer: Service / Model (used by presenters).
+ * Used For: Parent/child/provider signup, login (including child-under-parent), role detection, reset, sign-out.
+ */
 public class AuthService {
 
     private final FirebaseAuth auth;
@@ -32,7 +37,9 @@ public class AuthService {
         this(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance());
     }
 
-    // Constructor injection → easier to mock in tests
+    /**
+     * Constructor injection for easier testing with mocks.
+     */
     public AuthService(FirebaseAuth auth, FirebaseFirestore db) {
         this.auth = auth;
         this.db = db;
@@ -40,6 +47,9 @@ public class AuthService {
 
     // ---------- SIGNUP ----------
 
+    /**
+     * Registers a new parent (auth + /parents/{parentUid} document).
+     */
     public void registerParent(
             final String name,
             final String email,
@@ -61,7 +71,7 @@ public class AuthService {
                     data.put("parentUid", parentUid);
                     data.put("name", name);
                     data.put("email", email);
-                    data.put("parentAccessCode", null); // to be set by future requirement
+                    data.put("parentAccessCode", null);
                     data.put("role", "parent");
                     data.put("onboarded", false);
                     data.put("createdAt", FieldValue.serverTimestamp());
@@ -78,6 +88,9 @@ public class AuthService {
                         callback.onFailure("Auth parent error: " + e.getMessage()));
     }
 
+    /**
+     * Registers a new provider (auth + /providers/{providerUid} document).
+     */
     public void registerProvider(
             final String prefix,
             final String name,
@@ -116,7 +129,9 @@ public class AuthService {
                         callback.onFailure("Auth provider error: " + e.getMessage()));
     }
 
-    // Child with own email (independent)
+    /**
+     * Registers an independent child (own email) as /children/{authUid}.
+     */
     public void registerChildIndependent(
             final String name,
             final String email,
@@ -157,7 +172,10 @@ public class AuthService {
                         callback.onFailure("Auth child error: " + e.getMessage()));
     }
 
-    // Child with parent PAC; child uses parent email to sign in.
+    /**
+     * Registers a child profile under an existing parent using parentAccessCode.
+     * Creates a /children/{childUid} document using the parent’s email.
+     */
     public void registerChildUnderParent(
             final String name,
             final String password,          // currently unused, kept for future extension
@@ -184,7 +202,7 @@ public class AuthService {
                         return;
                     }
 
-                    // 2) Create child document with random ID
+                    // 2) Create child document with Firestore-generated ID
                     DocumentReference childRef = db.collection("children").document();
                     String childUid = childRef.getId();
 
@@ -212,7 +230,10 @@ public class AuthService {
 
     // ---------- LOGIN ----------
 
-    // Parent, Provider, independent child: email+password
+    /**
+     * Logs in with email/password and then detects the user’s role.
+     * Used by: parent, provider, and independent child flows.
+     */
     public void loginWithEmailPassword(
             final String email,
             final String password,
@@ -233,14 +254,15 @@ public class AuthService {
                     }
 
                     String uid = user.getUid();
-                    // After login, figure out which collection this user belongs to
                     detectRoleForUid(uid, callback);
                 })
                 .addOnFailureListener(e ->
                         callback.onFailure("Auth login error: " + e.getMessage()));
     }
 
-    // Child under parent login: childName + parentEmail + password
+    /**
+     * Logs in as a parent (email/password) and then finds the matching child profile by name.
+     */
     public void loginChildUnderParent(
             final String childName,
             final String parentEmail,
@@ -289,8 +311,10 @@ public class AuthService {
 
     // ---------- ROLE / ONBOARDING ----------
 
+    /**
+     * Internal helper to detect role by checking parents → providers → children.
+     */
     private void detectRoleForUid(final String uid, final LoginResultCallback callback) {
-        // Check parents → providers → children
         db.collection("parents").document(uid).get()
                 .addOnSuccessListener(parentSnap -> {
                     if (parentSnap.exists()) {
@@ -327,6 +351,9 @@ public class AuthService {
                         callback.onFailure("Parent role error: " + e.getMessage()));
     }
 
+    /**
+     * Fetches the current signed-in user’s role and onboarding flag.
+     */
     public void fetchCurrentUserRole(final FetchRoleCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
@@ -351,6 +378,9 @@ public class AuthService {
         });
     }
 
+    /**
+     * Marks the current user as onboarded in the collection selected by role.
+     */
     public void markOnboarded(RoleType role, final SimpleResultCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
@@ -383,6 +413,9 @@ public class AuthService {
 
     // ---------- MISC ----------
 
+    /**
+     * Sends a password reset email using FirebaseAuth.
+     */
     public void sendPasswordReset(String email, final SimpleResultCallback callback) {
         auth.sendPasswordResetEmail(email)
                 .addOnSuccessListener(unused -> callback.onSuccess())
@@ -390,6 +423,9 @@ public class AuthService {
                         callback.onFailure("Reset email error: " + e.getMessage()));
     }
 
+    /**
+     * Signs out the current FirebaseAuth user.
+     */
     public void signOut() {
         auth.signOut();
     }

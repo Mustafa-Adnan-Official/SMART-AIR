@@ -7,6 +7,11 @@ import com.example.smartair.models.RoleType;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.utils.InputValidator;
 
+/**
+ * Purpose: Implements login logic and validation.
+ * Layer: Presenter (MVP)
+ * Used For: Handling all login flows and updating the View based on results.
+ */
 public class LoginPresenterImpl implements LoginContract.Presenter {
 
     private LoginContract.View view;
@@ -28,6 +33,9 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
         }
     }
 
+    /**
+     * Handles parent, provider, and independent-child login.
+     */
     private void handleEmailPasswordLogin() {
         final String email = view.getEmail();
         final String password = view.getPassword();
@@ -54,7 +62,6 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
             @Override
             public void onSuccess(String uid, RoleType role, boolean onboarded) {
                 if (view == null) return;
-
                 view.showLoading(false);
 
                 if (!onboarded) {
@@ -63,16 +70,10 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
                 }
 
                 switch (role) {
-                    case PARENT:
-                        view.navigateToParentHome();
-                        break;
-                    case PROVIDER:
-                        view.navigateToProviderHome();
-                        break;
+                    case PARENT:   view.navigateToParentHome();   break;
+                    case PROVIDER: view.navigateToProviderHome(); break;
                     case CHILD:
-                    default:
-                        view.navigateToChildHome(uid);
-                        break;
+                    default:       view.navigateToChildHome(uid); break;
                 }
             }
 
@@ -92,6 +93,9 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
         });
     }
 
+    /**
+     * Handles login when child logs in under a parent email.
+     */
     private void handleChildUnderParentLogin() {
         final String childName = view.getChildName();
         final String parentEmail = view.getParentEmailForChildMode();
@@ -151,12 +155,10 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
     public void onForgotPasswordClicked() {
         if (view == null) return;
 
-        String email;
-        if (view.isChildMode() && view.isChildUnderParentMode()) {
-            email = view.getParentEmailForChildMode();
-        } else {
-            email = view.getEmail();
-        }
+        String email =
+                (view.isChildMode() && view.isChildUnderParentMode())
+                        ? view.getParentEmailForChildMode()
+                        : view.getEmail();
 
         if (!InputValidator.isValidEmail(email)) {
             view.showEmailError("Enter a valid email to reset password");
@@ -184,7 +186,6 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
 
     @Override
     public void onDestroy() {
-        // To avoid memory leaks in tests / activities
         this.view = null;
     }
 }
