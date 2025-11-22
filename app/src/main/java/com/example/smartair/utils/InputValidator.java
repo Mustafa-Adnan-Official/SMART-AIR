@@ -3,18 +3,31 @@ package com.example.smartair.utils;
 import android.text.TextUtils;
 import android.util.Patterns;
 
+/**
+ * Purpose: Centralized input validation helpers used by signup/login presenters.
+ * Layer: Utils
+ * Notes:
+ *  - Keeps Activities/Presenters clean by isolating validation logic.
+ *  - Methods return simple boolean values for MVP flow control.
+ */
 public class InputValidator {
 
+    /** Valid email using Android's built-in email pattern. */
     public static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email)
                 && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * Valid password rules:
+     *  - at least 6 characters
+     *  - must contain at least one non-alphanumeric character
+     */
     public static boolean isValidPassword(String password) {
         if (password == null || password.length() < 6) {
             return false;
         }
-        // At least one non-alphanumeric (special) character
+
         boolean hasSpecial = false;
         for (int i = 0; i < password.length(); i++) {
             char c = password.charAt(i);
@@ -26,6 +39,11 @@ public class InputValidator {
         return hasSpecial;
     }
 
+    /**
+     * Valid name rules:
+     *  - not empty
+     *  - cannot contain digits
+     */
     public static boolean isValidName(String name) {
         if (TextUtils.isEmpty(name)) {
             return false;
@@ -38,12 +56,15 @@ public class InputValidator {
         return true;
     }
 
+    /**
+     * Valid Parent Access Code (PAC) format:
+     *  "PA-" + 4 alphanumeric chars + "-" + 2 alphanumeric chars.
+     *  Example: PA-7FQ2-91
+     */
     public static boolean isValidPAC(String pac) {
         if (TextUtils.isEmpty(pac)) {
             return false;
         }
-        // Example: PA-7FQ2-91 → "PA-" + 4 chars + "-" + 2 chars
-        // Tweak pattern if you want.
         return pac.matches("PA-[A-Z0-9]{4}-[A-Z0-9]{2}");
     }
 }

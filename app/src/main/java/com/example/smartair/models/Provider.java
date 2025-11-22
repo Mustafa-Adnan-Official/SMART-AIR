@@ -2,15 +2,21 @@ package com.example.smartair.models;
 
 import com.google.firebase.Timestamp;
 
+/**
+ * Purpose: Represents a provider document stored in /providers/{providerUid}.
+ * Layer: Model
+ * Used For: Passing provider data to presenters and services.
+ */
 public class Provider {
 
-    private String providerUid;
-    private String prefix;       // "Dr.", etc.
+    private String providerUid;   // FirebaseAuth UID
+    private String prefix;        // e.g. "Dr."
     private String name;
     private String email;
     private boolean onboarded;
     private Timestamp createdAt;
 
+    /** Required for Firebase deserialization. */
     public Provider() {}
 
     public Provider(String providerUid,

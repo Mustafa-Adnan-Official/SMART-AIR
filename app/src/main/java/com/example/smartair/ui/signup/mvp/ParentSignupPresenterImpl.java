@@ -4,6 +4,10 @@ import com.example.smartair.callbacks.AuthResultCallback;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.utils.InputValidator;
 
+/**
+ * Purpose: Handles validation and signup logic for parent accounts.
+ * Layer: Presenter (Signup)
+ */
 public class ParentSignupPresenterImpl implements ParentSignupContract.Presenter {
 
     private ParentSignupContract.View view;

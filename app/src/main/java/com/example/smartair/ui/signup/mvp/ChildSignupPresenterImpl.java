@@ -4,6 +4,10 @@ import com.example.smartair.callbacks.AuthResultCallback;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.utils.InputValidator;
 
+/**
+ * Purpose: Handles validation and signup logic for child accounts.
+ * Layer: Presenter (Signup)
+ */
 public class ChildSignupPresenterImpl implements ChildSignupContract.Presenter {
 
     private ChildSignupContract.View view;
@@ -51,8 +55,7 @@ public class ChildSignupPresenterImpl implements ChildSignupContract.Presenter {
 
         view.showLoading(true);
 
-        authService.registerChildIndependent(
-                name, email, password,
+        authService.registerChildIndependent(name, email, password,
                 new AuthResultCallback() {
                     @Override
                     public void onSuccess(String uid) {
@@ -67,10 +70,8 @@ public class ChildSignupPresenterImpl implements ChildSignupContract.Presenter {
                         view.showLoading(false);
                         view.showGenericError(errorMessage);
                     }
-                }
-        );
+                });
     }
-
 
     private void signupWithParent() {
         String name = view.getChildName();
@@ -85,7 +86,7 @@ public class ChildSignupPresenterImpl implements ChildSignupContract.Presenter {
         }
 
         if (!InputValidator.isValidPAC(pac)) {
-            view.showPACError("Invalid PAC format");
+            view.showPACError("Invalid PAC");
             valid = false;
         }
 
@@ -116,10 +117,8 @@ public class ChildSignupPresenterImpl implements ChildSignupContract.Presenter {
                         view.showLoading(false);
                         view.showGenericError(errorMessage);
                     }
-                }
-        );
+                });
     }
-
 
     @Override
     public void onDestroy() {

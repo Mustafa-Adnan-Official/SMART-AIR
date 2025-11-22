@@ -1,5 +1,9 @@
 package com.example.smartair.ui.signup.mvp;
 
+/**
+ * Purpose: Defines View ↔ Presenter contract for provider signup.
+ * Layer: MVP (Signup)
+ */
 public interface ProviderSignupContract {
 
     interface View {

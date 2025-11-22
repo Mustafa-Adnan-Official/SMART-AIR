@@ -2,18 +2,24 @@ package com.example.smartair.models;
 
 import com.google.firebase.Timestamp;
 
+/**
+ * Purpose: Represents a child document stored in /children/{childUid}.
+ * Layer: Model
+ * Used For: Moving child data between Firestore and app logic.
+ */
 public class Child {
 
-    private String childUid;          // if independent: auth UID; if under parent: random id
+    private String childUid;          // independent child → auth UID; under parent → generated ID
     private String name;
-    private String email;             // either own email or parent email
-    private boolean hasOwnEmail;      // true if email is child’s own email
-    private String parentAccessCode;  // null or actual PAC
-    private String parentUid;         // null / empty if no parent
+    private String email;             // child’s own email OR parent’s email
+    private boolean hasOwnEmail;
+    private String parentAccessCode;  // null or actual PAC used during linking
+    private String parentUid;         // null if no parent
     private int personalBest;         // default 0
     private boolean onboarded;
     private Timestamp createdAt;
 
+    /** Required for Firebase deserialization. */
     public Child() {}
 
     public Child(String childUid,
