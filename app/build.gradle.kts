@@ -48,7 +48,8 @@ android {
 
 dependencies {
 
-        // ...
+        // ... other dependencies
+    implementation("com.google.android.material:material:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
         // Note: The version '1.0.0' is a placeholder; Android Studio might suggest a newer one.
     implementation(libs.androidx.core.ktx)
