@@ -39,7 +39,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
 
 
-   public ProvidersAdapter(Context context, List<Provider> providersList){
+    public ProvidersAdapter(Context context, List<Provider> providersList){
         this.providersList = providersList;
         this.context = context;
     }
@@ -86,7 +86,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
                 Switch accessSwitch = childView.findViewById(R.id.provider_child_access_button);
                 Button manageDataBtn = childView.findViewById(R.id.manage_data_button);
 
-                accessSwitch.setText(childInfo.getChildren.childName);
+                accessSwitch.setText(childInfo.childName);
                 accessSwitch.setText(childInfo.hasAccess);
 
                 accessSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -97,7 +97,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
                 });
 
                 manageDataBtn.setOnClickListener(v -> {
-                    Toast.makeText(context, "Manage Data Button Clicked", Toast.LENGTH_SHORT).show();
+                    showManageDataDialog(context, childInfo);
                 });
 
                 holder.childModulesContainer.addView(childView);
@@ -106,12 +106,13 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         }
 
         holder.deleteButton.setOnClickListener(v -> {
-            showDeleteProviderDialog(v.getContext(), currentProvider, position);
+            showDeleteProviderDialog(context, currentProvider, position);
 
         });
 
         holder.sendReportButton.setOnClickListener(v -> {
-            showEditPBDialog(v.getContext(), currentChild, position);
+            sendRealtimeReport(currentProvider);
+
         });
 
 
@@ -119,8 +120,111 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
     @Override
     public int getItemCount() {
-        return childList.size();
+        return providersList.size();
     }
+
+    private void showManageDataDialog(Context context, Provider.ChildAccessInfo childInfo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_manage_data, null);
+
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+
+        Switch closeButton = dialogView.findViewById(R.id.dialog_close_button);
+        Switch toggleRescue = dialogView.findViewById(R.id.toggle_rescuelog_data);
+        Switch toggleSymptoms = dialogView.findViewById(R.id.toggle_symptoms_tracking);
+        Switch toggleTriggers = dialogView.findViewById(R.id.toggle_triggers_tracking);
+        Switch togglePeakFlow = dialogView.findViewById(R.id.toggle_peakflow_tracking);
+        Switch toggleTriageIncident = dialogView.findViewById(R.id.toggle_triageincidents_tracking);
+        Switch toggleSummaryCharts = dialogView.findViewById(R.id.toggle_summarycharts_tracking);
+
+        toggleRescue.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        toggleSymptoms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        toggleTriggers.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        togglePeakFlow.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        toggleTriageIncident.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        toggleSummaryCharts.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            //TODO: Change Rescue Log Data in Database
+            if (isChecked) {
+            } else {
+
+            }
+        });
+
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+
+    }
+
+    private void showDeleteProviderDialog(Context context, Provider provider, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.delete_provider_dialog, null); // Ensure filename matches
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        Button yesButton = dialogView.findViewById(R.id.dialog_yesdeleteprovider_button);
+        Button noButton = dialogView.findViewById(R.id.dialog_nodeleteprovider_button);
+
+        yesButton.setOnClickListener(v -> {
+            providersList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, providersList.size());
+
+            Toast.makeText(context, "Provider Removed", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        noButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void sendRealtimeReport(Provider currentProvider) {
+        //TODO: DATABASE UPDATE
+
+    }
+
 
 
 
