@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This layout is no longer needed, used for prev sample testing. -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dev_root"
     android:layout_width="match_parent"
@@ -6,6 +8,7 @@
     android:orientation="vertical"
     android:padding="24dp">
 
+    <!--
     <Button
         android:id="@+id/btnCreateParent"
         android:layout_width="match_parent"
@@ -32,5 +35,6 @@
         android:layout_height="wrap_content"
         android:text="Create Child (With Parent)"
         android:layout_marginTop="16dp" />
+    -->
 
 </LinearLayout>
