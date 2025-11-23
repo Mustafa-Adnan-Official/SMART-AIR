@@ -37,7 +37,6 @@ public class ActivitySettingsChild extends AppCompatActivity {
         public void setPbSetting(int pbSetting) { this.pbSetting = pbSetting; }
         public void setDailyControllerUses(int controllerUses) { this.controllerUses = controllerUses; }
     }
-    // -------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
