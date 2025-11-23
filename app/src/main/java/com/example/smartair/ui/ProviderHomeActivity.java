@@ -1,9 +1,21 @@
 package com.example.smartair.ui;
 
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
- * Purpose: Home screen for the provider role after login/onboarding.
- * Layer: View (UI)
- * Used For: R1 role routing → provider lands here.
+ * Placeholder provider home screen for R1.
  */
-public class ProviderHomeActivity {
+public class ProviderHomeActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(android.R.layout.simple_list_item_1);
+
+        TextView tv = findViewById(android.R.id.text1);
+        tv.setText("Provider Home (TODO – replace with real layout)");
+    }
 }

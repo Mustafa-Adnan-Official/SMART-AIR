@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartAir">
 
-        <!-- ✅ DevSignupActivity is the ONLY launcher activity -->
+        <!-- Launcher / entry point -->
         <activity
-            android:name=".ui.dev.DevSignupActivity"
+            android:name=".ui.WelcomeRoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +20,23 @@
             </intent-filter>
         </activity>
 
+        <!-- Signup screens -->
+        <activity android:name=".ui.signup.ParentSignupActivity" />
+        <activity android:name=".ui.signup.ChildSignupActivity" />
+        <activity android:name=".ui.signup.ProviderSignupActivity" />
+
+        <!-- Login screens -->
+        <activity android:name=".ui.login.ParentLoginActivity" />
+        <activity android:name=".ui.login.ChildLoginActivity" />
+        <activity android:name=".ui.login.ProviderLoginActivity" />
+
+        <!-- Simple placeholder homes -->
+        <activity android:name=".ui.ParentHomeActivity" />
+        <activity android:name=".ui.ChildHomeActivity" />
+        <activity android:name=".ui.ProviderHomeActivity" />
+
+        <!-- (If you still have the old MainActivity and don't need it, you can remove it) -->
     </application>
+
 
 </manifest>
