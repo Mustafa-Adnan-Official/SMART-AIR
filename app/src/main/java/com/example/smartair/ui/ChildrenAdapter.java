@@ -1,5 +1,7 @@
 package com.example.smartair.ui;
 
+
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -15,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartair.R; // R is your generated resource file
 import com.example.smartair.models.Child; // Assuming Child is in your models package
+import com.example.smartair.models.Parent;
+import com.example.smartair.repositories.ChildRepository;
+import com.example.smartair.repositories.ParentRepository;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 
@@ -25,15 +30,24 @@ import java.util.List;
  */
 public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildViewHolder> {
 
+
+    private ChildRepository childRepository;
+    private ParentRepository parentRepository;
+    private String childUID;
+    private String parentUID;
     // List of children to display
     private List<Child> childList;
 
     /**
-     * ViewHolder class to hold the child UI elements
+     * ViewHolder class to hold the child UI elements in parent settings
      * @param childList
      */
     public ChildrenAdapter(List<Child> childList){
         this.childList = childList;
+        childRepository = new ChildRepository();
+        parentRepository = new ParentRepository();
+
+
     }
 
     @NonNull
@@ -47,9 +61,16 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
         Child currentChild = childList.get(position);
+        childUID = currentChild.getChildUid();
+        parentUID = currentChild.getParentUid();
+
+
+
+
+
 
         holder.nameTextView.setText(currentChild.getName());
-        holder.pbSettingsTextView.setText("PB Setting: " + currentChild.getPbSetting());
+        holder.pbSettingsTextView.setText("PB Setting: " + currentChild.getPersonalBest());
         holder.controllerSettingsTextView.setText("Expected Daily Controller Uses: " + currentChild.getControllerUses());
 
         holder.deleteButton.setOnClickListener(v -> {
@@ -106,6 +127,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
         public void removeChild(int position) {
             childList.remove(position);
             notifyItemRemoved(position);
+            parentRepository.removeChild(parentUID, childUID);
+
 
         }
 
@@ -124,7 +147,6 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
             yesButton.setOnClickListener(v -> {
 
                 removeChild(position);
-                //REMOVE FROM DATABASE
                 dialog.dismiss();
             });
 
@@ -148,7 +170,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
             Button cancelButton = dialogView.findViewById(R.id.dialog_noconfirmpb_button);
 
 
-            pbEditText.setText(String.valueOf(currentChild.getPbSetting()));
+            pbEditText.setText(String.valueOf(currentChild.getPersonalBest()));
 
             confirmButton.setOnClickListener(v -> {
                 String newValueString = pbEditText.getText().toString();
@@ -157,7 +179,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
                     try {
                         int newValue = Integer.parseInt(newValueString);
 
-                        currentChild.setPbSetting(newValue);
+                        currentChild.setPersonalBest(newValue);
+                        childRepository.adjustPB(childUID, newValue);
 
                         notifyItemChanged(childList.indexOf(currentChild));
                         dialog.dismiss();
@@ -199,6 +222,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
                         int newValue = Integer.parseInt(newValueString);
 
                         currentChild.setDailyControllerUses(newValue);
+                        childRepository.adjustControllerUses(childUID, newValue);
+
 
                         notifyItemChanged(childList.indexOf(currentChild));
                         dialog.dismiss();
