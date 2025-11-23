@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp"
+    android:padding="10dp"
+    android:background="@drawable/rounded_settings_background">
+
+
+
+
+        <Switch
+            android:id="@+id/provider_child_access_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Child 1"
+            android:textStyle = "bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="18dp"
+            android:fontFamily="@font/codec_pro_regular"
+            android:checked="false"
+            android:thumbTint="@color/white"
+            android:trackTint="@color/switch_track_selector"
+            android:background = "@drawable/rounded_settings_background"
+            />
+
+
+        <Button
+            android:id = "@+id/manage_data_button"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/rounded_managedata_background"
+            android:textColor = "@color/white"
+            android:textStyle = "bold"
+            android:fontFamily = "@font/codec_pro_regular"
+            android:text="Manage Data Toggles" />
+
+</LinearLayout>
