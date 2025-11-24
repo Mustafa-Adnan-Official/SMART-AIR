@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
 import com.example.smartair.services.AuthService;
+import com.example.smartair.ui.login.ParentLoginActivity;
 
 /**
  * Parent home screen.
@@ -47,6 +48,10 @@ public class ParentHomeActivity extends AppCompatActivity {
              Intent intent = new Intent(this, ActivitySettingsProvider.class);
              startActivity(intent);
              return true;
+        } else if (id == R.id.action_sign_out) {
+            Intent intent = new Intent (this, ParentLoginActivity.class);
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
