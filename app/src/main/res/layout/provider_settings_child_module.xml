@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginBottom="12dp"
-    android:padding="10dp"
-    android:background="@drawable/rounded_settings_background">
+    android:background="@drawable/rounded_settings_background"
+    android:orientation="vertical"
+    android:padding="10dp">
 
 
+    <Switch
+        android:id="@+id/provider_child_access_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/rounded_settings_background"
+        android:checked="false"
+        android:fontFamily="@font/codec_pro_regular"
+        android:text="Child 1"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector" />
 
 
-        <Switch
-            android:id="@+id/provider_child_access_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Child 1"
-            android:textStyle = "bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="18dp"
-            android:fontFamily="@font/codec_pro_regular"
-            android:checked="false"
-            android:thumbTint="@color/white"
-            android:trackTint="@color/switch_track_selector"
-            android:background = "@drawable/rounded_settings_background"
-            />
-
-
-        <Button
-            android:id = "@+id/manage_data_button"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:background="@drawable/rounded_managedata_background"
-            android:textColor = "@color/white"
-            android:textStyle = "bold"
-            android:fontFamily = "@font/codec_pro_regular"
-            android:text="Manage Data Toggles" />
+    <Button
+        android:id="@+id/manage_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/rounded_managedata_background"
+        android:fontFamily="@font/codec_pro_regular"
+        android:text="Manage Data Toggles"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 
 </LinearLayout>

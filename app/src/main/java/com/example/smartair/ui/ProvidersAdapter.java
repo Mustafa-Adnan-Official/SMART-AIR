@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartair.R;
+import com.example.smartair.models.Child;
 import com.example.smartair.models.Parent;
 import com.example.smartair.models.Provider;
 import com.example.smartair.repositories.ChildRepository;
@@ -89,30 +90,31 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         holder.childModulesContainer.removeAllViews();
 
         if (currentProvider.getChildren() != null) {
-            for (Provider.ChildAccessInfo childInfo : currentProvider.getChildren()) {
-                if (childInfo.getParentUid() == parent.getUid()) {
-                    childUid = childInfo.getUid();
+            for (Child child : currentProvider.getChildren()) {
+                if (child.getParentUid().equals(parent.getParentUid())) {
+                    childUid = child.getChildUid();
                     View childView = LayoutInflater.from(context).inflate(R.layout.provider_settings_child_module, holder.childModulesContainer, false);
 
                     Switch accessSwitch = childView.findViewById(R.id.provider_child_access_button);
                     Button manageDataBtn = childView.findViewById(R.id.manage_data_button);
 
-                    accessSwitch.setText(childInfo.getName());
-                    accessSwitch.setText(providerRepository.getAccessVal(childUid, currentProvider.getUid()));
+                    accessSwitch.setText(child.getName());
+                    accessSwitch.setChecked(providerRepository.getAccessBool(childUid, currentProvider.getProviderUid()));
 
                     accessSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                        accessSwitch.setText(providerRepository.setAccessVal(childUid, currentProvider.getUid()));
+                        providerRepository.setAccessBool(childUid, currentProvider.getProviderUid(), isChecked);
 
-                        Toast.makeText(context, "Child Access Changed", Toast.LENGTH_SHORT).show();)
+                        Toast.makeText(context, "Child Access Changed", Toast.LENGTH_SHORT).show();
 
                     });
 
                     manageDataBtn.setOnClickListener(v -> {
-                        showManageDataDialog(context, childInfo);
+                        showManageDataDialog(context, child);
                     });
+                    holder.childModulesContainer.addView(childView);
+
                 }
 
-                holder.childModulesContainer.addView(childView);
 
             }
         }
@@ -135,7 +137,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         return providersList.size();
     }
 
-    private void showManageDataDialog(Context context, Provider.ChildAccessInfo childInfo) {
+    private void showManageDataDialog(Context context, Child child) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_manage_data, null);
@@ -254,4 +256,3 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 }
 
 
-}

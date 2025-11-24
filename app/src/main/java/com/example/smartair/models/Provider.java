@@ -2,6 +2,8 @@ package com.example.smartair.models;
 
 import com.google.firebase.Timestamp;
 
+import java.util.List;
+
 /**
  * Purpose: Represents a provider document stored in /providers/{providerUid}.
  * Layer: Model
@@ -15,6 +17,7 @@ public class Provider {
     private String email;
     private boolean onboarded;
     private Timestamp createdAt;
+    private List<Child> childList;
 
     /** Required for Firebase deserialization. */
     public Provider() {}
@@ -79,5 +82,9 @@ public class Provider {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<Child> getChildren() {
+        return childList;
     }
 }
