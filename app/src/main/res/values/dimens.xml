@@ -1,0 +1,6 @@
+<resources>
+    <string name="logo_ratio">W,1077:336</string>
+
+    <dimen name="logo_horizontal_margin">0dp</dimen>   <!-- Make the logo touch the screen edges -->
+    <dimen name="logo_top_margin">0dp</dimen>
+</resources>
