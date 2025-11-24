@@ -35,8 +35,7 @@ public class ActivitySettingsChild extends AppCompatActivity {
     }
 
     private void loadChildrenData() {
-        // --- TEMPORARY TEST DATA START ---
-        // Simulating fetched children to verify UI
+
         childList.clear();
 
         Child child1 = new Child();

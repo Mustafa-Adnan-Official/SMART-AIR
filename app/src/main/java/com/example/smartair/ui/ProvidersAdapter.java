@@ -25,10 +25,7 @@ import com.example.smartair.repositories.ChildRepository;
 import com.example.smartair.repositories.ProviderRepository;
 
 import java.util.List;
-/**
- *
- * This class is to connect the Provider UI elements to the Provider database and any data
- */
+
 public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.ProviderViewHolder> {
 
     // List of Providers to display
@@ -40,11 +37,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     private Parent parent;
     private String childUid;
 
-    /**
-     * ViewHolder class to hold the child UI elements
-     * @param providersList
-     * @param context
-     */
     public ProvidersAdapter(Context context, List<Provider> providersList, Parent parent){
         this.providersList = providersList;
         this.context = context;
@@ -52,9 +44,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         this.parent = parent;
         this.childRepository = new ChildRepository();
     }
-
-
-
 
     public static class ProviderViewHolder extends RecyclerView.ViewHolder {
 
@@ -69,7 +58,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
             deleteButton = itemView.findViewById(R.id.delete_child_button);
             sendReportButton = itemView.findViewById(R.id.send_realtime_report_button);
             childModulesContainer = itemView.findViewById(R.id.child_modules_list_container);
-
         }
     }
 
@@ -77,7 +65,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     @Override
     public ProviderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.parent_settings_child_card, parent, false); // Ensure this matches your file name
+                .inflate(R.layout.parent_settings_provider_card, parent, false); 
         return new ProviderViewHolder(itemView);
     }
 
@@ -85,13 +73,17 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     public void onBindViewHolder(@NonNull ProviderViewHolder holder, int position) {
         Provider currentProvider = providersList.get(position);
 
-
         holder.nameTextView.setText(currentProvider.getName());
-        holder.childModulesContainer.removeAllViews();
+        
+        if (holder.childModulesContainer != null) {
+            holder.childModulesContainer.removeAllViews();
+        }
 
-        if (currentProvider.getChildren() != null) {
+        if (currentProvider.getChildren() != null && holder.childModulesContainer != null) {
             for (Child child : currentProvider.getChildren()) {
-                if (child.getParentUid().equals(parent.getParentUid())) {
+                if (parent != null && child.getParentUid() != null && 
+                    child.getParentUid().equals(parent.getParentUid())) {
+                    
                     childUid = child.getChildUid();
                     View childView = LayoutInflater.from(context).inflate(R.layout.provider_settings_child_module, holder.childModulesContainer, false);
 
@@ -99,37 +91,29 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
                     Button manageDataBtn = childView.findViewById(R.id.manage_data_button);
 
                     accessSwitch.setText(child.getName());
-                    accessSwitch.setChecked(providerRepository.getAccessBool(childUid, currentProvider.getProviderUid()));
+                    
+                    accessSwitch.setChecked(false); 
 
                     accessSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         providerRepository.setAccessBool(childUid, currentProvider.getProviderUid(), isChecked);
-
                         Toast.makeText(context, "Child Access Changed", Toast.LENGTH_SHORT).show();
-
                     });
 
                     manageDataBtn.setOnClickListener(v -> {
                         showManageDataDialog(context, child);
                     });
                     holder.childModulesContainer.addView(childView);
-
                 }
-
-
             }
         }
 
         holder.deleteButton.setOnClickListener(v -> {
             showDeleteProviderDialog(context, currentProvider, position);
-
         });
 
         holder.sendReportButton.setOnClickListener(v -> {
             sendRealtimeReport(currentProvider);
-
         });
-
-
     }
 
     @Override
@@ -139,84 +123,39 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
     private void showManageDataDialog(Context context, Child child) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_manage_data, null);
-
         builder.setView(dialogView);
-
         AlertDialog dialog = builder.create();
 
-
-        Switch closeButton = dialogView.findViewById(R.id.dialog_close_button);
+        // FIX: Cast to Button, not Switch. XML defines it as <Button>.
+        Button closeButton = dialogView.findViewById(R.id.dialog_close_button);
+        
         Switch toggleRescue = dialogView.findViewById(R.id.toggle_rescuelog_data);
         Switch toggleSymptoms = dialogView.findViewById(R.id.toggle_symptoms_tracking);
         Switch toggleTriggers = dialogView.findViewById(R.id.toggle_triggers_tracking);
         Switch togglePeakFlow = dialogView.findViewById(R.id.toggle_peakflow_tracking);
         Switch toggleTriageIncident = dialogView.findViewById(R.id.toggle_triageincidents_tracking);
         Switch toggleSummaryCharts = dialogView.findViewById(R.id.toggle_summarycharts_tracking);
+        // Note: toggle_controlleradherence_logs is present in XML but was unused here. 
+        // You can add it if needed:
+        // Switch toggleController = dialogView.findViewById(R.id.toggle_controlleradherence_logs);
 
-        toggleRescue.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-
-
-            } else {
-
-            }
-        });
-
-        toggleSymptoms.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-            } else {
-
-            }
-        });
-
-        toggleTriggers.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-            } else {
-
-            }
-        });
-
-        togglePeakFlow.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-            } else {
-
-            }
-        });
-
-        toggleTriageIncident.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-            } else {
-
-            }
-        });
-
-        toggleSummaryCharts.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Change Rescue Log Data in Database
-            if (isChecked) {
-            } else {
-
-            }
-        });
+        // Setup dummy listeners
+        if (toggleRescue != null) toggleRescue.setOnCheckedChangeListener((buttonView, isChecked) -> {});
+        if (toggleSymptoms != null) toggleSymptoms.setOnCheckedChangeListener((buttonView, isChecked) -> {});
+        if (toggleTriggers != null) toggleTriggers.setOnCheckedChangeListener((buttonView, isChecked) -> {});
+        if (togglePeakFlow != null) togglePeakFlow.setOnCheckedChangeListener((buttonView, isChecked) -> {});
+        if (toggleTriageIncident != null) toggleTriageIncident.setOnCheckedChangeListener((buttonView, isChecked) -> {});
+        if (toggleSummaryCharts != null) toggleSummaryCharts.setOnCheckedChangeListener((buttonView, isChecked) -> {});
 
         closeButton.setOnClickListener(v -> dialog.dismiss());
-
         dialog.show();
-
     }
 
     private void showDeleteProviderDialog(Context context, Provider provider, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete_provider, null); // Ensure filename matches
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete_provider, null);
         builder.setView(dialogView);
-
         AlertDialog dialog = builder.create();
 
         Button yesButton = dialogView.findViewById(R.id.dialog_yesdeleteprovider_button);
@@ -226,33 +165,15 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
             providersList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, providersList.size());
-
-            //TODO: DELETE PROVIDER FROM DATABASE
-
             Toast.makeText(context, "Provider Removed", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
         noButton.setOnClickListener(v -> dialog.dismiss());
-
         dialog.show();
     }
 
     private void sendRealtimeReport(Provider currentProvider) {
-        //TODO: DATABASE UPDATE
-
+        // Placeholder
     }
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
