@@ -161,13 +161,11 @@ public class ParentLoginActivity extends AppCompatActivity implements LoginContr
 
     @Override
     public void navigateToOnboarding(String roleString) {
-        // TODO: Wire to Parent onboarding flow when Activities exist.
-        Toast.makeText(
-                this,
-                "First login detected (" + roleString + "). Onboarding flow TODO.",
-                Toast.LENGTH_LONG
-        ).show();
-        navigateToParentHome();
+        // For parent logins, we always go to parent onboarding
+        Intent i = new Intent(this,
+                com.example.smartair.ui.onboarding.ParentOnboardingActivity.class);
+        startActivity(i);
+        finish();
     }
 
     @Override

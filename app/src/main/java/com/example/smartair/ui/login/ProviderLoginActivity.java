@@ -155,13 +155,10 @@ public class ProviderLoginActivity extends AppCompatActivity implements LoginCon
 
     @Override
     public void navigateToOnboarding(String roleString) {
-        // TODO: Provider onboarding screens.
-        Toast.makeText(
-                this,
-                "First login detected (" + roleString + "). Onboarding flow TODO.",
-                Toast.LENGTH_LONG
-        ).show();
-        navigateToProviderHome();
+        Intent i = new Intent(this,
+                com.example.smartair.ui.onboarding.ProviderOnboardingActivity.class);
+        startActivity(i);
+        finish();
     }
 
     @Override

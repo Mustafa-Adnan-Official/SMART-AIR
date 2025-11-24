@@ -43,6 +43,10 @@
         <activity android:name=".ui.ActivitySettingsChild" />
         <activity android:name=".ui.ActivitySettingsProvider" />
 
+        <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
+        <activity android:name=".ui.onboarding.ParentOnboardingActivity" />
+        <activity android:name=".ui.onboarding.ProviderOnboardingActivity" />
+
         <!-- (If you still have the old MainActivity and don't need it, you can remove it) -->
     </application>
 

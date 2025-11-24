@@ -1,6 +1,7 @@
 package com.example.smartair.models;
 
 import com.google.firebase.Timestamp;
+import java.util.List;
 
 /**
  * Purpose: Represents a parent document stored in /parents/{parentUid}.
@@ -16,6 +17,9 @@ public class Parent {
     private boolean onboarded;
     private Timestamp createdAt;
 
+    // New: list of child UIDs linked to this parent
+    private List<String> childUIDs;
+
     /** Required for Firebase deserialization. */
     public Parent() {}
 
@@ -24,13 +28,15 @@ public class Parent {
                   String email,
                   String parentAccessCode,
                   boolean onboarded,
-                  Timestamp createdAt) {
+                  Timestamp createdAt,
+                  List<String> childUIDs) {
         this.parentUid = parentUid;
         this.name = name;
         this.email = email;
         this.parentAccessCode = parentAccessCode;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
+        this.childUIDs = childUIDs;
     }
 
     public String getParentUid() {
@@ -79,5 +85,13 @@ public class Parent {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<String> getChildUIDs() {
+        return childUIDs;
+    }
+
+    public void setChildUIDs(List<String> childUIDs) {
+        this.childUIDs = childUIDs;
     }
 }

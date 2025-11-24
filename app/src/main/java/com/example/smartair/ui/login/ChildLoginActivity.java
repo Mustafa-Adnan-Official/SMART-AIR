@@ -48,27 +48,38 @@ public class ChildLoginActivity extends AppCompatActivity implements LoginContra
         setContentView(R.layout.child_li);
 
         switchParentEmail = findViewById(R.id.switch_parent_email);
-        inputParentEmail = findViewById(R.id.input_parent_email);
+        inputParentEmail  = findViewById(R.id.input_parent_email);
 
-        inputName = findViewById(R.id.input_name);
-        inputEmail = findViewById(R.id.input_email);
+        inputName     = findViewById(R.id.input_name);
+        inputEmail    = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
 
-        emailErrorText = findViewById(R.id.email_error);
-        passwordErrorText = findViewById(R.id.pass_error);
-        passwordRequirementsText = findViewById(R.id.password_requirements);
+        emailErrorText            = findViewById(R.id.email_error);
+        passwordErrorText         = findViewById(R.id.pass_error);
+        passwordRequirementsText  = findViewById(R.id.password_requirements);
 
-        btnLogin = findViewById(R.id.btn_login);
+        btnLogin         = findViewById(R.id.btn_login);
         btnForgotPassword = findViewById(R.id.btn_forgot_pswrd);
 
         presenter = new LoginPresenterImpl(this, new AuthService());
 
+        // Default state: independent child
+        inputParentEmail.setVisibility(View.GONE);
+        inputEmail.setVisibility(View.VISIBLE);
+
         switchParentEmail.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                // CHILD UNDER PARENT:
+                // show parent email, hide child's own email
                 inputParentEmail.setVisibility(View.VISIBLE);
+                inputEmail.setText("");
+                inputEmail.setVisibility(View.GONE);
             } else {
+                // INDEPENDENT CHILD:
+                // hide parent email, show child's own email
                 inputParentEmail.setText("");
                 inputParentEmail.setVisibility(View.GONE);
+                inputEmail.setVisibility(View.VISIBLE);
             }
         });
 
@@ -95,6 +106,7 @@ public class ChildLoginActivity extends AppCompatActivity implements LoginContra
 
     @Override
     public String getEmail() {
+        // Used for independent child mode
         return inputEmail.getText().toString().trim();
     }
 
@@ -110,6 +122,7 @@ public class ChildLoginActivity extends AppCompatActivity implements LoginContra
 
     @Override
     public String getParentEmailForChildMode() {
+        // Used when isChildUnderParentMode() == true
         return inputParentEmail.getText().toString().trim();
     }
 
@@ -182,18 +195,33 @@ public class ChildLoginActivity extends AppCompatActivity implements LoginContra
 
     @Override
     public void navigateToOnboarding(String roleString) {
-        Toast.makeText(this, "First login detected (" + roleString + "). Onboarding flow TODO.", Toast.LENGTH_LONG).show();
-        navigateToChildHome("currentChild");
+        Intent intent;
+
+        if ("parent".equals(roleString)) {
+            intent = new Intent(this, com.example.smartair.ui.onboarding.ParentOnboardingActivity.class);
+        } else if ("provider".equals(roleString)) {
+            intent = new Intent(this, com.example.smartair.ui.onboarding.ProviderOnboardingActivity.class);
+        } else {
+            // default to child
+            intent = new Intent(this, com.example.smartair.ui.onboarding.ChildOnboardingActivity.class);
+        }
+
+        startActivity(intent);
+        finish();
     }
 
     @Override
     public void showEmailNotVerifiedMessage() {
-        Toast.makeText(this, "Please ask your parent to verify the email before logging in.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this,
+                "Please ask your parent to verify the email before logging in.",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showPasswordResetSent(String email) {
-        Toast.makeText(this, "Password reset email sent to " + email, Toast.LENGTH_LONG).show();
+        Toast.makeText(this,
+                "Password reset email sent to " + email,
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
