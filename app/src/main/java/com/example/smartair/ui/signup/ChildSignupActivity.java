@@ -35,7 +35,6 @@ public class ChildSignupActivity extends AppCompatActivity implements ChildSignu
     private TextView emailErrorText;
     private TextView passwordErrorText;
     private TextView passwordRequirementsText;
-    private TextView pacErrorText;
 
     private Button btnRegister;
     private Button btnExistingUser;
@@ -48,29 +47,39 @@ public class ChildSignupActivity extends AppCompatActivity implements ChildSignu
         setContentView(R.layout.child_su);
 
         switchParentLink = findViewById(R.id.switch_parent_link);
-        inputParentCode = findViewById(R.id.input_parent_code);
+        inputParentCode  = findViewById(R.id.input_parent_code);
 
-        inputName = findViewById(R.id.input_name);
-        inputEmail = findViewById(R.id.input_email);
+        inputName     = findViewById(R.id.input_name);
+        inputEmail    = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
 
-        emailErrorText = findViewById(R.id.email_error);
-        passwordErrorText = findViewById(R.id.pass_error);
+        emailErrorText           = findViewById(R.id.email_error);
+        passwordErrorText        = findViewById(R.id.pass_error);
         passwordRequirementsText = findViewById(R.id.password_requirements);
-        pacErrorText = inputParentCode;
 
-        btnRegister = findViewById(R.id.btn_register);
-        btnExistingUser = findViewById(R.id.btn_existing_user);
+        btnRegister      = findViewById(R.id.btn_register);
+        btnExistingUser  = findViewById(R.id.btn_existing_user);
 
         presenter = new ChildSignupPresenterImpl(this, new AuthService());
+
+        // Default: independent child (no PAC, email visible)
+        inputParentCode.setVisibility(View.GONE);
+        inputEmail.setVisibility(View.VISIBLE);
 
         // Switch toggle logic
         switchParentLink.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                // LINKED TO PARENT:
+                // show PAC, hide child's own email
                 inputParentCode.setVisibility(View.VISIBLE);
+                inputEmail.setText("");
+                inputEmail.setVisibility(View.GONE);
             } else {
+                // INDEPENDENT CHILD:
+                // hide PAC, show child's own email
                 inputParentCode.setText("");
                 inputParentCode.setVisibility(View.GONE);
+                inputEmail.setVisibility(View.VISIBLE);
             }
         });
 
@@ -124,6 +133,7 @@ public class ChildSignupActivity extends AppCompatActivity implements ChildSignu
 
     @Override
     public String getParentEmailForPAC() {
+        // Not used in current R1 flow (parent email comes from PAC lookup)
         return "";
     }
 
@@ -166,14 +176,18 @@ public class ChildSignupActivity extends AppCompatActivity implements ChildSignu
 
     @Override
     public void navigateToEmailVerificationScreen() {
-        Toast.makeText(this, "Account created. Please check your email to verify.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this,
+                "Account created. Please check your email to verify.",
+                Toast.LENGTH_LONG).show();
         startActivity(new Intent(this, ChildLoginActivity.class));
         finish();
     }
 
     @Override
     public void navigateToParentLinkedSuccessScreen() {
-        Toast.makeText(this, "Linked to parent successfully. You can log in now.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this,
+                "Linked to parent successfully. You can log in now.",
+                Toast.LENGTH_LONG).show();
         startActivity(new Intent(this, ChildLoginActivity.class));
         finish();
     }

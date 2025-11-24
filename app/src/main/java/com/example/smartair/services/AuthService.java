@@ -150,16 +150,21 @@ public class AuthService {
                     user.sendEmailVerification();
 
                     Map<String, Object> data = new HashMap<>();
-                    data.put("childUid",      childUid);
-                    data.put("name",          name);
-                    data.put("email",         email);
-                    data.put("hasOwnEmail",   true);
+                    data.put("childUid", childUid);
+                    data.put("name", name);
+
+                    // Login + reference email for this child
+                    data.put("email", email);          // used for login
+                    data.put("childEmail", email);     // explicit child email
+                    data.put("parentEmail", null);     // no parent in this mode
+
+                    data.put("hasOwnEmail", true);
                     data.put("parentAccessCode", null);
-                    data.put("parentUid",     null);
-                    data.put("personalBest",  0);
-                    data.put("role",          "child");
-                    data.put("onboarded",     false);
-                    data.put("createdAt",     FieldValue.serverTimestamp());
+                    data.put("parentUid", null);
+                    data.put("personalBest", 0);
+                    data.put("role", "child");
+                    data.put("onboarded", false);
+                    data.put("createdAt", FieldValue.serverTimestamp());
 
                     db.collection("children")
                             .document(childUid)
@@ -174,11 +179,16 @@ public class AuthService {
 
     /**
      * Registers a child profile under an existing parent using parentAccessCode.
-     * Creates a /children/{childUid} document using the parent’s email.
+     * Flow:
+     *  1) Find parent by PAC
+     *  2) Generate alias email from parent email (local+child-<unique>@domain)
+     *  3) Create FirebaseAuth user with alias email + child's password
+     *  4) Create /children/{childUid} with childEmail + parentEmail references
+     *  5) Append childUid to parent's childUIDs array
      */
     public void registerChildUnderParent(
             final String name,
-            final String password,          // currently unused, kept for future extension
+            final String password,
             final String parentAccessCode,
             final AuthResultCallback callback) {
 
@@ -194,7 +204,7 @@ public class AuthService {
                     }
 
                     DocumentSnapshot parentDoc = querySnapshot.getDocuments().get(0);
-                    final String parentUid   = parentDoc.getString("parentUid");
+                    final String parentUid = parentDoc.getString("parentUid");
                     final String parentEmail = parentDoc.getString("email");
 
                     if (parentUid == null || parentEmail == null) {
@@ -202,26 +212,64 @@ public class AuthService {
                         return;
                     }
 
-                    // 2) Create child document with Firestore-generated ID
-                    DocumentReference childRef = db.collection("children").document();
-                    String childUid = childRef.getId();
+                    // 2) Build alias email from parent email:
+                    //    localPart + "+child-" + <unique> + "@" + domain
+                    String[] parts = parentEmail.split("@", 2);
+                    String local = parts[0];
+                    String domain = (parts.length > 1) ? parts[1] : "";
+                    String uniqueTag = "child-" + System.currentTimeMillis();
+                    final String childAliasEmail = local + "+" + uniqueTag + "@" + domain;
 
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("childUid",         childUid);
-                    data.put("name",             name);
-                    data.put("email",            parentEmail);   // child signs in using parent email
-                    data.put("hasOwnEmail",      false);
-                    data.put("parentAccessCode", parentAccessCode);
-                    data.put("parentUid",        parentUid);
-                    data.put("personalBest",     0);
-                    data.put("role",             "child");
-                    data.put("onboarded",        false);
-                    data.put("createdAt",        FieldValue.serverTimestamp());
+                    // 3) Create auth user for child with alias email
+                    auth.createUserWithEmailAndPassword(childAliasEmail, password)
+                            .addOnSuccessListener(authResult -> {
+                                FirebaseUser childUser = authResult.getUser();
+                                if (childUser == null) {
+                                    callback.onFailure("Child auth user is null");
+                                    return;
+                                }
 
-                    childRef.set(data)
-                            .addOnSuccessListener(unused -> callback.onSuccess(childUid))
+                                // Optionally send verification to alias (goes to parent inbox)
+                                childUser.sendEmailVerification();
+
+                                final String childUid = childUser.getUid();
+
+                                // 4) Create child doc
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("childUid", childUid);
+                                data.put("name", name);
+
+                                // Login + reference emails
+                                data.put("email", childAliasEmail);      // used for login
+                                data.put("childEmail", childAliasEmail); // explicit child email
+                                data.put("parentEmail", parentEmail);    // reference to real parent email
+
+                                data.put("hasOwnEmail", false);
+                                data.put("parentAccessCode", parentAccessCode);
+                                data.put("parentUid", parentUid);
+                                data.put("personalBest", 0);
+                                data.put("role", "child");
+                                data.put("onboarded", false);
+                                data.put("createdAt", FieldValue.serverTimestamp());
+
+                                db.collection("children")
+                                        .document(childUid)
+                                        .set(data)
+                                        .addOnSuccessListener(unused -> {
+                                            // 5) Append childUid to parent's childUIDs array
+                                            db.collection("parents")
+                                                    .document(parentUid)
+                                                    .update("childUIDs", FieldValue.arrayUnion(childUid))
+                                                    .addOnSuccessListener(unused2 ->
+                                                            callback.onSuccess(childUid))
+                                                    .addOnFailureListener(e ->
+                                                            callback.onFailure("Failed to update parent.childUIDs: " + e.getMessage()));
+                                        })
+                                        .addOnFailureListener(e ->
+                                                callback.onFailure("Firestore child error: " + e.getMessage()));
+                            })
                             .addOnFailureListener(e ->
-                                    callback.onFailure("Firestore child error: " + e.getMessage()));
+                                    callback.onFailure("Auth child error: " + e.getMessage()));
                 })
                 .addOnFailureListener(e ->
                         callback.onFailure("PAC lookup error: " + e.getMessage()));
@@ -261,7 +309,13 @@ public class AuthService {
     }
 
     /**
-     * Logs in as a parent (email/password) and then finds the matching child profile by name.
+     * Logs a child in under a parent email.
+     *
+     * Flow:
+     *  1) Find parent doc by email
+     *  2) Find child doc under that parent with matching name
+     *  3) Read child's alias email from doc
+     *  4) Auth with child alias email + password
      */
     public void loginChildUnderParent(
             final String childName,
@@ -269,21 +323,23 @@ public class AuthService {
             final String password,
             final ChildUnderParentLoginCallback callback) {
 
-        // 1) Log in as parent
-        auth.signInWithEmailAndPassword(parentEmail, password)
-                .addOnSuccessListener(authResult -> {
-                    FirebaseUser parent = authResult.getUser();
-                    if (parent == null) {
-                        callback.onFailure("Parent user is null");
-                        return;
-                    }
-                    if (!parent.isEmailVerified()) {
-                        auth.signOut();
-                        callback.onFailure("Parent email not verified");
+        // 1) Find parent by email
+        db.collection("parents")
+                .whereEqualTo("email", parentEmail)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(parentQuery -> {
+                    if (parentQuery.isEmpty()) {
+                        callback.onFailure("No parent found with that email");
                         return;
                     }
 
-                    final String parentUid = parent.getUid();
+                    DocumentSnapshot parentDoc = parentQuery.getDocuments().get(0);
+                    final String parentUid = parentDoc.getString("parentUid");
+                    if (parentUid == null) {
+                        callback.onFailure("Parent UID missing");
+                        return;
+                    }
 
                     // 2) Find child under this parent with the given name
                     db.collection("children")
@@ -291,22 +347,48 @@ public class AuthService {
                             .whereEqualTo("name", childName)
                             .limit(1)
                             .get()
-                            .addOnSuccessListener(querySnapshot -> {
-                                if (querySnapshot.isEmpty()) {
+                            .addOnSuccessListener(childQuery -> {
+                                if (childQuery.isEmpty()) {
                                     callback.onFailure("No matching child profile for this parent");
                                     return;
                                 }
 
-                                DocumentSnapshot childDoc = querySnapshot.getDocuments().get(0);
-                                String childUid = childDoc.getString("childUid");
+                                DocumentSnapshot childDoc = childQuery.getDocuments().get(0);
+                                final String childUid = childDoc.getString("childUid");
+
+                                // Prefer "email" (login email); fallback to "childEmail" if needed
+                                String childEmail = childDoc.getString("email");
+                                if (childEmail == null) {
+                                    childEmail = childDoc.getString("childEmail");
+                                }
+
                                 Boolean onboarded = childDoc.getBoolean("onboarded");
-                                callback.onSuccess(childUid, onboarded != null && onboarded);
+
+                                if (childEmail == null || childUid == null) {
+                                    callback.onFailure("Child email or UID missing");
+                                    return;
+                                }
+
+                                // 3) Log in as child with alias email
+                                auth.signInWithEmailAndPassword(childEmail, password)
+                                        .addOnSuccessListener(authResult -> {
+                                            FirebaseUser child = authResult.getUser();
+                                            if (child == null) {
+                                                callback.onFailure("Child user is null");
+                                                return;
+                                            }
+
+                                            // You could optionally enforce email verification here.
+                                            callback.onSuccess(childUid, onboarded != null && onboarded);
+                                        })
+                                        .addOnFailureListener(e ->
+                                                callback.onFailure("Child auth error: " + e.getMessage()));
                             })
                             .addOnFailureListener(e ->
                                     callback.onFailure("Child lookup error: " + e.getMessage()));
                 })
                 .addOnFailureListener(e ->
-                        callback.onFailure("Parent auth error: " + e.getMessage()));
+                        callback.onFailure("Parent lookup error: " + e.getMessage()));
     }
 
     // ---------- ROLE / ONBOARDING ----------
@@ -421,6 +503,81 @@ public class AuthService {
                 .addOnSuccessListener(unused -> callback.onSuccess())
                 .addOnFailureListener(e ->
                         callback.onFailure("Reset email error: " + e.getMessage()));
+    }
+
+    /**
+     * Sends a password reset email for a child account that is linked under a parent.
+     *
+     * Flow:
+     *  1) Find the parent document using the parent's real email.
+     *  2) From that parentUid, locate the matching child document by child name.
+     *  3) Read the child’s alias email (email or childEmail field).
+     *  4) Trigger FirebaseAuth password reset for the child’s alias email.
+     *
+     * Notes:
+     *  - The reset link is delivered to the parent’s inbox because alias emails route to
+     *    the parent’s mailbox.
+     *  - This operation resets ONLY the child’s FirebaseAuth account; the parent’s password
+     *    remains unaffected.
+     *
+     * Used For: Forgot-password flow in child-under-parent login mode.
+     */
+    public void sendChildPasswordResetUnderParent(
+            final String childName,
+            final String parentEmail,
+            final SimpleResultCallback callback) {
+
+        // 1) Find parent by email
+        db.collection("parents")
+                .whereEqualTo("email", parentEmail)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(parentQuery -> {
+                    if (parentQuery.isEmpty()) {
+                        callback.onFailure("No parent found with that email");
+                        return;
+                    }
+
+                    DocumentSnapshot parentDoc = parentQuery.getDocuments().get(0);
+                    final String parentUid = parentDoc.getString("parentUid");
+                    if (parentUid == null) {
+                        callback.onFailure("Parent UID missing");
+                        return;
+                    }
+
+                    // 2) Find child under this parent with the given name
+                    db.collection("children")
+                            .whereEqualTo("parentUid", parentUid)
+                            .whereEqualTo("name", childName)
+                            .limit(1)
+                            .get()
+                            .addOnSuccessListener(childQuery -> {
+                                if (childQuery.isEmpty()) {
+                                    callback.onFailure("No matching child profile for this parent");
+                                    return;
+                                }
+
+                                DocumentSnapshot childDoc = childQuery.getDocuments().get(0);
+
+                                // Prefer "email" field, fallback to "childEmail"
+                                String childEmail = childDoc.getString("email");
+                                if (childEmail == null) {
+                                    childEmail = childDoc.getString("childEmail");
+                                }
+
+                                if (childEmail == null) {
+                                    callback.onFailure("Child email missing");
+                                    return;
+                                }
+
+                                // 3) Send reset email for the CHILD account
+                                sendPasswordReset(childEmail, callback);
+                            })
+                            .addOnFailureListener(e ->
+                                    callback.onFailure("Child lookup error: " + e.getMessage()));
+                })
+                .addOnFailureListener(e ->
+                        callback.onFailure("Parent lookup error: " + e.getMessage()));
     }
 
     /**

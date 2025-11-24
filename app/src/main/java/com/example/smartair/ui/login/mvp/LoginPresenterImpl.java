@@ -155,10 +155,52 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
     public void onForgotPasswordClicked() {
         if (view == null) return;
 
-        String email =
-                (view.isChildMode() && view.isChildUnderParentMode())
-                        ? view.getParentEmailForChildMode()
-                        : view.getEmail();
+        // Child under parent flow → special logic
+        if (view.isChildMode() && view.isChildUnderParentMode()) {
+            final String parentEmail = view.getParentEmailForChildMode();
+            final String childName   = view.getChildName();
+
+            boolean valid = true;
+
+            if (!InputValidator.isValidEmail(parentEmail)) {
+                view.showEmailError("Enter a valid parent email");
+                valid = false;
+            }
+
+            if (!InputValidator.isValidName(childName)) {
+                view.showChildNameError("Enter a valid child name");
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            view.showLoading(true);
+
+            authService.sendChildPasswordResetUnderParent(
+                    childName,
+                    parentEmail,
+                    new SimpleResultCallback() {
+                        @Override
+                        public void onSuccess() {
+                            if (view == null) return;
+                            view.showLoading(false);
+                            // You can phrase this however you like
+                            view.showPasswordResetSent(parentEmail);
+                        }
+
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            if (view == null) return;
+                            view.showLoading(false);
+                            view.showGenericError(errorMessage);
+                        }
+                    }
+            );
+            return;
+        }
+
+        // Normal flow: parent / provider / independent child
+        String email = view.getEmail();
 
         if (!InputValidator.isValidEmail(email)) {
             view.showEmailError("Enter a valid email to reset password");
