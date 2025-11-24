@@ -127,7 +127,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
         public void removeChild(int position) {
             childList.remove(position);
             notifyItemRemoved(position);
-            parentRepository.removeChild(parentUID, childUID);
+
+            //parentRepository.removeChild(parentUID, childUID);
 
 
         }

@@ -87,4 +87,8 @@ public class Provider {
     public List<Child> getChildren() {
         return childList;
     }
+
+    public void setChildren(List<Child> childList) {
+        this.childList = childList;
+    }
 }
