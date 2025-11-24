@@ -17,6 +17,7 @@ public class Child {
     private String parentUid;         // null if no parent
     private int personalBest;         // default 0
     private boolean onboarded;
+    private int controllerAdherence;
     private Timestamp createdAt;
 
     /** Required for Firebase deserialization. */
@@ -29,6 +30,7 @@ public class Child {
                  String parentAccessCode,
                  String parentUid,
                  int personalBest,
+                 int controllerAdherence,
                  boolean onboarded,
                  Timestamp createdAt) {
         this.childUid = childUid;
@@ -40,6 +42,7 @@ public class Child {
         this.personalBest = personalBest;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
+        this.controllerAdherence = controllerAdherence;
     }
 
     public String getChildUid() {
@@ -112,5 +115,13 @@ public class Child {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getControllerUses() {
+        return controllerAdherence;
+    }
+
+    public void setDailyControllerUses(int newValue) {
+        this.controllerAdherence = newValue;
     }
 }
