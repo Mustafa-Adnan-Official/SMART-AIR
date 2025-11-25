@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="logo_max_height">80dp</dimen>
+    <dimen name="tablet_logo_height">120dp</dimen>   <!-- very small -->
+    <dimen name="logo_horizontal_margin">48dp</dimen>
+</resources>

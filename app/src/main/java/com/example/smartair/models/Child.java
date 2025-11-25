@@ -1,40 +1,158 @@
 package com.example.smartair.models;
 
-import java.util.List;
+import com.google.firebase.Timestamp;
 
+/**
+ * Purpose: Represents a child document stored in /children/{childUid}.
+ * Layer: Model
+ * Used For: Moving child data between Firestore and app logic.
+ */
 public class Child {
-    public String childUID;
-    public String parentUID;
-    public String name;
-    public String email;
-    public String role;
-    public int personalBest;
-    public int controllerUses;
-    public int reportDuration;
-    public boolean hasOwnEmail;
-    public List<ProviderSharing> providerSharingList;
 
+    private String childUid;          // auth UID for both independent and under-parent
+    private String name;
+
+    // Login email (child's own email or alias based on parent email)
+    private String email;
+
+    // Explicit fields matching Firestore schema
+    private String childEmail;        // child's own or alias email
+    private String parentEmail;       // null for independent child
+
+    private boolean hasOwnEmail;
+    private String parentAccessCode;  // null or actual PAC used during linking
+    private String parentUid;         // null if no parent
+
+    private int personalBest;         // default 0
+    private boolean onboarded;
+    private int controllerAdherence;
+    private Timestamp createdAt;
+
+    /** Required for Firebase deserialization. */
     public Child() {}
 
-    public Child(String childUID,
-                 String parentUID,
+    public Child(String childUid,
                  String name,
                  String email,
-                 String role,
-                 int personalBest,
-                 int controllerUses,
-                 int reportDuration,
+                 String childEmail,
+                 String parentEmail,
                  boolean hasOwnEmail,
-                 List<ProviderSharing> providerSharingList) {
-        this.childUID = childUID;
-        this.parentUID = parentUID;
+                 String parentAccessCode,
+                 String parentUid,
+                 int personalBest,
+                 int controllerAdherence,
+                 boolean onboarded,
+                 Timestamp createdAt) {
+        this.childUid = childUid;
         this.name = name;
         this.email = email;
-        this.role = role;
-        this.personalBest = personalBest;
-        this.controllerUses = controllerUses;
-        this.reportDuration = reportDuration;
+        this.childEmail = childEmail;
+        this.parentEmail = parentEmail;
         this.hasOwnEmail = hasOwnEmail;
-        this.providerSharingList = providerSharingList;
+        this.parentAccessCode = parentAccessCode;
+        this.parentUid = parentUid;
+        this.personalBest = personalBest;
+        this.controllerAdherence = controllerAdherence;
+        this.onboarded = onboarded;
+        this.createdAt = createdAt;
+    }
+
+    public String getChildUid() {
+        return childUid;
+    }
+
+    public void setChildUid(String childUid) {
+        this.childUid = childUid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // Login email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Explicit child email
+    public String getChildEmail() {
+        return childEmail;
+    }
+
+    public void setChildEmail(String childEmail) {
+        this.childEmail = childEmail;
+    }
+
+    // Parent email reference
+    public String getParentEmail() {
+        return parentEmail;
+    }
+
+    public void setParentEmail(String parentEmail) {
+        this.parentEmail = parentEmail;
+    }
+
+    public boolean isHasOwnEmail() {
+        return hasOwnEmail;
+    }
+
+    public void setHasOwnEmail(boolean hasOwnEmail) {
+        this.hasOwnEmail = hasOwnEmail;
+    }
+
+    public String getParentAccessCode() {
+        return parentAccessCode;
+    }
+
+    public void setParentAccessCode(String parentAccessCode) {
+        this.parentAccessCode = parentAccessCode;
+    }
+
+    public String getParentUid() {
+        return parentUid;
+    }
+
+    public void setParentUid(String parentUid) {
+        this.parentUid = parentUid;
+    }
+
+    public int getPersonalBest() {
+        return personalBest;
+    }
+
+    public void setPersonalBest(int personalBest) {
+        this.personalBest = personalBest;
+    }
+
+    public boolean isOnboarded() {
+        return onboarded;
+    }
+
+    public void setOnboarded(boolean onboarded) {
+        this.onboarded = onboarded;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getControllerUses() {
+        return controllerAdherence;
+    }
+
+    public void setDailyControllerUses(int newValue) {
+        this.controllerAdherence = newValue;
     }
 }

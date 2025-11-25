@@ -1,4 +1,23 @@
 package com.example.smartair.ui;
 
-public class ChildHomeActivity {
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+/**
+ * Placeholder child home screen for R1.
+ */
+public class ChildHomeActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(android.R.layout.simple_list_item_1);
+
+        String childUid = getIntent().getStringExtra("childUid");
+
+        TextView tv = findViewById(android.R.id.text1);
+        tv.setText("Child Home (TODO) – childUid = " + childUid);
+    }
 }
