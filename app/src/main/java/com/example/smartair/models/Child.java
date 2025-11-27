@@ -29,6 +29,28 @@ public class Child {
 
     private Timestamp createdAt;
 
+    // --- R3 Achievements / Badges fields ---
+
+    // Controller streak (wrapped in streakMasterBadge map in Firestore)
+    private int currentControllerStreak;
+    private int highestControllerStreak;
+
+    // Controller badges
+    private boolean perfectControllerWeekBadgeEarned;
+    private boolean perfectControllerMonthBadgeEarned;
+    private boolean perfectControllerYearBadgeEarned;
+
+    // Technique streak + badges
+    private int currentHQTechniqueSessionsStreak;
+
+    private boolean tenHQTechniqueSessionsBadgeEarned;
+    private boolean thirtyHQTechniqueSessionsBadgeEarned;
+    private boolean hundredHQTechniqueSessionsBadgeEarned;
+    private boolean yearHundredHQTechniqueSessionsBadgeEarned;
+
+    // Low-rescue month badge
+    private int lowRescueMonthBadgeCount;
+
     /** Required for Firebase deserialization. */
     public Child() {
     }
