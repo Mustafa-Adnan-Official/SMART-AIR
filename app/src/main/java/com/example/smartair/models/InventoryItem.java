@@ -26,6 +26,9 @@ public class InventoryItem {
 
     private int remainingDoses;       // updated as child/parent logs usage
 
+    // For controller adherence calculations (schema: expectedDailyUses)
+    private int expectedDailyUses;
+
     /** Required for Firebase. */
     public InventoryItem() {
     }
