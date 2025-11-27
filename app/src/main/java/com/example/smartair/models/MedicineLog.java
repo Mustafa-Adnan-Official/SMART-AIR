@@ -30,6 +30,12 @@ public class MedicineLog {
 
     private Integer postBreathRating;
 
+    // Optional extras matching schema
+    private Double peakFlow;          // nullable PEF around this dose
+    private java.util.List<String> symptoms;  // tags like "cough", "wheeze"
+    private Boolean techniqueTrainerUsed;     // true/false for controller doses
+
+
     /** Required for Firebase deserialization. */
     public MedicineLog() {
     }

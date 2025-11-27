@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Unlocked (card.isSelected = true) -->
+    <item
+        android:state_selected="true"
+        android:drawable="@drawable/achievement_card_unlocked" />
+
+    <!-- Default = locked -->
+    <item android:drawable="@drawable/achievement_card_locked" />
+
+</selector>

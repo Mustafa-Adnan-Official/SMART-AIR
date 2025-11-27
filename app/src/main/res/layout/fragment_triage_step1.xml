@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <!-- TOP BAR WITH LOGO -->
+    <ImageView
+        android:id="@+id/triageTopBar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="#142144"
+        android:scaleType="fitCenter"
+        android:src="@drawable/triage_topbar_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/cardStep1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/triage_card_bg"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/triageTopBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- RED TRIAGE LABEL -->
+        <TextView
+            android:id="@+id/textTriageLabelStep1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TRIAGE STEP 1 — tell us what happened today."
+            android:textColor="#D42828"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="@font/garet_heavy"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Title lines -->
+        <TextView
+            android:id="@+id/textRescueAttemptsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Input your number of rescue attempts today *:"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"/>
+
+        <EditText
+            android:id="@+id/editRescueAttempts"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="number"
+            android:fontFamily="@font/garet_book"/>
+
+        <TextView
+            android:id="@+id/textCurrentPefLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Input your current PEF :"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"/>
+
+        <EditText
+            android:id="@+id/editCurrentPef"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="number"
+            android:fontFamily="@font/garet_book"/>
+
+        <!-- Symptoms section -->
+        <TextView
+            android:id="@+id/textSymptomsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Select any of the following symptoms:"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"/>
+
+        <CheckBox
+            android:id="@+id/checkboxCantSpeak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Can’t speak full sentences"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <CheckBox
+            android:id="@+id/checkboxChestPulling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Chest pulling in/retractions"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <CheckBox
+            android:id="@+id/checkboxBlueLips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Blue/grey lips or nails"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <!-- Button row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/buttonBackStep1"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/dark_button_bg"
+                android:text="BACK"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="@font/garet_book"/>
+
+            <Button
+                android:id="@+id/buttonNextStep1"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/dark_button_bg"
+                android:text="NEXT"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="@font/garet_book"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

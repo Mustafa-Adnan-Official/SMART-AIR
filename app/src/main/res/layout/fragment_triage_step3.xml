@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <!-- TOP BAR WITH LOGO -->
+    <ImageView
+        android:id="@+id/triageTopBar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="#142144"
+        android:scaleType="fitCenter"
+        android:src="@drawable/triage_topbar_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/cardStep3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/triage_card_bg"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/triageTopBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- RED TRIAGE LABEL -->
+        <TextView
+            android:id="@+id/textTriageLabelStep3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TRIAGE STEP 3 — check any serious symptoms."
+            android:textColor="#D42828"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="@font/garet_heavy"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/textStep3Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select any of the following that apply *:"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"/>
+
+        <CheckBox
+            android:id="@+id/checkboxCantSpeak2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Can’t speak full sentences"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <CheckBox
+            android:id="@+id/checkboxChestPulling2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Chest pulling in/retractions"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <CheckBox
+            android:id="@+id/checkboxBlueLips2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Blue/gray lips or nails"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"
+            android:button="@drawable/triage_checkbox_background"/>
+
+        <TextView
+            android:id="@+id/textBreathingRegulated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Has your breathing regulated?"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_book"/>
+
+        <LinearLayout
+            android:id="@+id/layoutYesNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonYes"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/dark_button_bg"
+                android:text="YES"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="@font/garet_book"/>
+
+            <Button
+                android:id="@+id/buttonNo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:background="@drawable/dark_button_bg"
+                android:text="NO"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="@font/garet_book"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

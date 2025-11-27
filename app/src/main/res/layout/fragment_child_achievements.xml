@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- TITLE: TROPHY + "Achievements" -->
+    <LinearLayout
+        android:id="@+id/achievementsTitleRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/textTrophy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🏆"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/textAchievementsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Achievements"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:fontFamily="@font/garet_heavy"/>
+    </LinearLayout>
+
+    <!-- INFO BOX UNDER ACHIEVEMENTS TITLE -->
+    <TextView
+        android:id="@+id/textAchievementsInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:background="@drawable/achievement_info_bg"
+        android:text="When unlocked, the badge turns blue."
+        android:textSize="12sp"
+        android:textColor="#333333"
+        android:fontFamily="@font/garet_book"
+        app:layout_constraintTop_toBottomOf="@id/achievementsTitleRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- SCROLL AREA WITH CARDS -->
+    <ScrollView
+        android:id="@+id/achievementsScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/textAchievementsInfo"
+        app:layout_constraintBottom_toTopOf="@id/buttonBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/achievementsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- CARD 1: Perfect Controller Week -->
+            <LinearLayout
+                android:id="@+id/cardPerfectController"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/achievement_card_background"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/iconPerfectController"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/star_icon" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/textPerfectControllerTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Perfect Controller Week 0/7"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/garet_heavy"/>
+
+                    <LinearLayout
+                        android:id="@+id/controllerCirclesRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                        <View android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="4dp" android:background="@drawable/achievement_circle" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- CARD 2: Technique Master -->
+            <LinearLayout
+                android:id="@+id/cardTechniqueMaster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/achievement_card_background"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/iconTechniqueMaster"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/controller_icon" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/textTechniqueMasterTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Technique Master"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_heavy"/>
+
+                    <TextView
+                        android:id="@+id/textTechniqueMasterSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="10 High-Quality Technique Sessions"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_book"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- CARD 3: Low Rescue Month -->
+            <LinearLayout
+                android:id="@+id/cardLowRescueMonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/achievement_card_background"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/iconLowRescue"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/drop_icon" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/textLowRescueTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Low Rescue Month"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_heavy"/>
+
+                    <TextView
+                        android:id="@+id/textLowRescueSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="≤4 rescue days in 30 days"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_book"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- CARD 4: Streak Master -->
+            <LinearLayout
+                android:id="@+id/cardStreakMaster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/achievement_card_background"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/iconStreakMaster"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/crown_icon" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/textStreakMasterTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Streak Master"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_heavy"/>
+
+                    <TextView
+                        android:id="@+id/textStreakCurrent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Current streak: 4 days"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_book"/>
+
+                    <TextView
+                        android:id="@+id/textStreakHighest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Highest streak: # days"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/garet_book"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BACK BUTTON -->
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/dark_button_bg"
+        android:contentDescription="Back"
+        android:src="@drawable/ic_back_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
