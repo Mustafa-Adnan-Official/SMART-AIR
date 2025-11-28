@@ -79,7 +79,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
         });
 
         holder.pbSettingsButton.setOnClickListener(v -> {
-            showEditPBDialog(v.getContext(), currentChild, position);
+            showEditPBDialog(v.getContext(), currentChild);
         });
 
         holder.controllerButton.setOnClickListener(v -> {
@@ -127,7 +127,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
         public void removeChild(int position) {
             childList.remove(position);
             notifyItemRemoved(position);
-            parentRepository.removeChild(parentUID, childUID);
+
+            //parentRepository.removeChild(parentUID, childUID);
 
 
         }
@@ -249,4 +250,3 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
     }
 
 
-}
