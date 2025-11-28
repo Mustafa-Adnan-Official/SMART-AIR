@@ -82,7 +82,7 @@
             android:id = "@+id/send_realtime_report_button"
             android:text = "Send Real-Time Report"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/rounded_managedata_background"
             android:fontFamily = "@font/codec_pro_regular"
             android:textStyle = "bold"
