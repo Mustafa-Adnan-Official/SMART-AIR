@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/outline_button">
+
+
+    <TextView
+        android:id="@+id/text_beforeCheck"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:gravity="center"
+        android:text="How do you feel before?"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/beforeCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_beforeCheck">
+
+        <Button
+            android:id="@+id/btnGood"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="🙂 Good"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnOkay"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="😐 Okay"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnBad"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="😟 Bad"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_dose_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Puffs or measures?"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textColor="#111111"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beforeCheck" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_dose_counter"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_dose_title">
+
+        <Button
+            android:id="@+id/btn_dose_value"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/dark_button_bg"
+            android:backgroundTint="@null"
+            android:text="1"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/codec_pro_fixed"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/btn_dose_plus"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+
+            android:background="@drawable/outline_button"
+            android:backgroundTint="@null"
+            android:includeFontPadding="false"
+            android:text="+"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/btn_dose_minus"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:background="@drawable/outline_button"
+            android:backgroundTint="@null"
+            android:includeFontPadding="false"
+            android:text="-"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_technique_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="View the technique trainer for a perfect session?"
+        android:textColor="#111111"
+        android:gravity="center"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_dose_counter" />
+
+    <Button
+        android:id="@+id/btn_open_trainer"
+        android:layout_width="120dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="12dp"
+        android:text="YES"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:background="@drawable/dark_button_bg"
+        app:layout_constraintTop_toBottomOf="@id/text_technique_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/text_afterCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="How do you feel now?"
+        android:textColor="#000000"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_open_trainer" />
+
+    <LinearLayout
+        android:id="@+id/afterCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_afterCheck">
+
+        <Button
+            android:id="@+id/btnNowBetter"
+            android:layout_width="115dp"
+            android:layout_height="40dp"
+            android:text="🙂 Better"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNowSame"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="😐 Same"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNowWorse"
+            android:layout_width="112dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="😟 Worse"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_log_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Log session?"
+        android:gravity="center"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textColor="#111111"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/afterCheck" />
+
+    <LinearLayout
+        android:id="@+id/layout_log_buttons"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/text_log_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btn_log_yes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="YES"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:background="@drawable/dark_button_bg" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/btn_log_no"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="NO"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textAllCaps="true"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:background="@drawable/dark_button_bg" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

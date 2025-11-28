@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:background="@drawable/outline_button">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Perfect Technique Trainer"
+        android:textSize="20sp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:paintFlags="underline"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="1. Seal lips around inhaler mouthpiece or spacer\n\n2. Breath in SLOWLY AND DEEPLY as you can\n\n3. Hold your breath for around 10 seconds\n\n4. If another puff needed, wait 30–60 seconds"
+        android:textColor="#000000"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <VideoView
+        android:id="@+id/videoTechnique"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="24dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSubmitTechnique"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="SUBMIT"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="16sp"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/dark_button_bg" />
+
+        <Space
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnBackATechnique"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="BACK"
+            android:textSize="16sp"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/dark_button_bg" />
+    </LinearLayout>
+
+</LinearLayout>
