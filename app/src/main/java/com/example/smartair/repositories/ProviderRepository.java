@@ -16,15 +16,15 @@ public class ProviderRepository {
     }
 
     public void adjustName(String providerUID, String newName) {
-            db.collection("providers")
-              .document(providerUID)
-              .update("name", newName);
+        db.collection("providers")
+          .document(providerUID)
+          .update("name", newName);
     }
 
     public void adjustPrefix(String providerUID, String newPrefix) {
         db.collection("providers")
-                .document(providerUID)
-                .update("prefix", newPrefix);
+          .document(providerUID)
+          .update("prefix", newPrefix);
     }
 
     public boolean getAccessBool(String childUid, String providerUid) {
