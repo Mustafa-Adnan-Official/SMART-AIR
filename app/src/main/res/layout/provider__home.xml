@@ -15,43 +15,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <ImageButton
+        android:id="@+id/settingsButton"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:elevation="10dp"
-        android:focusable="true"
+        android:background="@android:color/transparent"
         android:src="@drawable/settings"
-        android:tint="@android:color/white"
+        app:tint="@android:color/white"
+        android:contentDescription="Settings"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/profilepic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Hello Dr. John"
-        android:textAlignment="textStart"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar" />
 
     <Button
         android:id="@+id/button18"
@@ -63,7 +52,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <Button
         android:id="@+id/button14"
@@ -83,7 +72,7 @@
         android:layout_height="35dp"
         android:layout_marginEnd="8dp"
         android:elevation="10dp"
-        android:tint="@color/white"
+        app:tint="@color/white"
         app:srcCompat="@drawable/dropdown"
         app:layout_constraintBottom_toBottomOf="@+id/button18"
         app:layout_constraintEnd_toEndOf="@+id/button18"
@@ -95,7 +84,7 @@
         android:layout_height="35dp"
         android:layout_marginEnd="8dp"
         android:elevation="10dp"
-        android:tint="@color/white"
+        app:tint="@color/white"
         app:srcCompat="@drawable/dropdown"
         app:layout_constraintBottom_toBottomOf="@+id/button14"
         app:layout_constraintEnd_toEndOf="@+id/button14"
@@ -136,7 +125,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        tools:listitem="@layout/provider_list_item_report" />
+        tools:listitem="@layout/provider__list_item_report" />
 
     <TextView
         android:id="@+id/note_textview"

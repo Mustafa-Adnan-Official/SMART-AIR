@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/dialog_background"
-    android:backgroundTint="#FFFFFF"
+    android:background="@drawable/outline_button"
     android:paddingBottom="16dp">
 
     <Button
