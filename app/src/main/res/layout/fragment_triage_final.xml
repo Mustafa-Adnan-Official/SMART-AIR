@@ -31,7 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- RED TRIAGE LABEL -->
         <TextView
             android:id="@+id/textTriageLabelFinal"
             android:layout_width="match_parent"
@@ -57,50 +56,58 @@
             android:fontFamily="@font/garet_heavy"/>
 
         <LinearLayout
-            android:id="@+id/layoutBeforeButtons"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="8dp">
+            android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/buttonBeforeBetter"
-                android:layout_width="0dp"
+                android:id="@+id/btnGood"
+                android:layout_width="105dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/feeling_button_background"
-                android:text="😀 Better"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
+                android:background="@drawable/button_selector"
+                android:backgroundTint="@null"
+                android:text="🙂 Good"
+                android:textColor="@color/text_selector"
                 android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:textStyle="bold"
+                android:fontFamily="@font/codec_pro_fixed"
+                app:backgroundTint="@null" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/buttonBeforeSame"
-                android:layout_width="0dp"
+                android:id="@+id/btnOkay"
+                android:layout_width="105dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/feeling_button_background"
-                android:text="🙂 Same"
-                android:textAllCaps="false"
-                android:textColor="#142144"
+                android:fontFamily="@font/codec_pro_fixed"
+                android:text="😐 Okay"
+                android:textStyle="bold"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:textColor="@color/text_selector"
+                android:background="@drawable/button_selector" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/buttonBeforeWorse"
-                android:layout_width="0dp"
+                android:id="@+id/btnBad"
+                android:layout_width="105dp"
+                android:fontFamily="@font/codec_pro_fixed"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/feeling_button_background"
-                android:text="😣 Worse"
-                android:textAllCaps="false"
-                android:textColor="#142144"
+                android:text="😟 Bad"
+                android:textStyle="bold"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:textColor="@color/text_selector"
+                android:background="@drawable/button_selector"/>
         </LinearLayout>
 
         <!-- NOW -->
@@ -117,53 +124,60 @@
             android:fontFamily="@font/garet_heavy"/>
 
         <LinearLayout
-            android:id="@+id/layoutNowButtons"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="8dp">
+            android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/buttonNowBetter"
-                android:layout_width="0dp"
+                android:id="@+id/btnNowBetter"
+                android:layout_width="100dp"
+                android:fontFamily="@font/codec_pro_fixed"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/feeling_button_background"
-                android:text="😀 Better"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:text="🙂 Better"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:textColor="@color/text_selector"
+                android:background="@drawable/button_selector" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/buttonNowSame"
-                android:layout_width="0dp"
+                android:id="@+id/btnNowSame"
+                android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/feeling_button_background"
-                android:text="🙂 Same"
-                android:textAllCaps="false"
-                android:textColor="#142144"
-                android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:text="😐 Same"
+                android:fontFamily="@font/codec_pro_fixed"
+                android:textStyle="bold"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:textSize="11sp"
+                android:textColor="@color/text_selector"
+                android:background="@drawable/button_selector" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/buttonNowWorse"
-                android:layout_width="0dp"
+                android:id="@+id/btnNowWorse"
+                android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/feeling_button_background"
-                android:text="😣 Worse"
-                android:textAllCaps="false"
-                android:textColor="#142144"
-                android:textSize="14sp"
-                android:fontFamily="@font/garet_book"/>
+                android:text="😟 Worse"
+                android:fontFamily="@font/codec_pro_fixed"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:textColor="@color/text_selector"
+                android:background="@drawable/button_selector" />
         </LinearLayout>
 
-        <!-- DONE BUTTON -->
         <Button
             android:id="@+id/buttonDone"
             android:layout_width="match_parent"
@@ -171,6 +185,8 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/dark_button_bg"
             android:text="DONE"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

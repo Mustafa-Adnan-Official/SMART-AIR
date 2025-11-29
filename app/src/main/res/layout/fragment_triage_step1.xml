@@ -145,6 +145,8 @@
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/dark_button_bg"
                 android:text="BACK"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
@@ -158,6 +160,8 @@
                 android:text="NEXT"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:textSize="14sp"
                 android:fontFamily="@font/garet_book"/>
         </LinearLayout>

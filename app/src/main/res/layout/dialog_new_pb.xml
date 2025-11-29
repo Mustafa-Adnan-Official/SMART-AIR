@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp"
-    >
+    android:padding="20dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter New PB"
+        android:text="Enter New Personal Best"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -20,55 +21,49 @@
 
         />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/pb_input_layout"
+    <EditText
+        android:id="@+id/adh_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="20dp"
-        android:hint="New Peak Flow Setting"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:background="@drawable/rounded_settings_background"
+        android:hint="New PB"
+        android:inputType="number"
+        android:maxLength="4"
+        android:fontFamily="@font/codec_pro_regular"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="12dp"
+        android:background="@drawable/rounded_settings_background"/>
 
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/pb_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="4"
-            android:textStyle="bold"
-            android:fontFamily="@font/codec_pro_regular"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialog_yesconfirmpb_button"
+            android:id="@+id/dialog_yesconfirmadh_button"
             android:layout_width="0dp"
-            android:layout_weight = "1"
-            android:layout_marginEnd = "8dp"
             android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:text="Confirm"
             android:background="@drawable/rounded_managedata_background"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:textColor="@color/white"
-            android:fontFamily="@font/codec_pro_regular"
-            />
+            android:fontFamily="@font/codec_pro_regular"/>
 
         <Button
-            android:id="@+id/dialog_noconfirmpb_button"
+            android:id="@+id/dialog_noconfirmadh_button"
             android:layout_width="0dp"
-            android:layout_weight = "1"
             android:layout_height="40dp"
-            android:background="@drawable/rounded_managedata_background"
-            android:fontFamily="@font/codec_pro_regular"
+            android:layout_weight="1"
             android:text="Exit"
-            android:textColor="@color/white" />
-
-
+            android:background="@drawable/rounded_managedata_background"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textColor="@color/white"
+            android:fontFamily="@font/codec_pro_regular"/>
 
     </LinearLayout>
 

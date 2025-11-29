@@ -107,6 +107,8 @@
             <Button
                 android:id="@+id/buttonYes"
                 android:layout_width="0dp"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:layout_weight="1"
                 android:layout_height="40dp"
                 android:layout_marginEnd="8dp"
@@ -120,6 +122,8 @@
             <Button
                 android:id="@+id/buttonNo"
                 android:layout_width="0dp"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
                 android:layout_weight="1"
                 android:layout_height="40dp"
                 android:background="@drawable/dark_button_bg"
