@@ -6,8 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".ui.ActivitySettingsChild">
+
+    <ImageView
+        android:id="@+id/logoSmartAir"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#142144"
+        android:src="@drawable/actual_logo"
+        android:scaleType="centerCrop"
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -16,7 +24,8 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="10dp" />
+        android:fontFamily = "@font/codec_pro_regular"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
