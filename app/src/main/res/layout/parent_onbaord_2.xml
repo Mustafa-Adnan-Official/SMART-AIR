@@ -19,14 +19,15 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/codec_pro_fixed"
         android:text="Linking Children"
+        android:textColor="#428CE4"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="#428CE4"
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
 
     <TextView
         android:id="@+id/desc"
@@ -45,16 +46,17 @@ You control exactly what a provider can view, and changes apply instantly."
         android:id="@+id/btn_next"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:text="Next"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/dark_button_bg"
-        app:layout_constraintTop_toBottomOf="@id/desc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="32dp"
+        android:background="@drawable/dark_button_bg"
         android:backgroundTint="@null"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:text="Next"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:backgroundTint="@null"/>
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
