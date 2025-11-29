@@ -24,9 +24,7 @@ public class Child {
     private int personalBest;         // default 0
 
     private boolean onboarded;
-
-    private int controllerAdherence;  // used by R3/R6
-
+    private int controllerAdherence;  // I called this ControllerUses
     private Timestamp createdAt;
 
     // --- R3 Achievements / Badges fields ---

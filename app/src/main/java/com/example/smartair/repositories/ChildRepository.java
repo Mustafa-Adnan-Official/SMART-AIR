@@ -20,14 +20,14 @@ public class ChildRepository {
 
     public void adjustPB(String childUID, int value) {
         db.collection("children")
-                      .document(childUID)
-                      .update("personalBest", value);
+          .document(childUID)
+          .update("personalBest", value);
     }
 
     public void adjustControllerUses(String childUID, int value) {
         db.collection("children")
-                      .document(childUID)
-                      .update("controllerUses", value);
+          .document(childUID)
+          .update("controllerUses", value);
     }
 
     public void adjustReportDuration(String childUID, int value) {
@@ -40,8 +40,8 @@ public class ChildRepository {
         ProviderSharing sharing = new ProviderSharing(providerUID, toggles);
 
         db.collection("children")
-                      .document(childUID)
-                      .update("providerSharingList", FieldValue.arrayUnion(sharing));
+          .document(childUID)
+          .update("providerSharingList", FieldValue.arrayUnion(sharing));
     }
 
     public void getChildrenForParent(String parentUid, ResultCallback<List<Child>> callback) {
