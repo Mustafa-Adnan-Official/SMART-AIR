@@ -23,7 +23,7 @@
             android:background="@drawable/history_filter_popup_bg"
             android:padding="16dp">
 
-            <!-- Header -->
+
             <TextView
                 android:id="@+id/textTriggerFiltersHeader"
                 android:layout_width="match_parent"
@@ -39,198 +39,185 @@
             <!-- Each trigger row (same style) -->
             <!-- Dust Mites -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            >
 
-                <TextView
-                    android:id="@+id/textTriggerDustMites"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Dust Mites"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/codec_pro_fixed"
+                android:text="Dust Mites"
+                android:textColor="#000000"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
-                <Switch
-                    android:id="@+id/switchDustMites"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
-            </LinearLayout>
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:thumbTint="@color/switch_thumb_colors"
+                app:trackTint="@color/switch_track_colors"/>
+        </LinearLayout>
 
-            <!-- Pets -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerPets"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Pets"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:textSize="17sp"
+                    android:fontFamily="@font/codec_pro_fixed"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchPets"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
-            <!-- Smoke -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerSmoke"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Smoke"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:fontFamily="@font/codec_pro_fixed"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchSmoke"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
-            <!-- Strong Odors/Perfumes -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerOdors"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/codec_pro_fixed"
                     android:layout_weight="1"
-                    android:text="Strong Odors/Perfumes"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:text="Strong Odors/ Perfumes"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchOdors"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
-            <!-- Cold Air -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerColdAir"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/codec_pro_fixed"
                     android:layout_weight="1"
                     android:text="Cold Air"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchColdAir"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
-            <!-- Illness -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerIllness"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Illness"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/codec_pro_fixed"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchIllness"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
-            <!-- Exercise -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="#E6E6E6"
-                android:paddingHorizontal="12dp">
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                >
 
                 <TextView
-                    android:id="@+id/textTriggerExercise"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Exercise"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:fontFamily="@font/garet_book" />
+                    android:text="Exercize"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/codec_pro_fixed"
+                    android:textColor="#000000"/>
 
-                <Switch
-                    android:id="@+id/switchExercise"
+                <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/toggle_thumb"
-                    android:track="@drawable/toggle_track" />
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
             </LinearLayout>
 
             <!-- Bottom buttons -->
@@ -246,6 +233,8 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/dark_button_bg"
                     android:text="Submit"
@@ -261,6 +250,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/dark_button_bg"
                     android:text="Back"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
