@@ -25,7 +25,7 @@ public class Child {
 
     private int personalBest;         // default 0
     private boolean onboarded;
-    private int controllerAdherence;
+    private int controllerAdherence;  // I called this ControllerUses
     private Timestamp createdAt;
 
     /** Required for Firebase deserialization. */
