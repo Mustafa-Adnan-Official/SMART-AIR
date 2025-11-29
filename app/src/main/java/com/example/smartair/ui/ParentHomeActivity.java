@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
 import com.example.smartair.services.AuthService;
+import com.example.smartair.ui.login.ParentLoginActivity;
 
 // MPAndroidChart imports
 import com.github.mikephil.charting.charts.LineChart;
@@ -140,7 +141,11 @@ public class ParentHomeActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_manage_providers) {
-            Intent intent = new Intent(this, ActivitySettingsProvider.class);
+             Intent intent = new Intent(this, ActivitySettingsProvider.class);
+             startActivity(intent);
+             return true;
+        } else if (id == R.id.action_sign_out) {
+            Intent intent = new Intent (this, ParentLoginActivity.class);
             startActivity(intent);
             return true;
         }
