@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/parent_settings_provider_card" />
+                tools:listitem="@layout/provider_card" />
 
         </LinearLayout>
     </ScrollView>
