@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="24dp">
+
+        <LinearLayout
+            android:id="@+id/panelHistoryDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/history_detail_popup_bg"
+            android:padding="16dp">
+
+            <!-- Date (underlined) -->
+            <TextView
+                android:id="@+id/textDetailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DATE"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_heavy"
+                android:paintFlags="underline" />
+
+            <!-- Rescue log -->
+            <TextView
+                android:id="@+id/textDetailRescueTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="RESCUE LOG:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_heavy" />
+
+            <TextView
+                android:id="@+id/textDetailRescueItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Example entry 1\n• Example entry 2"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_book" />
+
+            <!-- Controller log -->
+            <TextView
+                android:id="@+id/textDetailControllerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="CONTROLLER LG:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_heavy" />
+
+            <TextView
+                android:id="@+id/textDetailControllerItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Example entry 1\n• Example entry 2"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_book" />
+
+            <!-- Symptoms -->
+            <TextView
+                android:id="@+id/textDetailSymptomsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="SYMPTOMS:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_heavy" />
+
+            <TextView
+                android:id="@+id/textDetailSymptomsItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Example symptom 1\n• Example symptom 2"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_book" />
+
+            <!-- Triggers -->
+            <TextView
+                android:id="@+id/textDetailTriggersTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="TRIGGERS:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_heavy" />
+
+            <TextView
+                android:id="@+id/textDetailTriggersItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Example trigger 1\n• Example trigger 2"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/garet_book" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

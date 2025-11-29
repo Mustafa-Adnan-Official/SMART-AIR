@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="32dp">
+
+        <!-- TOP LOGO BAR (same idea as child home) -->
+        <ImageView
+            android:id="@+id/logoSmartAir"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:background="#142144"
+            android:src="@drawable/actual_logo"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Gear on top-right -->
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/settings_gear"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
+            android:scaleType="fitCenter"
+            android:padding="8dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintTop_toTopOf="@id/logoSmartAir"
+            app:layout_constraintBottom_toBottomOf="@id/logoSmartAir"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- PROFILE SECTION -->
+        <LinearLayout
+            android:id="@+id/profile_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="24dp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/logoSmartAir"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Parent profile picture (button, round via drawable) -->
+            <ImageButton
+                android:id="@+id/btn_profile_picture"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/profile_picture_border"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile Picture" />
+
+            <!-- Greeting -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/text_greeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello"
+                    android:textSize="18sp"
+                    android:textColor="#757575"
+                    android:fontFamily="@font/garet_book" />
+
+                <TextView
+                    android:id="@+id/text_parent_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Parent Name"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/garet_heavy" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- CHILD SELECTOR BAR (BUTTON) -->
+        <Button
+            android:id="@+id/btn_child_selector"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="#142144"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:text="Child 1  ▼"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/garet_heavy"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/profile_section"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- TODAY'S PEF ZONE (BANNER, NOT BUTTON) -->
+        <LinearLayout
+            android:id="@+id/banner_pef_zone_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/pef_zone_background"
+            android:padding="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_child_selector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/text_pef_label_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's PEF Zone"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:fontFamily="@font/codec_pro_regular"
+                android:background="@drawable/outline_button"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/text_pef_value_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="82% PEF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/codec_pro_fixed" />
+
+            <TextView
+                android:id="@+id/text_pef_subtitle_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="of PB"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:fontFamily="@font/codec_pro_regular" />
+
+        </LinearLayout>
+
+        <!-- ROW: VIEW HISTORY + DAILY CHECK-IN -->
+        <LinearLayout
+            android:id="@+id/row_history_daily"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:weightSum="2"
+            app:layout_constraintTop_toBottomOf="@id/banner_pef_zone_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- View History BUTTON -->
+            <Button
+                android:id="@+id/btn_view_history_parent"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/dark_button_bg"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:text="View History\n📅"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:fontFamily="@font/codec_pro_regular" />
+
+            <!-- Daily Check-In BUTTON -->
+            <Button
+                android:id="@+id/btn_daily_checkin_parent"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/daily_checkin_background"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:text="DAILY-CHECK IN\n"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:fontFamily="@font/codec_pro_fixed" />
+
+        </LinearLayout>
+
+        <!-- ROW: WEEKLY RESCUE COUNT + LAST RESCUE TIME (display banners) -->
+        <LinearLayout
+            android:id="@+id/row_rescue_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:weightSum="2"
+            app:layout_constraintTop_toBottomOf="@id/row_history_daily"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Weekly Rescue Count -->
+            <LinearLayout
+                android:id="@+id/banner_weekly_rescue"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                android:background="@drawable/dark_button_bg"
+                android:padding="14dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weekly Rescue Count"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+                <TextView
+                    android:id="@+id/text_weekly_rescue_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Per Week"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="6dp"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+            </LinearLayout>
+
+            <!-- Last Rescue Time -->
+            <LinearLayout
+                android:id="@+id/banner_last_rescue"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                android:background="@drawable/dark_button_bg"
+                android:padding="14dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last Rescue Time"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+                <TextView
+                    android:id="@+id/text_last_rescue_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="April 14th 2025 -\n7:10pm"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- SYMPTOMS TRENDS CARD (graph + 1W/1M toggles) -->
+        <LinearLayout
+            android:id="@+id/card_symptoms_trends"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/dark_button_bg"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/row_rescue_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Chip label -->
+            <TextView
+                android:id="@+id/text_symptoms_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Symptoms Trends"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:background="@drawable/outline_button"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:fontFamily="@font/codec_pro_regular" />
+
+            <!-- Toggle row 1W / 1M -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/toggle_1w"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/outline_button"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:text="1W"
+                    android:textAllCaps="false"
+                    android:textSize="11sp"
+                    android:textColor="#000000"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+                <Button
+                    android:id="@+id/toggle_1m"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/outline_button"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:text="1M"
+                    android:textAllCaps="false"
+                    android:textSize="11sp"
+                    android:textColor="#000000"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/codec_pro_regular" />
+
+            </LinearLayout>
+
+            <!-- Line chart: # of triggers per day -->
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/linechart_triggers"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+        <!-- INCIDENT LOG LABEL (header, not a button) -->
+        <TextView
+            android:id="@+id/label_incident_log"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Incident Log"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/codec_pro_regular"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/card_symptoms_trends"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- INCIDENT LOG CONTENT (expands with text) -->
+        <LinearLayout
+            android:id="@+id/container_incident_log"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F2F2F2"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/label_incident_log"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Placeholder incident text -->
+            <TextView
+                android:id="@+id/text_incident_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Time: 4:15pm\nFlags Present:\n • Chest pulling\n • Blue nails\nAction Plan: YELLOW; not improved\nEmergency Card Shown\nNumber of Rescue Attempts:\nPEF: N/A"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:fontFamily="@font/codec_pro_regular" />
+        </LinearLayout>
+
+        <!-- MEDICINE LOG LABEL (header, not a button) -->
+        <TextView
+            android:id="@+id/label_medicine_log"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Medicine Log"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/codec_pro_regular"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/container_incident_log"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- MEDICINE LOG CONTENT (expands with text) -->
+        <LinearLayout
+            android:id="@+id/container_medicine_log"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F2F2F2"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/label_medicine_log"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/text_medicine_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rescue – 7:10pm – 2 puff(s)\nController – 8:15am – 1 puff(s)"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:fontFamily="@font/codec_pro_regular" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

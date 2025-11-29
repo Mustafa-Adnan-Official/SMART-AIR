@@ -1,0 +1,94 @@
+package com.example.smartair.models;
+
+import com.google.firebase.Timestamp;
+
+import java.util.List;
+
+/**
+ * Purpose: Represents a provider document stored in /providers/{providerUid}.
+ * Layer: Model
+ * Used For: Passing provider data to presenters and services.
+ */
+public class Provider {
+
+    private String providerUid;   // FirebaseAuth UID
+    private String prefix;        // e.g. "Dr."
+    private String name;
+    private String email;
+    private boolean onboarded;
+    private Timestamp createdAt;
+    private List<Child> childList;
+
+    /** Required for Firebase deserialization. */
+    public Provider() {}
+
+    public Provider(String providerUid,
+                    String prefix,
+                    String name,
+                    String email,
+                    boolean onboarded,
+                    Timestamp createdAt) {
+        this.providerUid = providerUid;
+        this.prefix = prefix;
+        this.name = name;
+        this.email = email;
+        this.onboarded = onboarded;
+        this.createdAt = createdAt;
+    }
+
+    public String getProviderUid() {
+        return providerUid;
+    }
+
+    public void setProviderUid(String providerUid) {
+        this.providerUid = providerUid;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isOnboarded() {
+        return onboarded;
+    }
+
+    public void setOnboarded(boolean onboarded) {
+        this.onboarded = onboarded;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<Child> getChildren() {
+        return childList;
+    }
+
+    public void setChildren(List<Child> childList) {
+        this.childList = childList;
+    }
+}

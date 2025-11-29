@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data Toggles"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/codec_pro_regular"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"/>
+
+    <Switch
+        android:id="@+id/toggle_rescuelog_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Rescue Logs"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+    <Switch
+        android:id="@+id/toggle_controlleradherence_logs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Controller Adherence "
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+    <Switch
+        android:id="@+id/toggle_symptoms_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Symptoms"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+
+    <Switch
+        android:id="@+id/toggle_triggers_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Triggers"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+    <Switch
+        android:id="@+id/toggle_peakflow_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Peak Flow (PEF)"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+
+    <Switch
+        android:id="@+id/toggle_triageincidents_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Triage Incidents"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+
+        />
+
+
+
+    <Switch
+        android:id="@+id/toggle_summarycharts_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="Summary Charts"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/codec_pro_regular"
+        android:checked="false"
+        android:thumbTint="@color/white"
+        android:trackTint="@color/switch_track_selector"
+        android:background = "@drawable/rounded_settings_background"
+        />
+
+
+    <Button
+        android:id="@+id/dialog_close_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Close"
+        android:background="@drawable/rounded_managedata_background"
+        android:textColor="@color/white"
+        android:fontFamily="@font/codec_pro_regular"
+        />
+
+</LinearLayout>

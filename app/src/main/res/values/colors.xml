@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="switch_thumb">#142144</color>
     <color name="switch_track_on">#428CE4</color>
     <color name="switch_track_off">#B0B0B0</color>
+</resources>
+-->
+<resources>
+<color name="black">#FF000000</color>
+<color name="white">#FFFFFFFF</color>
+<color name="switch_thumb">#142144</color>
+<color name="switch_track_on">#428CE4</color>
+<color name="switch_track_off">#B0B0B0</color>
+
+<!-- Needed by Theme.SmartAir -->
+<color name="purple_500">#6200EE</color>
+<color name="purple_700">#3700B3</color>
 </resources>
