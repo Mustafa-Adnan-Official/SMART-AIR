@@ -9,33 +9,53 @@ import com.google.firebase.Timestamp;
  */
 public class Child {
 
-    private String childUid;          // auth UID for both independent and under-parent
+    private String childUid;          // independent child → auth UID; under parent → generated ID
+
     private String name;
 
-    // Login email (child's own email or alias based on parent email)
-    private String email;
-
-    // Explicit fields matching Firestore schema
-    private String childEmail;        // child's own or alias email
-    private String parentEmail;       // null for independent child
+    private String email;             // child’s own email OR parent’s email
 
     private boolean hasOwnEmail;
+
     private String parentAccessCode;  // null or actual PAC used during linking
+
     private String parentUid;         // null if no parent
 
     private int personalBest;         // default 0
+
     private boolean onboarded;
     private int controllerAdherence;  // I called this ControllerUses
     private Timestamp createdAt;
 
+    // --- R3 Achievements / Badges fields ---
+
+    // Controller streak (wrapped in streakMasterBadge map in Firestore)
+    private int currentControllerStreak;
+    private int highestControllerStreak;
+
+    // Controller badges
+    private boolean perfectControllerWeekBadgeEarned;
+    private boolean perfectControllerMonthBadgeEarned;
+    private boolean perfectControllerYearBadgeEarned;
+
+    // Technique streak + badges
+    private int currentHQTechniqueSessionsStreak;
+
+    private boolean tenHQTechniqueSessionsBadgeEarned;
+    private boolean thirtyHQTechniqueSessionsBadgeEarned;
+    private boolean hundredHQTechniqueSessionsBadgeEarned;
+    private boolean yearHundredHQTechniqueSessionsBadgeEarned;
+
+    // Low-rescue month badge
+    private int lowRescueMonthBadgeCount;
+
     /** Required for Firebase deserialization. */
-    public Child() {}
+    public Child() {
+    }
 
     public Child(String childUid,
                  String name,
                  String email,
-                 String childEmail,
-                 String parentEmail,
                  boolean hasOwnEmail,
                  String parentAccessCode,
                  String parentUid,
@@ -43,18 +63,17 @@ public class Child {
                  int controllerAdherence,
                  boolean onboarded,
                  Timestamp createdAt) {
+
         this.childUid = childUid;
         this.name = name;
         this.email = email;
-        this.childEmail = childEmail;
-        this.parentEmail = parentEmail;
         this.hasOwnEmail = hasOwnEmail;
         this.parentAccessCode = parentAccessCode;
         this.parentUid = parentUid;
         this.personalBest = personalBest;
-        this.controllerAdherence = controllerAdherence;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
+        this.controllerAdherence = controllerAdherence;
     }
 
     public String getChildUid() {
@@ -73,31 +92,12 @@ public class Child {
         this.name = name;
     }
 
-    // Login email
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    // Explicit child email
-    public String getChildEmail() {
-        return childEmail;
-    }
-
-    public void setChildEmail(String childEmail) {
-        this.childEmail = childEmail;
-    }
-
-    // Parent email reference
-    public String getParentEmail() {
-        return parentEmail;
-    }
-
-    public void setParentEmail(String parentEmail) {
-        this.parentEmail = parentEmail;
     }
 
     public boolean isHasOwnEmail() {
@@ -156,3 +156,4 @@ public class Child {
         this.controllerAdherence = newValue;
     }
 }
+
