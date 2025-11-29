@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/rounded_settings_background"
     >
 
     <TextView
@@ -32,6 +34,8 @@
         android:text="Yes"
         android:background="@drawable/rounded_managedata_background"
         android:textColor="@color/white"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         android:fontFamily="@font/codec_pro_regular"
         />
 
@@ -39,6 +43,8 @@
         android:id="@+id/dialog_nodeletedhild_button"
         android:layout_width="0dp"
         android:layout_weight = "1"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         android:layout_height="40dp"
         android:background="@drawable/rounded_managedata_background"
         android:fontFamily="@font/codec_pro_regular"

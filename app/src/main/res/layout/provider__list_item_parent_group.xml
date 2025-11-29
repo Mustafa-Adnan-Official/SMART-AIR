@@ -10,31 +10,32 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#D0CFCF">
 
         <TextView
             android:id="@+id/parent_name_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#D0CFCF"
             android:padding="12dp"
             android:text="Parent Name"
             android:textColor="@android:color/black"
             android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/delete_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/delete_button" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/delete_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/delete"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
