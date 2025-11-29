@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort by Symptoms"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/codec_pro_regular"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/symptom_night_waking_button"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/codec_pro_regular"
+            android:text="🌙 Night Waking"
+
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/symptom_cough_wheeze_button"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/codec_pro_regular"
+            android:text="😮‍💨Cough/Wheeze"
+
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/symptom_activity_difficulty_button"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/codec_pro_regular"
+            android:text="🏃‍♂️‍➡️Activity Difficulty"
+
+
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/symptom_shortness_breath_button"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/codec_pro_regular"
+            android:text="🫁Shortness of Breath"
+
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_confirmsymptoms_sort_button"
+            android:layout_width="0dp"
+            android:layout_weight = "1"
+            android:layout_marginEnd = "8dp"
+            android:layout_height="40dp"
+            android:text="Confirm"
+            android:background="@drawable/rounded_managedata_background"
+            android:textColor="@color/white"
+            android:fontFamily="@font/codec_pro_regular"
+            />
+
+        <Button
+            android:id="@+id/dialog_nosymptoms_sort_button"
+            android:layout_width="0dp"
+            android:layout_weight = "1"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_managedata_background"
+            android:fontFamily="@font/codec_pro_regular"
+            android:text="Exit"
+            android:textColor="@color/white" />
+
+
+
+    </LinearLayout>
+</LinearLayout>

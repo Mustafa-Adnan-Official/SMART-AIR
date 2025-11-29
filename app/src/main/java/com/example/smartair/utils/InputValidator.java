@@ -45,14 +45,22 @@ public class InputValidator {
      *  - cannot contain digits
      */
     public static boolean isValidName(String name) {
+
+       //validation for emty string
         if (TextUtils.isEmpty(name)) {
             return false;
         }
+
+        //validation for digits
         for (int i = 0; i < name.length(); i++) {
             if (Character.isDigit(name.charAt(i))) {
                 return false;
             }
         }
+
+        //illegal characters
+
+
         return true;
     }
 

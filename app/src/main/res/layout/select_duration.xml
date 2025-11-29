@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/outline_button">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Duration"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:background="@drawable/dark_button_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/btn3mo"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="3Mo"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_selector_two"
+            android:backgroundTint="@null"/>
+
+        <Button
+            android:id="@+id/btn4mo"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="4Mo"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@null"
+            android:background="@drawable/button_selector_two"
+            android:backgroundTint="@null"/>
+
+        <Button
+            android:id="@+id/btn5mo"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="5Mo"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_selector_two"
+            android:backgroundTint="@null"/>
+
+        <Button
+            android:id="@+id/btn6mo"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="6Mo"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@null"
+            android:background="@drawable/button_selector_two"
+            android:backgroundTint="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Send"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/dark_button_bg"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"/>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Back"
+            android:textStyle="bold"
+            app:backgroundTint="@null"
+            android:textSize="17sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/dark_button_bg"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/codec_pro_fixed"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:background="@drawable/outline_button">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How do you feel before?"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btnGood"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="@null"
+            android:text="🙂 Good"
+            android:textColor="@color/text_selector"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/codec_pro_fixed"
+            app:backgroundTint="@null" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnOkay"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:text="😐 Okay"
+            android:textStyle="bold"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnBad"
+            android:layout_width="110dp"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:layout_height="40dp"
+            android:text="😟 Bad"
+            android:textStyle="bold"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Puffs or measures?"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btnDoseValue"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="1"
+            android:textStyle="bold"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/dark_button_bg" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnDosePlus"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:includeFontPadding="false"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:background="@drawable/outline_button" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnDoseMinus"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="-"
+            android:textStyle="bold"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:includeFontPadding="false"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:background="@drawable/outline_button" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How do you feel now?"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btnNowBetter"
+            android:layout_width="115dp"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:layout_height="40dp"
+            android:text="🙂 Better"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNowSame"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:text="😐 Same"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:textStyle="bold"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNowWorse"
+            android:layout_width="112dp"
+            android:layout_height="40dp"
+            android:text="😟 Worse"
+            android:fontFamily="@font/codec_pro_fixed"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Breathing Rate (PEF) :"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/inputPEF"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:background="@drawable/edittext_bg"
+        android:paddingHorizontal="12dp"
+        android:fontFamily="@font/codec_pro_fixed"
+        android:hint="|"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+</LinearLayout>
