@@ -26,7 +26,7 @@ public class WelcomeRoleSelectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.role_selection);
+        setContentView(R.layout.account_activity_role_selection);
 
         btnChild = findViewById(R.id.btn_child);
         btnParent = findViewById(R.id.btn_parent);

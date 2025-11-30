@@ -30,19 +30,19 @@ public class ChildOnboardingActivity extends AppCompatActivity {
     }
 
     private void showPage1() {
-        setContentView(R.layout.child_onboard_1);
+        setContentView(R.layout.onboard_activity_child_1);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage2());
     }
 
     private void showPage2() {
-        setContentView(R.layout.child_onboard_2);
+        setContentView(R.layout.onboard_activity_child_2);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage3());
     }
 
     private void showPage3() {
-        setContentView(R.layout.child_onboard_3);
+        setContentView(R.layout.onboard_activity_child_3);
         Button btnDone = findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> completeOnboarding());
     }

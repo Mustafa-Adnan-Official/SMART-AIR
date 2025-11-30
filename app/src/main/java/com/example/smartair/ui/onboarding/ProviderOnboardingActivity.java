@@ -30,19 +30,19 @@ public class ProviderOnboardingActivity extends AppCompatActivity {
     }
 
     private void showPage1() {
-        setContentView(R.layout.provider_onboard_1);
+        setContentView(R.layout.onboard_activity_provider_1);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage2());
     }
 
     private void showPage2() {
-        setContentView(R.layout.provider_onboard_2);
+        setContentView(R.layout.onboard_activity_provider_2);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage3());
     }
 
     private void showPage3() {
-        setContentView(R.layout.provider_onboard_3);
+        setContentView(R.layout.onboard_activity_provider_3);
         Button btnDone = findViewById(R.id.btn_next); // text says “Done”
         btnDone.setOnClickListener(v -> completeOnboarding());
     }

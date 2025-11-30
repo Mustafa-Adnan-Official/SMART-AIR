@@ -40,7 +40,7 @@ public class ProviderLoginActivity extends AppCompatActivity implements LoginCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.provider_li);
+        setContentView(R.layout.account_acitivity_provider_li);
 
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);

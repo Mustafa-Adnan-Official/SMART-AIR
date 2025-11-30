@@ -14,6 +14,9 @@
 <color name="switch_thumb">#142144</color>
 <color name="switch_track_on">#428CE4</color>
 <color name="switch_track_off">#B0B0B0</color>
+    <color name="card_green">#1F5C30</color>
+    <color name="card_yellow">#C89B2A</color>
+    <color name="card_red">#8F1D18</color>
 
 <!-- Needed by Theme.SmartAir -->
 <color name="purple_500">#6200EE</color>

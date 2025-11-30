@@ -24,7 +24,7 @@ public class ChildHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_child_home);
+        setContentView(R.layout.homescreen_activity_child);
 
         // Top bar
         btnSettings = findViewById(R.id.btn_settings);

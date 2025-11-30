@@ -40,7 +40,7 @@ public class ProviderSignupActivity extends AppCompatActivity implements Provide
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.provider_su);
+        setContentView(R.layout.account_activity_provider_su);
 
         inputPrefix = findViewById(R.id.input_prefix);
         inputLastName = findViewById(R.id.input_lastname);
