@@ -3,7 +3,7 @@ package com.example.smartair.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.smartair.models.RoleType;
+import com.example.smartair.models.users.RoleType;
 
 /**
  * Purpose: Simple SharedPreferences wrapper for storing session-related metadata.

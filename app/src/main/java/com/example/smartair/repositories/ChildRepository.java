@@ -5,7 +5,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.smartair.models.ChildToggles;
 import com.example.smartair.callbacks.ResultCallback;
-import com.example.smartair.models.Child;
+import com.example.smartair.models.users.Child;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;

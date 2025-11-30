@@ -1,4 +1,4 @@
-package com.example.smartair.ui;
+package com.example.smartair.ui.HomeActivities;
 
 import android.content.Intent;
 import android.os.Bundle;

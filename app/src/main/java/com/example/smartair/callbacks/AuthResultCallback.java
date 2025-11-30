@@ -1,7 +1,5 @@
 package com.example.smartair.callbacks;
 
-import com.example.smartair.models.RoleType;
-
 /**
  * Purpose: Reports success/failure of FirebaseAuth login or signup.
  * Layer: Model → Presenter

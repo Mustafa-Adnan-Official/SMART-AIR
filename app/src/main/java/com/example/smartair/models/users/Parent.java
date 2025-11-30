@@ -1,4 +1,4 @@
-package com.example.smartair.models;
+package com.example.smartair.models.users;
 
 import com.google.firebase.Timestamp;
 import java.util.List;
@@ -14,10 +14,10 @@ public class Parent {
     private String name;
     private String email;
     private String parentAccessCode; // may be null
+    private String role;             // "parent"
     private boolean onboarded;
     private Timestamp createdAt;
 
-    // New: list of child UIDs linked to this parent
     private List<String> childUIDs;
 
     /** Required for Firebase deserialization. */
@@ -27,6 +27,7 @@ public class Parent {
                   String name,
                   String email,
                   String parentAccessCode,
+                  String role,
                   boolean onboarded,
                   Timestamp createdAt,
                   List<String> childUIDs) {
@@ -34,6 +35,7 @@ public class Parent {
         this.name = name;
         this.email = email;
         this.parentAccessCode = parentAccessCode;
+        this.role = role;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
         this.childUIDs = childUIDs;
@@ -69,6 +71,14 @@ public class Parent {
 
     public void setParentAccessCode(String parentAccessCode) {
         this.parentAccessCode = parentAccessCode;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public boolean isOnboarded() {

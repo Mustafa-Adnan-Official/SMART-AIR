@@ -12,7 +12,7 @@
 
         <!-- Entry point -->
         <activity
-            android:name=".ui.WelcomeRoleSelectionActivity"
+            android:name=".ui.HomeActivities.WelcomeRoleSelectionActivity"
             android:exported="true" >
 
             <intent-filter>
@@ -33,13 +33,13 @@
 
         <!-- Simple placeholder homes -->
         <activity 
-            android:name=".ui.ParentHomeActivity" 
+            android:name=".ui.HomeActivities.ParentHomeActivity"
             android:exported="true">
 
         </activity>
 
-        <activity android:name=".ui.ChildHomeActivity" />
-        <activity android:name=".ui.ProviderHomeActivity" />
+        <activity android:name=".ui.HomeActivities.ChildHomeActivity" />
+        <activity android:name=".ui.HomeActivities.ProviderHomeActivity" />
         <activity android:name=".ui.ActivitySettingsChild" />
         <activity android:name=".ui.ActivitySettingsProvider" />
 

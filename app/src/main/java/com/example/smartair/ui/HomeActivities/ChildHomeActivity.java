@@ -1,6 +1,5 @@
-package com.example.smartair.ui; // change to your actual package name
+package com.example.smartair.ui.HomeActivities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;

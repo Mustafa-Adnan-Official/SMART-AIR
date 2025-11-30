@@ -1,4 +1,4 @@
-package com.example.smartair.models;
+package com.example.smartair.models.users;
 
 /**
  * Purpose: Defines the three user roles in the app.

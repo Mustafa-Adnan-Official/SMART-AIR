@@ -11,12 +11,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
-import com.example.smartair.models.RoleType;
 import com.example.smartair.services.AuthService;
-import com.example.smartair.ui.ChildHomeActivity;
-import com.example.smartair.ui.ParentHomeActivity;
-import com.example.smartair.ui.ProviderHomeActivity;
-import com.example.smartair.ui.signup.ParentSignupActivity;
+import com.example.smartair.ui.HomeActivities.ChildHomeActivity;
+import com.example.smartair.ui.HomeActivities.ParentHomeActivity;
+import com.example.smartair.ui.HomeActivities.ProviderHomeActivity;
 import com.example.smartair.ui.login.mvp.LoginContract;
 import com.example.smartair.ui.login.mvp.LoginPresenterImpl;
 

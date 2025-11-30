@@ -32,8 +32,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
-                android:fontFamily="@font/garet_heavy"
-                android:paintFlags="underline" />
+                android:fontFamily="@font/garet_heavy" />
 
             <!-- Rescue log -->
             <TextView

@@ -1,6 +1,6 @@
 package com.example.smartair.callbacks;
 
-import com.example.smartair.models.RoleType;
+import com.example.smartair.models.users.RoleType;
 
 /**
  * Purpose: Returns the user’s role (parent/provider/child) after login.

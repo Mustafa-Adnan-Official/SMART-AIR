@@ -1,4 +1,4 @@
-package com.example.smartair.ui;
+package com.example.smartair.ui.HomeActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
-import com.example.smartair.services.AuthService;
 import com.example.smartair.ui.login.ParentLoginActivity;
 
 // MPAndroidChart imports
@@ -137,15 +136,17 @@ public class ParentHomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_manage_children) {
-            Intent intent = new Intent(this, ActivitySettingsChild.class);
-            startActivity(intent);
+            // TODO: Re-enable when ActivitySettingsChild screen exists again
+            // Intent intent = new Intent(this, ActivitySettingsChild.class);
+            // startActivity(intent);
             return true;
         } else if (id == R.id.action_manage_providers) {
-             Intent intent = new Intent(this, ActivitySettingsProvider.class);
-             startActivity(intent);
-             return true;
+            // TODO: Re-enable when ActivitySettingsProvider screen exists again
+            // Intent intent = new Intent(this, ActivitySettingsProvider.class);
+            // startActivity(intent);
+            return true;
         } else if (id == R.id.action_sign_out) {
-            Intent intent = new Intent (this, ParentLoginActivity.class);
+            Intent intent = new Intent(this, ParentLoginActivity.class);
             startActivity(intent);
             return true;
         }

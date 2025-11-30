@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartair.R; // R is your generated resource file
-import com.example.smartair.models.Child; // Assuming Child is in your models package
-import com.example.smartair.models.Parent;
+import com.example.smartair.models.users.Child; // Assuming Child is in your models package
+import com.example.smartair.models.users.Parent;
 import com.example.smartair.repositories.ChildRepository;
 import com.example.smartair.repositories.ParentRepository;
 import com.google.android.material.textfield.TextInputEditText;

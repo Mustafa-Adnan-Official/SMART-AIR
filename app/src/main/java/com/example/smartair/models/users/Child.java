@@ -1,4 +1,4 @@
-package com.example.smartair.models;
+package com.example.smartair.models.users;
 
 import com.google.firebase.Timestamp;
 
@@ -6,39 +6,46 @@ import com.google.firebase.Timestamp;
  * Purpose: Represents a child document stored in /children/{childUid}.
  * Layer: Model
  * Used For: Moving child data between Firestore and app logic.
+ *
+ * Firestore fields (R1 core):
+ *  - childUid
+ *  - name
+ *  - childEmail
+ *  - parentEmail
+ *  - hasOwnEmail
+ *  - parentUid
+ *  - parentAccessCode
+ *  - role
+ *  - personalBest
+ *  - onboarded
+ *  - createdAt
  */
 public class Child {
 
-    private String childUid;          // independent child → auth UID; under parent → generated ID
-
+    private String childUid;
     private String name;
 
-    private String email;             // child’s own email OR parent’s email
-
+    private String childEmail;
+    private String parentEmail;
     private boolean hasOwnEmail;
+    private String parentAccessCode;
+    private String parentUid;
+    private String role;          // "child"
 
-    private String parentAccessCode;  // null or actual PAC used during linking
-
-    private String parentUid;         // null if no parent
-
-    private int personalBest;         // default 0
-
+    private int personalBest;
     private boolean onboarded;
-    private int controllerAdherence;  // I called this ControllerUses
+    private int controllerAdherence;  // optional summary field
     private Timestamp createdAt;
 
-    // --- R3 Achievements / Badges fields ---
+    // --- R3 Achievements / Badges (for later, but you can leave these as plain fields if needed) ---
 
-    // Controller streak (wrapped in streakMasterBadge map in Firestore)
     private int currentControllerStreak;
     private int highestControllerStreak;
 
-    // Controller badges
     private boolean perfectControllerWeekBadgeEarned;
     private boolean perfectControllerMonthBadgeEarned;
     private boolean perfectControllerYearBadgeEarned;
 
-    // Technique streak + badges
     private int currentHQTechniqueSessionsStreak;
 
     private boolean tenHQTechniqueSessionsBadgeEarned;
@@ -46,7 +53,6 @@ public class Child {
     private boolean hundredHQTechniqueSessionsBadgeEarned;
     private boolean yearHundredHQTechniqueSessionsBadgeEarned;
 
-    // Low-rescue month badge
     private int lowRescueMonthBadgeCount;
 
     /** Required for Firebase deserialization. */
@@ -55,10 +61,12 @@ public class Child {
 
     public Child(String childUid,
                  String name,
-                 String email,
+                 String childEmail,
+                 String parentEmail,
                  boolean hasOwnEmail,
                  String parentAccessCode,
                  String parentUid,
+                 String role,
                  int personalBest,
                  int controllerAdherence,
                  boolean onboarded,
@@ -66,10 +74,12 @@ public class Child {
 
         this.childUid = childUid;
         this.name = name;
-        this.email = email;
+        this.childEmail = childEmail;
+        this.parentEmail = parentEmail;
         this.hasOwnEmail = hasOwnEmail;
         this.parentAccessCode = parentAccessCode;
         this.parentUid = parentUid;
+        this.role = role;
         this.personalBest = personalBest;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
@@ -92,12 +102,20 @@ public class Child {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getChildEmail() {
+        return childEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setChildEmail(String childEmail) {
+        this.childEmail = childEmail;
+    }
+
+    public String getParentEmail() {
+        return parentEmail;
+    }
+
+    public void setParentEmail(String parentEmail) {
+        this.parentEmail = parentEmail;
     }
 
     public boolean isHasOwnEmail() {
@@ -122,6 +140,14 @@ public class Child {
 
     public void setParentUid(String parentUid) {
         this.parentUid = parentUid;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public int getPersonalBest() {
@@ -155,5 +181,6 @@ public class Child {
     public void setDailyControllerUses(int newValue) {
         this.controllerAdherence = newValue;
     }
-}
 
+    // (You can keep/add getters & setters for the achievement fields as needed)
+}

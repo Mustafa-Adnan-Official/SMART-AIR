@@ -1,7 +1,6 @@
-package com.example.smartair.models;
+package com.example.smartair.models.users;
 
 import com.google.firebase.Timestamp;
-
 import java.util.List;
 
 /**
@@ -15,8 +14,10 @@ public class Provider {
     private String prefix;        // e.g. "Dr."
     private String name;
     private String email;
+    private String role;          // "provider"
     private boolean onboarded;
     private Timestamp createdAt;
+
     private List<Child> childList;
 
     /** Required for Firebase deserialization. */
@@ -26,12 +27,14 @@ public class Provider {
                     String prefix,
                     String name,
                     String email,
+                    String role,
                     boolean onboarded,
                     Timestamp createdAt) {
         this.providerUid = providerUid;
         this.prefix = prefix;
         this.name = name;
         this.email = email;
+        this.role = role;
         this.onboarded = onboarded;
         this.createdAt = createdAt;
     }
@@ -66,6 +69,14 @@ public class Provider {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public boolean isOnboarded() {

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartair.R;
 import com.example.smartair.callbacks.ResultCallback;
-import com.example.smartair.models.Child;
+import com.example.smartair.models.users.Child;
 import com.example.smartair.repositories.ChildRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

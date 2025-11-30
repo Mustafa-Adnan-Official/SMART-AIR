@@ -1,6 +1,6 @@
 package com.example.smartair.callbacks;
 
-import com.example.smartair.models.RoleType;
+import com.example.smartair.models.users.RoleType;
 
 /**
  * Purpose: Final wrapped login result after auth + role lookup.

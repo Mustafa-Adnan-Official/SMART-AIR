@@ -13,9 +13,9 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.smartair.R;
 import com.example.smartair.services.AuthService;
-import com.example.smartair.ui.ChildHomeActivity;
-import com.example.smartair.ui.ParentHomeActivity;
-import com.example.smartair.ui.ProviderHomeActivity;
+import com.example.smartair.ui.HomeActivities.ChildHomeActivity;
+import com.example.smartair.ui.HomeActivities.ParentHomeActivity;
+import com.example.smartair.ui.HomeActivities.ProviderHomeActivity;
 import com.example.smartair.ui.login.mvp.LoginContract;
 import com.example.smartair.ui.login.mvp.LoginPresenterImpl;
 

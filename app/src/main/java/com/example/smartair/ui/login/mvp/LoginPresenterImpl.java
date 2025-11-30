@@ -3,7 +3,7 @@ package com.example.smartair.ui.login.mvp;
 import com.example.smartair.callbacks.ChildUnderParentLoginCallback;
 import com.example.smartair.callbacks.LoginResultCallback;
 import com.example.smartair.callbacks.SimpleResultCallback;
-import com.example.smartair.models.RoleType;
+import com.example.smartair.models.users.RoleType;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.utils.InputValidator;
 
