@@ -153,8 +153,8 @@
         android:text = "Manage Inventory"
         android:textSize="18sp"
         android:fontFamily = "@font/codec_pro_regular"
-
-
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         />
 
 

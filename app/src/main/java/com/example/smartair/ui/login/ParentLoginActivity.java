@@ -40,7 +40,7 @@ public class ParentLoginActivity extends AppCompatActivity implements LoginContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.parent_li);
+        setContentView(R.layout.account_activity_parent_li);
 
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);

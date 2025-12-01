@@ -37,6 +37,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/provider__list_item_parent_group" />
+        tools:listitem="@layout/manage_item_parent_row_for_provider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

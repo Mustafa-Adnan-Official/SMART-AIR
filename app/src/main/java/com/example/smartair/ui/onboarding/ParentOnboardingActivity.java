@@ -30,25 +30,25 @@ public class ParentOnboardingActivity extends AppCompatActivity {
     }
 
     private void showPage1() {
-        setContentView(R.layout.parent_onboard_1);
+        setContentView(R.layout.onboard_activity_parent_1);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage2());
     }
 
     private void showPage2() {
-        setContentView(R.layout.parent_onboard_2);
+        setContentView(R.layout.onboard_activity_parent_2);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage3());
     }
 
     private void showPage3() {
-        setContentView(R.layout.parent_onboard_3);
+        setContentView(R.layout.onboard_activity_parent_3);
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(v -> showPage4());
     }
 
     private void showPage4() {
-        setContentView(R.layout.parent_onboard_4);
+        setContentView(R.layout.onboard_activity_parent_4);
         Button btnDone = findViewById(R.id.btn_next); // last one’s text is “Done”
         btnDone.setOnClickListener(v -> completeOnboarding());
     }

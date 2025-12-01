@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="@drawable/dialog_background"
-    android:backgroundTint="#FFFFFF">
+    android:background="@drawable/outline_button"
+>
 
     <TextView
         android:id="@+id/confirmation_text_view"

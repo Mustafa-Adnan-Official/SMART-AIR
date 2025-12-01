@@ -35,7 +35,7 @@ public class ParentHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_parent_home);
+        setContentView(R.layout.homescreen_activity_parent);
 
         // --- Find views from XML ---
         lineChartTriggers = findViewById(R.id.linechart_triggers);

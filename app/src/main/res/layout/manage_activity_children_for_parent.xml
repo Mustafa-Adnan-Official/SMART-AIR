@@ -6,17 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".ui.ActivitySettingsProvider">
+    tools:context=".ui.ActivitySettingsChild">
+
+    <ImageView
+        android:id="@+id/logoSmartAir"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#142144"
+        android:src="@drawable/actual_logo"
+        android:scaleType="centerCrop"
+        />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Providers"
+        android:text="Manage Children"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="16dp" />
+        android:fontFamily = "@font/codec_pro_regular"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,12 +37,12 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/providers_recycler_view"
+                android:id="@+id/children_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
+                android:nestedScrollingEnabled="true"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/provider_card" />
+                tools:listitem="@layout/manage_item_child_row_for_parent" />
 
         </LinearLayout>
     </ScrollView>

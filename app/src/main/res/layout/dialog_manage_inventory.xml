@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dp"
     >
 
@@ -16,15 +17,17 @@
     <Button
         android:id="@+id/inventory_controller_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         android:layout_weight="1"
         android:text="Controller"
-        android:textSize="22sp"
+        android:textSize="19sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:textColor="@color/text_selector"
         android:fontFamily="@font/codec_pro_regular"
         android:layout_marginBottom="16dp"
-        android:background = "@drawable/inventory_toggle_bg"
+        android:background = "@drawable/button_selector"
         android:layout_marginRight="10dp"
 
         />
@@ -35,12 +38,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Rescue"
-            android:textSize="22sp"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textSize="19sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/text_selector"
             android:fontFamily="@font/codec_pro_regular"
             android:layout_marginBottom="16dp"
-            android:background = "@drawable/inventory_toggle_bg"
+            android:background = "@drawable/button_selector"
             android:layout_marginLeft = "10dp"
 
             />
@@ -125,17 +130,18 @@
     </LinearLayout>
 
 
-
-
     <Button
         android:id="@+id/inventory_new_canister_button"
         android:layout_width="match_parent"
-        android:layout_weight = "1"
         android:layout_height="40dp"
+        android:layout_weight="1"
         android:background="@drawable/rounded_managedata_background"
         android:fontFamily="@font/codec_pro_regular"
         android:text="New Canister"
-        android:textColor="@color/white" />
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/inventory_warning_text"

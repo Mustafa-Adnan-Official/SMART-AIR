@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -190,6 +191,8 @@
             android:layout_marginEnd = "8dp"
             android:layout_height="40dp"
             android:text="Confirm"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:background="@drawable/rounded_managedata_background"
             android:textColor="@color/white"
             android:fontFamily="@font/codec_pro_regular"
@@ -203,6 +206,8 @@
             android:background="@drawable/rounded_managedata_background"
             android:fontFamily="@font/codec_pro_regular"
             android:text="Exit"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:textColor="@color/white" />
 
 

@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/outline_button"
     android:padding="20dp">
     <TextView
         android:layout_width="match_parent"
@@ -19,16 +21,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <Button
             android:id="@+id/symptom_night_waking_button"
             android:layout_width="250dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector"
+            android:layout_marginEnd="20dp"
             android:fontFamily="@font/codec_pro_regular"
             android:text="🌙 Night Waking"
-
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -37,9 +44,12 @@
             android:layout_width="250dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector"
             android:fontFamily="@font/codec_pro_regular"
             android:text="😮‍💨Cough/Wheeze"
-
             android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -55,9 +65,13 @@
             android:layout_width="250dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginEnd="20dp"
             android:fontFamily="@font/codec_pro_regular"
             android:text="🏃‍♂️‍➡️Activity Difficulty"
-
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector"
 
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -69,7 +83,10 @@
             android:layout_weight="1"
             android:fontFamily="@font/codec_pro_regular"
             android:text="🫁Shortness of Breath"
-
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:textColor="@color/text_selector"
+            android:background="@drawable/button_selector"
             android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -85,6 +102,8 @@
             android:layout_marginEnd = "8dp"
             android:layout_height="40dp"
             android:text="Confirm"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:background="@drawable/rounded_managedata_background"
             android:textColor="@color/white"
             android:fontFamily="@font/codec_pro_regular"
@@ -98,6 +117,8 @@
             android:background="@drawable/rounded_managedata_background"
             android:fontFamily="@font/codec_pro_regular"
             android:text="Exit"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:textColor="@color/white" />
 
 
