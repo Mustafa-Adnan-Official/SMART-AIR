@@ -1,5 +1,7 @@
 package com.example.smartair.models.childcollections;
 
+import com.google.firebase.Timestamp;
+
 /**
  * Purpose: Represents the achievements summary document stored in
  *          children/{childUid}/achievements/summary.
@@ -15,6 +17,7 @@ public class AchievementSummary {
     private boolean perfectControllerMonthBadgeEarned;
     private boolean perfectControllerYearBadgeEarned;
 
+    // Technique streak = consecutive days with at least one HQ technique session
     private int currentHQTechniqueSessionsStreak;
 
     private boolean tenHQTechniqueSessionsBadgeEarned;
@@ -24,10 +27,14 @@ public class AchievementSummary {
 
     private int lowRescueMonthBadgeCount;
 
+    // New: last day on which we counted a HQ technique session toward the streak
+    private Timestamp lastHQTechniqueSessionDate;
+
     /** Required for Firebase deserialization. */
     public AchievementSummary() {
     }
 
+    // (We don't actually use this constructor anywhere; kept for completeness.)
     public AchievementSummary(StreakMasterBadge streakMasterBadge,
                               boolean perfectControllerWeekBadgeEarned,
                               boolean perfectControllerMonthBadgeEarned,
@@ -128,5 +135,13 @@ public class AchievementSummary {
 
     public void setLowRescueMonthBadgeCount(int lowRescueMonthBadgeCount) {
         this.lowRescueMonthBadgeCount = lowRescueMonthBadgeCount;
+    }
+
+    public Timestamp getLastHQTechniqueSessionDate() {
+        return lastHQTechniqueSessionDate;
+    }
+
+    public void setLastHQTechniqueSessionDate(Timestamp lastHQTechniqueSessionDate) {
+        this.lastHQTechniqueSessionDate = lastHQTechniqueSessionDate;
     }
 }

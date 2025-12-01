@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,7 +15,7 @@
         <!-- Entry point -->
         <activity
             android:name=".ui.HomeActivities.WelcomeRoleSelectionActivity"
-            android:exported="true" >
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +23,7 @@
             </intent-filter>
 
         </activity>
+
         <!-- Signup screens -->
         <activity android:name=".ui.signup.ParentSignupActivity" />
         <activity android:name=".ui.signup.ChildSignupActivity" />
@@ -31,24 +34,34 @@
         <activity android:name=".ui.login.ChildLoginActivity" />
         <activity android:name=".ui.login.ProviderLoginActivity" />
 
-        <!-- Simple placeholder homes -->
-        <activity 
+        <!-- Home screens -->
+        <activity
             android:name=".ui.HomeActivities.ParentHomeActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
 
         <activity android:name=".ui.HomeActivities.ChildHomeActivity" />
         <activity android:name=".ui.HomeActivities.ProviderHomeActivity" />
-        <activity android:name=".ui.ActivitySettingsChild" />
-        <activity android:name=".ui.ActivitySettingsProvider" />
 
+        <!-- Onboarding -->
         <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
         <activity android:name=".ui.onboarding.ParentOnboardingActivity" />
         <activity android:name=".ui.onboarding.ProviderOnboardingActivity" />
 
-        <!-- (If you still have the old MainActivity and don't need it, you can remove it) -->
-    </application>
+        <!-- R3: Medicine logging -->
+        <activity android:name=".ui.r3.meds.RescueSessionActivity"
+            android:exported="false" />
 
+        <activity android:name=".ui.r3.meds.ControllerSessionActivity"
+            android:exported="false" />
+
+        <!-- R3: Technique trainer -->
+        <activity android:name=".ui.r3.technique.TechniqueTrainerActivity"
+            android:exported="false" />
+
+        <!-- R3: Achievements -->
+        <activity android:name=".ui.r3.motivation.ChildAchievementsActivity"
+            android:exported="false" />
+
+    </application>
 
 </manifest>

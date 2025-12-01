@@ -549,4 +549,15 @@ public class AuthService {
     public void signOut() {
         auth.signOut();
     }
+
+    /**
+     * Returns the UID of the currently logged-in FirebaseAuth user.
+     * Used by child home, rescue logging, controller logging, etc.
+     */
+    public String getCurrentUserUid() {
+        if (auth.getCurrentUser() != null) {
+            return auth.getCurrentUser().getUid();
+        }
+        return null;
+    }
 }
