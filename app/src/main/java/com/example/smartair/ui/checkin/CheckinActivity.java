@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySettingsChild extends AppCompatActivity {
+public class CheckinActivity extends AppCompatActivity {
 
     private RecyclerView childrenRecyclerView;
     private ChildrenAdapter childrenAdapter;
@@ -36,28 +36,6 @@ public class ActivitySettingsChild extends AppCompatActivity {
 
     private void loadChildrenData() {
 
-        childList.clear();
-
-        Child child1 = new Child();
-        child1.setName("Test Child 1");
-        child1.setPersonalBest(150);
-        child1.setDailyControllerUses(5); // Assuming setter name from previous context
-        child1.setChildUid("test_uid_1");
-        childList.add(child1);
-
-        Child child2 = new Child();
-        child2.setName("Test Child 2");
-        child2.setPersonalBest(300);
-        child2.setDailyControllerUses(2);
-        child2.setChildUid("test_uid_2");
-        childList.add(child2);
-
-        if (childrenAdapter != null) {
-            childrenAdapter.notifyDataSetChanged();
-        }
-        // --- TEMPORARY TEST DATA END ---
-
-        /* REAL DATA LOADING (Commented out for UI testing)
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String parentUid = currentUser.getUid();
@@ -74,13 +52,13 @@ public class ActivitySettingsChild extends AppCompatActivity {
 
                 @Override
                 public void onError(Exception e) {
-                    Toast.makeText(ActivitySettingsChild.this, "Error loading children: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CheckinActivity.this, "Error loading children", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
-        */
+
     }
 
     private void setupChildrenRecyclerView() {

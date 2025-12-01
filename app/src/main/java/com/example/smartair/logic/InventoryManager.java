@@ -1,7 +1,8 @@
 package com.example.smartair.logic;
 
-import com.example.smartair.models.InventoryItem;
 import com.google.firebase.Timestamp;
+import com.example.smartair.models.childcollections.InventoryItem;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,86 +24,87 @@ public class InventoryManager {
                                  String name,
                                  Timestamp purchaseDate,
                                  Timestamp expiryDate,
-                                 int totalDoses) {
+                                 int totalDoses,
+                                 int expectedUses
+    ) {
 
-        String id = UUID.randomUUID().toString();
+        // Enforce at most two items: "rescue" and "controller"
+        // Check if item of this type already exists
+        InventoryItem existingItem = null;
+        for (InventoryItem i : items) {
+            if (i.getType().equalsIgnoreCase(medicineType)) {
+                existingItem = i;
+                break;
+            }
+        }
 
-        InventoryItem item = new InventoryItem(
-                id,
-                childUid,
-                medicineType,
-                name,
-                purchaseDate,
-                expiryDate,
-                totalDoses,
-                totalDoses
-        );
-
-        items.add(item);
-
-        return item;
+        if (existingItem != null) {
+            // Update existing item
+            existingItem.setPurchaseDate(purchaseDate);
+            existingItem.setExpirationDate(expiryDate);
+            existingItem.setTotalActuations(totalDoses);
+            existingItem.setExpectedDailyUses(expectedUses);
+            existingItem.setDosesRemaining(totalDoses); // Reset remaining doses for new canister
+            return existingItem;
+        } else {
+            // Create new item
+            InventoryItem item = new InventoryItem(medicineType, expiryDate, purchaseDate, expectedUses, totalDoses, totalDoses);
+            items.add(item);
+            return item;
+        }
     }
 
     /**
      * Subtract doses after a medicine log.
      */
-    public void recordUse(String itemId, int dosesUsed) {
+    public void recordUse(String type, int dosesUsed) {
 
-        InventoryItem item = findById(itemId);
+        if (type == null) return;
+
+        InventoryItem item = null;
+        for (InventoryItem i : items) {
+            if (i.getType().equalsIgnoreCase(type)) {
+                item = i;
+                break;
+            }
+        }
 
         if (item != null) {
-            int remaining = Math.max(0, item.getRemainingDoses() - dosesUsed);
-            item.setRemainingDoses(remaining);
+            int remaining = Math.max(0, item.getDosesRemaining() - dosesUsed);
+            item.setDosesRemaining(remaining);
         }
     }
 
     public List<InventoryItem> getItemsForChild(String childUid) {
-        List<InventoryItem> result = new ArrayList<>();
-
-        for (InventoryItem i : items) {
-            if (childUid.equals(i.getChildUid())) {
-                result.add(i);
-            }
-        }
-
-        return result;
+        return new ArrayList<>(items);
     }
 
-    /**
-     * Returns human-readable alert messages (for UI or notifications).
-     */
+
     public List<String> getAlerts(Timestamp now) {
         List<String> alerts = new ArrayList<>();
 
         for (InventoryItem item : items) {
 
             // Low canister
-            if (item.getTotalDoses() > 0) {
-                double ratio = (double) item.getRemainingDoses()
-                        / (double) item.getTotalDoses();
+            if (item.getTotalActuations() > 0) {
+                double ratio = (double) item.getDosesRemaining()
+                        / (double) item.getTotalActuations();
 
                 if (ratio <= LOW_THRESHOLD) {
-                    alerts.add("Low canister for " + item.getName());
+                    alerts.add("Low canister for " + item.getType());
                 }
             }
 
             // Expired medication
-            if (item.getExpiryDate() != null
-                    && item.getExpiryDate().compareTo(now) <= 0) {
+            if (item.getExpirationDate() != null
+                    && item.getExpirationDate().compareTo(now) <= 0) {
 
-                alerts.add("Expired medication: " + item.getName());
+                alerts.add("Expired medication: " + item.getType());
             }
         }
 
         return alerts;
     }
 
-    private InventoryItem findById(String id) {
-        for (InventoryItem i : items) {
-            if (id.equals(i.getItemId())) {
-                return i;
-            }
-        }
-        return null;
-    }
+
 }

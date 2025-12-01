@@ -118,6 +118,7 @@
             />
 
         <TextView
+            android:id = "@+id/zone_threshold_green_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text = "• Green ≥ 80% PB = 400"
@@ -126,23 +127,24 @@
             />
 
         <TextView
+            android:id = "@+id/zone_threshold_yellow_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text = "• Yellow ≥ 50-79% PB = 250 to 395"
+            android:text = "• Yellow 50-79% PB = 250 to 395"
             android:textSize = "15sp" />
 
         <TextView
+            android:id = "@+id/zone_threshold_red_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text = "• Green ≥ 50-79% PB = &lt;250"
+            android:text = "• Red 50% PB = 250"
             android:textSize = "15sp" />
-        <!--&lt alias for < (less than sign)... for error: android:text must not contain '<'-->
 
     </LinearLayout>
 
 
     <Button
-        android:id="@+id/zone_threshold_text"
+        android:id="@+id/manage_inventory_button"
         android:layout_width = "match_parent"
         android:layout_height = "wrap_content"
         android:layout_weight="1"

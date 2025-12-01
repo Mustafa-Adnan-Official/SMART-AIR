@@ -46,6 +46,9 @@
         <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
         <activity android:name=".ui.onboarding.ParentOnboardingActivity" />
         <activity android:name=".ui.onboarding.ProviderOnboardingActivity" />
+        
+        <activity android:name=".ui.checkin.DailyCheckinActivity" />
+        <activity android:name=".ui.checkin.DailyCheckinActivityParent" />
 
         <!-- (If you still have the old MainActivity and don't need it, you can remove it) -->
     </application>

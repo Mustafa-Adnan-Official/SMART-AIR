@@ -38,48 +38,8 @@ public class ActivitySettingsProvider extends AppCompatActivity {
     }
 
     private void loadProvidersData() {
-        // --- TEMPORARY TEST DATA START ---
-        providerList.clear();
 
-        // 1. Create a Mock Parent
-        currentParent = new Parent();
-        currentParent.setParentUid("mock_parent_uid");
-        currentParent.setName("Mock Parent");
 
-        // 2. Create Mock Children
-        Child child1 = new Child();
-        child1.setName("Test Child 1");
-        child1.setChildUid("child_1");
-        child1.setParentUid("mock_parent_uid");
-
-        Child child2 = new Child();
-        child2.setName("Test Child 2");
-        child2.setChildUid("child_2");
-        child2.setParentUid("mock_parent_uid");
-
-        List<Child> children = new ArrayList<>();
-        children.add(child1);
-        children.add(child2);
-
-        // 3. Create Mock Providers
-        Provider p1 = new Provider();
-        p1.setName("Dr. Smith");
-        p1.setProviderUid("provider_1");
-        p1.setChildren(children); 
-        providerList.add(p1);
-
-        Provider p2 = new Provider();
-        p2.setName("Nurse Joy");
-        p2.setProviderUid("provider_2");
-        p2.setChildren(children);
-        providerList.add(p2);
-
-        if (providerAdapter != null) {
-            providerAdapter.notifyDataSetChanged();
-        }
-        // --- TEMPORARY TEST DATA END ---
-
-        /* REAL DATA LOADING (Commented out)
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String parentUid = currentUser.getUid();
@@ -99,7 +59,7 @@ public class ActivitySettingsProvider extends AppCompatActivity {
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
-        */
+
     }
 
     private void setupRecyclerView() {

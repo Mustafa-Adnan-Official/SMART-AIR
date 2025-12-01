@@ -5,6 +5,54 @@
     android:orientation="vertical"
     android:padding="20dp"
     >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Canister Type"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="@font/codec_pro_regular"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                android:background="@drawable/dark_button_bg" />
+
+            <RadioGroup
+                android:id="@+id/canister_type_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:gravity="center">
+
+                <RadioButton
+                    android:id="@+id/radio_controller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Controller"
+                    android:textSize="18sp"
+                    android:paddingEnd="20dp"
+                    android:checked="true"
+                    android:fontFamily="@font/codec_pro_regular"/>
+
+                <RadioButton
+                    android:id="@+id/radio_rescue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rescue"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/codec_pro_regular"/>
+
+            </RadioGroup>
+        </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -6,6 +6,17 @@
     android:padding="20dp"
     >
 
+    <ImageButton
+        android:id="@+id/inventory_exit_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="start"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:scaleType="fitCenter"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="Exit"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Controller"
-        android:textSize="22sp"
+        android:textSize="19sp"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:fontFamily="@font/codec_pro_regular"
@@ -35,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Rescue"
-            android:textSize="22sp"
+            android:textSize="19sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:fontFamily="@font/codec_pro_regular"
@@ -57,7 +68,7 @@
 
 
         <TextView
-            android:id="@+id/controller_purchase_date_text"
+            android:id="@+id/purchase_date_text"
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:layout_weight="1"
@@ -73,7 +84,7 @@
             />
 
         <TextView
-            android:id="@+id/controller_expiration_date_text"
+            android:id="@+id/expiration_date_text"
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content"
             android:layout_weight="1"

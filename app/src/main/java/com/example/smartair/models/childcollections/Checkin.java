@@ -2,6 +2,8 @@ package com.example.smartair.models.childcollections;
 
 import com.google.firebase.Timestamp;
 import java.util.List;
+import java.util.HashMap; // <-- New Import Needed
+import java.util.Map;
 
 /**
  * Purpose: Represents a daily check-in document stored in
@@ -16,7 +18,7 @@ public class Checkin {
     private String feeling;
     private List<String> symptoms;
     private List<String> triggers;
-    private Long peakFlow;          // may be null
+    private int peakFlow;          // may be null
     private EntryAuthor entryAuthor;
 
     /** Required for Firebase deserialization. */
@@ -27,7 +29,7 @@ public class Checkin {
                    String feeling,
                    List<String> symptoms,
                    List<String> triggers,
-                   Long peakFlow,
+                   int peakFlow,
                    EntryAuthor entryAuthor) {
         this.createdAt = createdAt;
         this.feeling = feeling;
@@ -69,11 +71,11 @@ public class Checkin {
         this.triggers = triggers;
     }
 
-    public Long getPeakFlow() {
+    public int getPeakFlow() {
         return peakFlow;
     }
 
-    public void setPeakFlow(Long peakFlow) {
+    public void setPeakFlow(int peakFlow) {
         this.peakFlow = peakFlow;
     }
 
@@ -84,4 +86,6 @@ public class Checkin {
     public void setEntryAuthor(EntryAuthor entryAuthor) {
         this.entryAuthor = entryAuthor;
     }
+
+
 }
