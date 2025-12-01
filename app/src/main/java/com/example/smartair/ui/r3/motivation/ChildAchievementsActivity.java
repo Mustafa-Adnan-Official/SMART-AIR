@@ -57,7 +57,7 @@ public class ChildAchievementsActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_child_achievements);
+        setContentView(R.layout.achievements_activity);
 
         childUid = getIntent().getStringExtra("childUid");
         if (childUid == null) {

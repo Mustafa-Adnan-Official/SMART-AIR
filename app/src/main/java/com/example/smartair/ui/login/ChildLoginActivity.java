@@ -45,7 +45,7 @@ public class ChildLoginActivity extends AppCompatActivity implements LoginContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.child_li);
+        setContentView(R.layout.account_activity_child_li);
 
         switchParentEmail = findViewById(R.id.switch_parent_email);
         inputParentEmail  = findViewById(R.id.input_parent_email);

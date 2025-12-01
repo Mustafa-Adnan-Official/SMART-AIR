@@ -44,7 +44,7 @@ public class ChildSignupActivity extends AppCompatActivity implements ChildSignu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.child_su);
+        setContentView(R.layout.account_activity_child_su);
 
         switchParentLink = findViewById(R.id.switch_parent_link);
         inputParentCode  = findViewById(R.id.input_parent_code);

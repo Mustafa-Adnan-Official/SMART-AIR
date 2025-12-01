@@ -44,7 +44,7 @@ public class ControllerSessionActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.controller_session);
+        setContentView(R.layout.medicine_dialog_controller_session);
 
         // Get childUid from AuthService
         AuthService authService = new AuthService();
