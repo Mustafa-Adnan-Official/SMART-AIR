@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.smartair.R;
 import com.example.smartair.models.childcollections.MedLog;
 import com.example.smartair.services.AchievementService;
+import com.example.smartair.services.AuthService;
 import com.example.smartair.services.InventoryService;
 import com.example.smartair.services.MedLogService;
 
@@ -45,10 +46,10 @@ public class RescueSessionActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rescue_session);
 
-        // Get childUid from Intent (set this when starting the Activity)
-        childUid = getIntent().getStringExtra("childUid");
-        if (childUid == null) {
-            // In a real app you might get it from AuthService / current child.
+        // Get childUid from AuthService (current logged-in child)
+        AuthService authService = new AuthService();
+        childUid = authService.getCurrentUserUid();
+        if (childUid == null || childUid.trim().isEmpty()) {
             Toast.makeText(this, "Missing childUid", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -84,21 +85,27 @@ public class RescueSessionActivity extends AppCompatActivity
 
         // initial dose text
         btnDoseValue.setText(String.valueOf(doseCount));
+
+        // ensure all feeling buttons start unselected
+        clearBeforeFeelingSelection();
+        clearAfterFeelingSelection();
     }
 
     private void setupListeners() {
         // Before feeling
         btnGood.setOnClickListener(v -> {
             feelingBefore = "good";
-            // TODO: visually mark selection (change background if you want)
+            setBeforeFeelingSelection(btnGood);
         });
 
         btnOkay.setOnClickListener(v -> {
             feelingBefore = "okay";
+            setBeforeFeelingSelection(btnOkay);
         });
 
         btnBad.setOnClickListener(v -> {
             feelingBefore = "bad";
+            setBeforeFeelingSelection(btnBad);
         });
 
         // Dose count
@@ -117,18 +124,49 @@ public class RescueSessionActivity extends AppCompatActivity
         // After feeling
         btnNowBetter.setOnClickListener(v -> {
             feelingAfter = "better";
+            setAfterFeelingSelection(btnNowBetter);
         });
 
         btnNowSame.setOnClickListener(v -> {
             feelingAfter = "same";
+            setAfterFeelingSelection(btnNowSame);
         });
 
         btnNowWorse.setOnClickListener(v -> {
             feelingAfter = "worse";
+            setAfterFeelingSelection(btnNowWorse);
         });
 
         // Save / log rescue dose
         btnSaveRescue.setOnClickListener(v -> onSaveClicked());
+    }
+
+    // --- Selection helpers for "before" buttons ---
+
+    private void clearBeforeFeelingSelection() {
+        btnGood.setSelected(false);
+        btnOkay.setSelected(false);
+        btnBad.setSelected(false);
+    }
+
+    private void setBeforeFeelingSelection(Button selected) {
+        btnGood.setSelected(selected == btnGood);
+        btnOkay.setSelected(selected == btnOkay);
+        btnBad.setSelected(selected == btnBad);
+    }
+
+    // --- Selection helpers for "after" buttons ---
+
+    private void clearAfterFeelingSelection() {
+        btnNowBetter.setSelected(false);
+        btnNowSame.setSelected(false);
+        btnNowWorse.setSelected(false);
+    }
+
+    private void setAfterFeelingSelection(Button selected) {
+        btnNowBetter.setSelected(selected == btnNowBetter);
+        btnNowSame.setSelected(selected == btnNowSame);
+        btnNowWorse.setSelected(selected == btnNowWorse);
     }
 
     private void onSaveClicked() {

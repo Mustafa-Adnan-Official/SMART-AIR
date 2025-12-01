@@ -4,25 +4,23 @@ import androidx.annotation.Nullable;
 
 import com.example.smartair.models.childcollections.Alert;
 import com.example.smartair.models.childcollections.InventoryItem;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Date;
-
 /**
- * R3: Inventory tracking, low canister alerts, expired alerts.
- * Paths:
- *   children/{childUid}/inventory/{inventoryId}
- *   children/{childUid}/alerts/{alertId}
+ * InventoryService
+ *
+ * Handles:
+ *  - children/{childUid}/inventory/{medicineType}
+ *  - Enforces inventory ONLY if the child is under a parent
+ *    (children/{childUid}.hasOwnEmail == false).
+ *
+ * Callers:
+ *  - ChildMedLogPresenter (updateInventoryAfterDose)
+ *  - InventoryPresenter (refreshInventory using doseCount = 0)
  */
 public class InventoryService {
-
-    private static final String COLLECTION_CHILDREN = "children";
-    private static final String SUBCOLLECTION_INVENTORY = "inventory";
-    private static final String SUBCOLLECTION_ALERTS = "alerts";
 
     private final FirebaseFirestore db;
 
@@ -30,136 +28,120 @@ public class InventoryService {
         this.db = FirebaseFirestore.getInstance();
     }
 
+    // ---------------------------------------------------------------------
+    // Callback interface used by existing code
+    // ---------------------------------------------------------------------
+
     public interface InventoryCallback {
-        void onSuccess(@Nullable InventoryItem updatedItem, @Nullable Alert newAlert);
+        void onSuccess(@Nullable InventoryItem item, @Nullable Alert alert);
         void onError(Exception e);
     }
 
-    private CollectionReference inventoryRef(String childUid) {
-        return db.collection(COLLECTION_CHILDREN)
-                .document(childUid)
-                .collection(SUBCOLLECTION_INVENTORY);
-    }
-
-    private CollectionReference alertsRef(String childUid) {
-        return db.collection(COLLECTION_CHILDREN)
-                .document(childUid)
-                .collection(SUBCOLLECTION_ALERTS);
-    }
+    // ---------------------------------------------------------------------
+    // Public API used by ChildMedLogPresenter + InventoryPresenter
+    // ---------------------------------------------------------------------
 
     /**
-     * Called after ANY dose is logged.
-     * Decrements dosesRemaining, updates totalActuations,
-     * and creates an alert if inventory is low (<=20%) or expired.
+     * Update inventory after a dose.
      *
-     * @param medicineType "rescue" or "controller"
+     * Behaviour:
+     *  - If child.hasOwnEmail == true OR field is missing:
+     *      → SKIP inventory checks entirely, just callback success.
+     *  - If child.hasOwnEmail == false:
+     *      → Require an inventory doc children/{childUid}/inventory/{medicineType}
+     *        and decrement dosesRemaining by doseCount (if > 0).
+     *
+     * If doseCount == 0, this acts like a "refresh" read for InventoryPresenter.
      */
     public void updateInventoryAfterDose(
             String childUid,
-            String medicineType,
+            String medicineType,   // "rescue" or "controller"
             long doseCount,
             InventoryCallback callback
     ) {
-        // Find the first inventory document for this medicine type
-        inventoryRef(childUid)
-                .whereEqualTo("type", medicineType)
-                .limit(1)
+        // 1) Check child.hasOwnEmail
+        db.collection("children")
+                .document(childUid)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (querySnapshot.isEmpty()) {
-                        if (callback != null) {
-                            callback.onError(new IllegalStateException(
-                                    "No inventory item found for type: " + medicineType));
-                        }
-                        return;
-                    }
+                .addOnSuccessListener(childSnap -> handleChildDoc(
+                        childUid,
+                        medicineType,
+                        doseCount,
+                        childSnap,
+                        callback
+                ))
+                .addOnFailureListener(callback::onError);
+    }
 
-                    DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
-                    InventoryItem item = doc.toObject(InventoryItem.class);
-                    if (item == null) {
-                        if (callback != null) {
-                            callback.onError(new IllegalStateException(
-                                    "Failed to deserialize InventoryItem"));
-                        }
-                        return;
-                    }
+    // ---------------------------------------------------------------------
+    // Internal helpers
+    // ---------------------------------------------------------------------
 
-                    // --- Update dosesRemaining & totalActuations ---
-                    long remaining = item.getDosesRemaining() == null
-                            ? 0L
-                            : item.getDosesRemaining();
+    private void handleChildDoc(
+            String childUid,
+            String medicineType,
+            long doseCount,
+            DocumentSnapshot childSnap,
+            InventoryCallback callback
+    ) {
+        // Default behaviour if field is missing: treat as standalone child
+        Boolean hasOwnEmail = childSnap.getBoolean("hasOwnEmail");
 
-                    long capacity = item.getTotalActuations() == null
-                            ? 0L
-                            : item.getTotalActuations();
+        // Standalone child → NO parent-managed inventory → skip check
+        if (hasOwnEmail == null || hasOwnEmail) {
+            // We just say "success, no inventory change".
+            callback.onSuccess(null, null);
+            return;
+        }
 
-                    // Don’t go below 0
-                    long newRemaining = Math.max(0L, remaining - doseCount);
-                    item.setDosesRemaining(newRemaining);
+        // Child under a parent → enforce inventory
+        DocumentReference invRef = db.collection("children")
+                .document(childUid)
+                .collection("inventory")
+                .document(medicineType);
 
-                    long newTotalActuations = capacity + doseCount;
-                    item.setTotalActuations(newTotalActuations);
+        invRef.get()
+                .addOnSuccessListener(invSnap -> handleInventoryDoc(
+                        invRef,
+                        invSnap,
+                        doseCount,
+                        callback
+                ))
+                .addOnFailureListener(callback::onError);
+    }
 
-                    // --- Low canister check (<=20% of capacity) ---
-                    boolean isLow = false;
-                    if (capacity > 0) {
-                        long lowThreshold = (long) Math.ceil(capacity * 0.2);
-                        isLow = newRemaining <= lowThreshold;
-                    }
+    private void handleInventoryDoc(
+            DocumentReference invRef,
+            DocumentSnapshot invSnap,
+            long doseCount,
+            InventoryCallback callback
+    ) {
+        if (!invSnap.exists()) {
+            callback.onError(
+                    new IllegalStateException("No inventory item found for this medicine type.")
+            );
+            return;
+        }
 
-                    // --- Expired check ---
-                    boolean isExpired = false;
-                    if (item.getExpirationDate() != null) {
-                        Date expiry = item.getExpirationDate().toDate();
-                        isExpired = expiry.before(new Date());
-                    }
+        // If doseCount == 0, we just return the current item (refresh use case)
+        Long currentRemaining = invSnap.getLong("dosesRemaining");
+        long remaining = currentRemaining != null ? currentRemaining : 0L;
 
-                    boolean needsInventoryAlert = isLow || isExpired;
+        if (doseCount <= 0) {
+            InventoryItem item = invSnap.toObject(InventoryItem.class);
+            callback.onSuccess(item, null);
+            return;
+        }
 
-                    Alert alert = null;
-                    if (needsInventoryAlert) {
-                        alert = new Alert(
-                                Timestamp.now(),
-                                false, // rapidRescueRepeats
-                                false, // redZoneDay
-                                false, // triageEscalation
-                                false, // worseAfterDose
-                                true   // inventoryLowOrExpired
-                        );
-                    }
+        long newRemaining = Math.max(0, remaining - doseCount);
 
-                    Alert finalAlert = alert;
-                    InventoryItem finalItem = item;
-                    DocumentReference docRef = doc.getReference();
-
-                    // Save updated inventory item
-                    docRef.set(item)
-                            .addOnSuccessListener(unused -> {
-                                if (finalAlert != null) {
-                                    // Also write an alert document
-                                    alertsRef(childUid)
-                                            .add(finalAlert)
-                                            .addOnSuccessListener(alertRef -> {
-                                                if (callback != null) {
-                                                    callback.onSuccess(finalItem, finalAlert);
-                                                }
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                if (callback != null) callback.onError(e);
-                                            });
-                                } else {
-                                    if (callback != null) {
-                                        callback.onSuccess(finalItem, null);
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(e -> {
-                                if (callback != null) callback.onError(e);
-                            });
-
+        invRef.update("dosesRemaining", newRemaining)
+                .addOnSuccessListener(unused -> {
+                    InventoryItem item = invSnap.toObject(InventoryItem.class);
+                    // We don’t call any setters on InventoryItem to avoid
+                    // depending on its exact fields; UI can re-read if needed.
+                    callback.onSuccess(item, null);
                 })
-                .addOnFailureListener(e -> {
-                    if (callback != null) callback.onError(e);
-                });
+                .addOnFailureListener(callback::onError);
     }
 }

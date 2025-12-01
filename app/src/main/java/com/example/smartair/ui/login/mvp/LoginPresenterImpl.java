@@ -26,15 +26,23 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
     public void onLoginClicked() {
         if (view == null) return;
 
+        // CHILD-UNDER-PARENT FLOW (child screen + switch ON)
         if (view.isChildMode() && view.isChildUnderParentMode()) {
             handleChildUnderParentLogin();
         } else {
+            // All other flows: parent / provider / independent child
             handleEmailPasswordLogin();
         }
     }
 
     /**
      * Handles parent, provider, and independent-child login.
+     * IMPORTANT:
+     *  - If we're on the CHILD login screen (isChildMode() == true)
+     *    and NOT in "child-under-parent" mode, we will ONLY allow
+     *    RoleType.CHILD to proceed. If the account is actually a
+     *    PARENT or PROVIDER, we show an error instead of navigating
+     *    to their home screens from the child UI.
      */
     private void handleEmailPasswordLogin() {
         final String email = view.getEmail();
@@ -64,16 +72,48 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
                 if (view == null) return;
                 view.showLoading(false);
 
+                // If NOT onboarded → send them to onboarding for their role
                 if (!onboarded) {
                     view.navigateToOnboarding(role.name().toLowerCase());
                     return;
                 }
 
+                // -----------------------------
+                // CHILD LOGIN SCREEN BEHAVIOUR
+                // -----------------------------
+                if (view.isChildMode()) {
+                    // This is the child login screen (independent child mode),
+                    // so we ONLY allow CHILD accounts through.
+                    if (role == RoleType.CHILD) {
+                        view.navigateToChildHome(uid);
+                    } else if (role == RoleType.PARENT) {
+                        view.showGenericError(
+                                "This email belongs to a parent account. " +
+                                        "Please use the Parent login screen."
+                        );
+                    } else if (role == RoleType.PROVIDER) {
+                        view.showGenericError(
+                                "This email belongs to a provider account. " +
+                                        "Please use the Provider login screen."
+                        );
+                    }
+                    return;
+                }
+
+                // -----------------------------
+                // NON-CHILD SCREENS (parent/provider login UIs)
+                // -----------------------------
                 switch (role) {
-                    case PARENT:   view.navigateToParentHome();   break;
-                    case PROVIDER: view.navigateToProviderHome(); break;
+                    case PARENT:
+                        view.navigateToParentHome();
+                        break;
+                    case PROVIDER:
+                        view.navigateToProviderHome();
+                        break;
                     case CHILD:
-                    default:       view.navigateToChildHome(uid); break;
+                    default:
+                        view.navigateToChildHome(uid);
+                        break;
                 }
             }
 
@@ -95,11 +135,20 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
 
     /**
      * Handles login when child logs in under a parent email.
+     *
+     * UI:
+     *  - Screen: ChildLoginActivity
+     *  - isChildMode()          == true
+     *  - isChildUnderParentMode()== true (switch ON)
+     *
+     * Back-end:
+     *  - AuthService.loginChildUnderParent(...)
+     *    internally finds the child alias email and signs in as THAT child.
      */
     private void handleChildUnderParentLogin() {
-        final String childName = view.getChildName();
+        final String childName   = view.getChildName();
         final String parentEmail = view.getParentEmailForChildMode();
-        final String password = view.getPassword();
+        final String password    = view.getPassword();
 
         boolean valid = true;
 
@@ -137,6 +186,7 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
                         if (!onboarded) {
                             view.navigateToOnboarding("child");
                         } else {
+                            // Always go to child home for this flow
                             view.navigateToChildHome(childUid);
                         }
                     }
@@ -155,7 +205,7 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
     public void onForgotPasswordClicked() {
         if (view == null) return;
 
-        // Child under parent flow → special logic
+        // CHILD-UNDER-PARENT RESET FLOW
         if (view.isChildMode() && view.isChildUnderParentMode()) {
             final String parentEmail = view.getParentEmailForChildMode();
             final String childName   = view.getChildName();
@@ -184,7 +234,6 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
                         public void onSuccess() {
                             if (view == null) return;
                             view.showLoading(false);
-                            // You can phrase this however you like
                             view.showPasswordResetSent(parentEmail);
                         }
 
@@ -199,7 +248,7 @@ public class LoginPresenterImpl implements LoginContract.Presenter {
             return;
         }
 
-        // Normal flow: parent / provider / independent child
+        // NORMAL RESET FLOW (parent / provider / independent child)
         String email = view.getEmail();
 
         if (!InputValidator.isValidEmail(email)) {

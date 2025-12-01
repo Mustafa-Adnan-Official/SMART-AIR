@@ -13,12 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
 import com.example.smartair.models.childcollections.AchievementSummary;
+import com.example.smartair.models.childcollections.StreakMasterBadge;
 import com.example.smartair.services.AchievementService;
 
 /**
  * Full-screen Achievements page for the child.
  *
- * Reached from: ChildHome "View full achievements" button.
+ * Reached from: ChildHome "See All Achievements" button.
  */
 public class ChildAchievementsActivity extends AppCompatActivity
         implements MotivationPresenter.View {
@@ -48,16 +49,16 @@ public class ChildAchievementsActivity extends AppCompatActivity
     private MotivationPresenter presenter;
     private String childUid;
 
-    // Simple hard-coded "unlocked" colour (blue-ish)
-    private static final int UNLOCKED_COLOR = Color.parseColor("#143C8F");
-    private static final int LOCKED_COLOR = Color.parseColor("#000000");
+    // Colours
+    private static final int UNLOCKED_COLOR = Color.parseColor("#143C8F"); // blue
+    private static final int LOCKED_COLOR   = Color.parseColor("#000000"); // black
+    private static final int ALERT_COLOR    = Color.parseColor("#D32F2F"); // red
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_child_achievements);
 
-        // Get child UID from Intent
         childUid = getIntent().getStringExtra("childUid");
         if (childUid == null) {
             Toast.makeText(this, "Missing child UID", Toast.LENGTH_SHORT).show();
@@ -105,25 +106,41 @@ public class ChildAchievementsActivity extends AppCompatActivity
 
     @Override
     public void showLoading() {
-        // Screen is simple, so no progress bar – you could disable cards here if you want.
+        // No spinner for now.
     }
 
     @Override
     public void hideLoading() {
-        // No-op for now.
+        // No-op.
     }
 
     @Override
     public void showAchievements(AchievementSummary summary) {
-        // 1) Perfect Controller Week badge
+        // --- Streak Master data from badge ---
+        StreakMasterBadge badge = summary.getStreakMasterBadge();
+        int currentStreak = 0;
+        int highestStreak = 0;
+
+        if (badge != null) {
+            currentStreak = badge.getCurrentStreakDays();
+            highestStreak = badge.getHighestStreakDays();
+        }
+
+        // 1) Perfect Controller Week: X / 7  (uses current streak, capped at 7)
+        int perfectWeekProgress = Math.min(currentStreak, 7);
+        String weekText = "Perfect Controller Week " + perfectWeekProgress + "/7";
+        textPerfectControllerTitle.setText(weekText);
+
+        boolean perfectWeekUnlocked =
+                summary.isPerfectControllerWeekBadgeEarned() || highestStreak >= 7;
+
         setCardUnlocked(
-                summary.isPerfectControllerWeekBadgeEarned(),
+                perfectWeekUnlocked,
                 iconPerfectController,
                 textPerfectControllerTitle
         );
 
-        // 2) Technique Master badge
-        //    (we’ll treat ANY of the HQ technique badges as unlocking this card)
+        // 2) Technique Master (unchanged)
         boolean techniqueUnlocked =
                 summary.isTenHQTechniqueSessionsBadgeEarned()
                         || summary.isThirtyHQTechniqueSessionsBadgeEarned()
@@ -136,17 +153,24 @@ public class ChildAchievementsActivity extends AppCompatActivity
                 textTechniqueMasterTitle
         );
 
-        // 3) Low Rescue Month badge
-        boolean lowRescueUnlocked = summary.getLowRescueMonthBadgeCount() > 0;
-        setCardUnlocked(
-                lowRescueUnlocked,
-                iconLowRescue,
-                textLowRescueTitle
-        );
+        // 3) Low Rescue Month:
+        // lowRescueMonthBadgeCount now stores "rescue days in last 30 days"
+        int rescueDaysLast30 = summary.getLowRescueMonthBadgeCount();
+        if (rescueDaysLast30 <= 4) {
+            // Good month => blue
+            setCardUnlocked(
+                    true,
+                    iconLowRescue,
+                    textLowRescueTitle
+            );
+        } else {
+            // Too many rescue days => turn red
+            textLowRescueTitle.setTextColor(Color.RED);
+            iconLowRescue.setColorFilter(Color.RED);
+        }
 
-        // 4) Streak Master
-        boolean streakUnlocked = summary.getStreakMasterBadge() != null
-                && summary.getStreakMasterBadge().isUnlocked();
+        // 4) Streak Master card
+        boolean streakUnlocked = highestStreak >= 1;
 
         setCardUnlocked(
                 streakUnlocked,
@@ -154,14 +178,8 @@ public class ChildAchievementsActivity extends AppCompatActivity
                 textStreakMasterTitle
         );
 
-        // If you have streak numbers on StreakMasterBadge, you can show them here.
-        if (summary.getStreakMasterBadge() != null) {
-            int current = summary.getStreakMasterBadge().getCurrentStreakDays();
-            int highest = summary.getStreakMasterBadge().getHighestStreakDays();
-
-            textStreakCurrent.setText("Current streak: " + current + " days");
-            textStreakHighest.setText("Highest streak: " + highest + " days");
-        }
+        textStreakCurrent.setText("Current streak: " + currentStreak + " days");
+        textStreakHighest.setText("Highest streak: " + highestStreak + " days");
     }
 
     @Override
@@ -169,7 +187,7 @@ public class ChildAchievementsActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // ---------------- Helper ----------------
+    // ---------------- Helpers ----------------
 
     private void setCardUnlocked(boolean unlocked,
                                  ImageView icon,
@@ -180,6 +198,23 @@ public class ChildAchievementsActivity extends AppCompatActivity
         } else {
             title.setTextColor(LOCKED_COLOR);
             icon.clearColorFilter();
+        }
+    }
+
+    /**
+     * Low rescue month:
+     *  - <=4 rescue days in last 30 days  -> BLUE (good)
+     *  - >4 rescue days                  -> RED (warning)
+     */
+    private void setLowRescueCardState(int rescueDaysLast30) {
+        boolean healthy = rescueDaysLast30 <= 4;
+
+        if (healthy) {
+            textLowRescueTitle.setTextColor(UNLOCKED_COLOR);
+            iconLowRescue.setColorFilter(UNLOCKED_COLOR);
+        } else {
+            textLowRescueTitle.setTextColor(ALERT_COLOR);
+            iconLowRescue.setColorFilter(ALERT_COLOR);
         }
     }
 }

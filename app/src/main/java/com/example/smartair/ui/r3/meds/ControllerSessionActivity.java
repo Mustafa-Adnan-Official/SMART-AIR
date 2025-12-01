@@ -2,7 +2,6 @@ package com.example.smartair.ui.r3.meds;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.smartair.R;
 import com.example.smartair.models.childcollections.MedLog;
 import com.example.smartair.services.AchievementService;
+import com.example.smartair.services.AuthService;
 import com.example.smartair.services.InventoryService;
 import com.example.smartair.services.MedLogService;
 
@@ -46,15 +46,15 @@ public class ControllerSessionActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.controller_session);
 
-        // Get childUid from Intent
-        childUid = getIntent().getStringExtra("childUid");
-        if (childUid == null) {
+        // Get childUid from AuthService
+        AuthService authService = new AuthService();
+        childUid = authService.getCurrentUserUid();
+        if (childUid == null || childUid.trim().isEmpty()) {
             Toast.makeText(this, "Missing childUid", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Init presenter & services
         presenter = new ChildMedLogPresenter(
                 this,
                 new MedLogService(),
@@ -85,13 +85,27 @@ public class ControllerSessionActivity extends AppCompatActivity
         btnLogNo = findViewById(R.id.btn_log_no);
 
         btnDoseValue.setText(String.valueOf(doseCount));
+
+        clearBeforeFeelingSelection();
+        clearAfterFeelingSelection();
     }
 
     private void setupListeners() {
         // Before feeling
-        btnGood.setOnClickListener(v -> feelingBefore = "good");
-        btnOkay.setOnClickListener(v -> feelingBefore = "okay");
-        btnBad.setOnClickListener(v -> feelingBefore = "bad");
+        btnGood.setOnClickListener(v -> {
+            feelingBefore = "good";
+            setBeforeFeelingSelection(btnGood);
+        });
+
+        btnOkay.setOnClickListener(v -> {
+            feelingBefore = "okay";
+            setBeforeFeelingSelection(btnOkay);
+        });
+
+        btnBad.setOnClickListener(v -> {
+            feelingBefore = "bad";
+            setBeforeFeelingSelection(btnBad);
+        });
 
         // Dose counter
         btnDosePlus.setOnClickListener(v -> {
@@ -108,21 +122,62 @@ public class ControllerSessionActivity extends AppCompatActivity
 
         // Technique trainer button
         btnOpenTrainer.setOnClickListener(v -> {
-            techniqueTrainerUsed = true;  // mark that the trainer was viewed
-
-            Intent i = new Intent(this, com.example.smartair.ui.r3.technique.TechniqueTrainerActivity.class);
+            techniqueTrainerUsed = true;
+            Intent i = new Intent(
+                    ControllerSessionActivity.this,
+                    com.example.smartair.ui.r3.technique.TechniqueTrainerActivity.class
+            );
+            i.putExtra("childUid", childUid);
             startActivity(i);
         });
 
-
         // After feeling
-        btnNowBetter.setOnClickListener(v -> feelingAfter = "better");
-        btnNowSame.setOnClickListener(v -> feelingAfter = "same");
-        btnNowWorse.setOnClickListener(v -> feelingAfter = "worse");
+        btnNowBetter.setOnClickListener(v -> {
+            feelingAfter = "better";
+            setAfterFeelingSelection(btnNowBetter);
+        });
+
+        btnNowSame.setOnClickListener(v -> {
+            feelingAfter = "same";
+            setAfterFeelingSelection(btnNowSame);
+        });
+
+        btnNowWorse.setOnClickListener(v -> {
+            feelingAfter = "worse";
+            setAfterFeelingSelection(btnNowWorse);
+        });
 
         // Log session?
         btnLogYes.setOnClickListener(v -> onLogSessionClicked());
-        btnLogNo.setOnClickListener(v -> finish()); // just close screen
+        btnLogNo.setOnClickListener(v -> finish());
+    }
+
+    // --- Selection helpers for "before" buttons ---
+
+    private void clearBeforeFeelingSelection() {
+        btnGood.setSelected(false);
+        btnOkay.setSelected(false);
+        btnBad.setSelected(false);
+    }
+
+    private void setBeforeFeelingSelection(Button selected) {
+        btnGood.setSelected(selected == btnGood);
+        btnOkay.setSelected(selected == btnOkay);
+        btnBad.setSelected(selected == btnBad);
+    }
+
+    // --- Selection helpers for "after" buttons ---
+
+    private void clearAfterFeelingSelection() {
+        btnNowBetter.setSelected(false);
+        btnNowSame.setSelected(false);
+        btnNowWorse.setSelected(false);
+    }
+
+    private void setAfterFeelingSelection(Button selected) {
+        btnNowBetter.setSelected(selected == btnNowBetter);
+        btnNowSame.setSelected(selected == btnNowSame);
+        btnNowWorse.setSelected(selected == btnNowWorse);
     }
 
     private void onLogSessionClicked() {
@@ -131,7 +186,6 @@ public class ControllerSessionActivity extends AppCompatActivity
             return;
         }
 
-        // No PEF/symptoms on this screen yet; can extend later
         Long peakFlow = null;
         List<String> symptoms = Collections.emptyList();
 
@@ -169,6 +223,8 @@ public class ControllerSessionActivity extends AppCompatActivity
 
     @Override
     public void showError(String message) {
-        Toast.makeText(this, message != null ? message : "Something went wrong", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                message != null ? message : "Something went wrong",
+                Toast.LENGTH_SHORT).show();
     }
 }

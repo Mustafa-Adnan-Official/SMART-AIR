@@ -2,8 +2,8 @@ package com.example.smartair.ui.r3.meds;
 
 import androidx.annotation.Nullable;
 
-import com.example.smartair.models.InventoryAlert;
 import com.example.smartair.models.childcollections.AchievementSummary;
+import com.example.smartair.models.childcollections.Alert;
 import com.example.smartair.models.childcollections.InventoryItem;
 import com.example.smartair.models.childcollections.MedLog;
 import com.example.smartair.services.AchievementService;
@@ -14,7 +14,7 @@ import com.google.firebase.Timestamp;
 import java.util.List;
 
 /**
- * Presenter/logic for the "Log Medicine" screen.
+ * Presenter/logic for the "Log Medicine" screens (rescue & controller).
  * Talks to MedLogService + InventoryService + AchievementService.
  */
 public class ChildMedLogPresenter {
@@ -43,7 +43,7 @@ public class ChildMedLogPresenter {
         this.achievementService = achievementService;
     }
 
-    // --- PUBLIC API called by Activity ---
+    // --- RESCUE DOSE ---
 
     public void logRescueDose(
             String childUid,
@@ -74,7 +74,7 @@ public class ChildMedLogPresenter {
                                 doseCount,
                                 new InventoryService.InventoryCallback() {
                                     @Override
-                                    public void onSuccess(InventoryItem item, @Nullable InventoryAlert alert) {
+                                    public void onSuccess(InventoryItem item, @Nullable Alert alert) {
                                         // Update motivation (low-rescue month, etc.)
                                         achievementService.updateAfterRescueDose(
                                                 childUid,
@@ -113,6 +113,8 @@ public class ChildMedLogPresenter {
         );
     }
 
+    // --- CONTROLLER DOSE ---
+
     public void logControllerDose(
             String childUid,
             long doseCount,
@@ -143,7 +145,7 @@ public class ChildMedLogPresenter {
                                 doseCount,
                                 new InventoryService.InventoryCallback() {
                                     @Override
-                                    public void onSuccess(InventoryItem item, @Nullable InventoryAlert alert) {
+                                    public void onSuccess(InventoryItem item, @Nullable Alert alert) {
                                         achievementService.updateAfterControllerDose(
                                                 childUid,
                                                 Timestamp.now(),
