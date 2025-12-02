@@ -109,6 +109,7 @@ public class ChildHomeActivity extends AppCompatActivity {
 
     // ---------------- Binding & Clicks ----------------
 
+    FirebaseUser user;
     private void bindViews() {
         // Fetch Child Name
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

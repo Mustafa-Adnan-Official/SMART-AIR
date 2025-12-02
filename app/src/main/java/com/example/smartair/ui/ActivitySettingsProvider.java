@@ -34,9 +34,9 @@ public class ActivitySettingsProvider extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings_provider);
+        setContentView(R.layout.manage_activity_providers_for_parent);
 
-        providerRecyclerView = findViewById(R.id.providers_recycler_view);
+        providerRecyclerView = findViewById(R.id.providersRecyclerView);
         providerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // loadProvidersData();

@@ -52,7 +52,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
     @Override
     public ChildViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.parent_settings_child_card, parent, false);
+                .inflate(R.layout.manage_item_child_row_for_parent, parent, false);
         return new ChildViewHolder(itemView);
     }
 
@@ -151,7 +151,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.ChildV
 
     private void showEditPBDialog(Context context, Child currentChild) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.dialog_new_pb, null);
+        View dialogView = inflater.inflate(R.layout.manage_dialog_new_pb, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);

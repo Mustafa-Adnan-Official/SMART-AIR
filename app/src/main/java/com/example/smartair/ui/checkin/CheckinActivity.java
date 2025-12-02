@@ -1,4 +1,4 @@
-package com.example.smartair.ui;
+package com.example.smartair.ui.checkin;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -10,6 +10,7 @@ import com.example.smartair.R;
 import com.example.smartair.callbacks.ResultCallback;
 import com.example.smartair.models.users.Child;
 import com.example.smartair.repositories.ChildRepository;
+import com.example.smartair.ui.ChildrenAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,7 +27,7 @@ public class CheckinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings_child);
+        setContentView(R.layout.manage_activity_children_for_parent);
 
         childrenRecyclerView = findViewById(R.id.children_recycler_view);
 

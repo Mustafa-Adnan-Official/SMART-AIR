@@ -84,7 +84,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     @Override
     public ProviderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.provider_card, parent, false);
+                .inflate(R.layout.manage_item_provider_row_for_parent, parent, false);
         Toast.makeText(itemView.getContext(), "DEBUG: onCreateViewHolder (Inflating Card)", Toast.LENGTH_SHORT).show();
         return new ProviderViewHolder(itemView);
     }
@@ -122,7 +122,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
                     final String currentChildUid = child.getChildUid();
 
                     // 3. SAFEGUARD: Check if the child row layout can be inflated
-                    View childView = LayoutInflater.from(context).inflate(R.layout.provider_child_row, holder.childModulesContainer, false);
+                    View childView = LayoutInflater.from(context).inflate(R.layout.manage_item_child_row_for_provider_row, holder.childModulesContainer, false);
 
                     if (childView != null) {
                         TextView childName = childView.findViewById(R.id.childName);
@@ -186,7 +186,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     private void showHistorySymptoms(Context context, Provider provider) {
         Toast.makeText(context, "DEBUG: Starting showHistorySymptoms", Toast.LENGTH_SHORT).show(); // 6. DIALOG START
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_symptoms, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_symptoms, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -315,7 +315,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     private void showTriggersSymptoms(Context context, Provider provider) {
         Toast.makeText(context, "DEBUG: Starting showTriggersSymptoms", Toast.LENGTH_SHORT).show(); // 12. DIALOG START
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_triggers, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_triggers, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -492,7 +492,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     private void showManageDataDialog(Context context, Provider provider) {
         Toast.makeText(context, "DEBUG: Starting showManageDataDialog", Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_manage_data, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_data, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -552,7 +552,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         Toast.makeText(context, "DEBUG: Starting showSelectDurationDialog (isHistory: " + isHistory + ")", Toast.LENGTH_SHORT).show();
         final int[] duration = {0};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_duration, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_duration, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 

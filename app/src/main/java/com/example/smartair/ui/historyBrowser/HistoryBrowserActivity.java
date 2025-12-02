@@ -13,7 +13,7 @@ public class HistoryBrowserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history_browser);
+        setContentView(R.layout.history_activity_browser);
 
         if (savedInstanceState == null) {
             String childUid = getIntent().getStringExtra("childUid");

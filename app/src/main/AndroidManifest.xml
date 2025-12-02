@@ -42,6 +42,10 @@
         <activity android:name=".ui.HomeActivities.ChildHomeActivity" />
         <activity android:name=".ui.HomeActivities.ProviderHomeActivity" />
 
+        <!-- Settings / Management -->
+        <activity android:name=".ui.ActivitySettingsChild" />
+        <activity android:name=".ui.ActivitySettingsProvider" />
+
         <!-- Onboarding -->
         <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
         <activity android:name=".ui.onboarding.ParentOnboardingActivity" />

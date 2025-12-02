@@ -53,7 +53,7 @@ public class DailyCheckinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_daily_checkin);
+        setContentView(R.layout.checkin_activity);
 
         childRepository = new ChildRepository();
 

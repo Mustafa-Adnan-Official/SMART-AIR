@@ -93,7 +93,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         try {
-            return inflater.inflate(R.layout.fragment_parent_history_browser, container, false);
+            return inflater.inflate(R.layout.history_activity_browser, container, false);
         } catch (Exception e) {
             Log.e(TAG, "Error inflating layout", e);
             return null;
@@ -261,7 +261,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         allCheckedTriggers.clear();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_symptoms, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_symptoms, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -387,7 +387,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         if (context == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_triggers, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_triggers, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -572,7 +572,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_history_row, parent, false);
+                    .inflate(R.layout.history_item_parent_row, parent, false);
             return new ViewHolder(view);
         }
 
@@ -616,7 +616,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
-                View dialogView = inflater.inflate(R.layout.dialog_history_day_details, null);
+                View dialogView = inflater.inflate(R.layout.history_dialog_day_details, null);
                 builder.setView(dialogView);
                 
                 // Bind views

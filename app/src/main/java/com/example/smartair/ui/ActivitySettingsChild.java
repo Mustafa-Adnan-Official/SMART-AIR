@@ -26,7 +26,7 @@ public class ActivitySettingsChild extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings_child);
+        setContentView(R.layout.manage_activity_children_for_parent);
 
         childrenRecyclerView = findViewById(R.id.children_recycler_view);
 
