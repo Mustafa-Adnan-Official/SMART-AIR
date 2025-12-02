@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#142144"
-            android:src="@drawable/actual_logo"
+            android:src="@drawable/smartair_official2"
             android:scaleType="centerCrop"
 />
 

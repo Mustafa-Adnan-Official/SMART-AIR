@@ -2,6 +2,7 @@ package com.example.smartair.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartair.R;
 import com.example.smartair.callbacks.ResultCallback;
+import com.example.smartair.models.childcollections.Alert;
+import com.example.smartair.models.childcollections.Incident;
+import com.example.smartair.models.childcollections.InventoryItem;
+import com.example.smartair.models.childcollections.ProviderAccess;
 import com.example.smartair.models.users.Child;
 import com.example.smartair.models.users.Parent;
 import com.example.smartair.models.users.Provider;
@@ -24,8 +30,11 @@ import com.example.smartair.repositories.ChildRepository;
 import com.example.smartair.repositories.ProviderRepository;
 import com.example.smartair.services.CheckinService;
 import com.example.smartair.services.HistoryService;
+import com.example.smartair.services.InventoryService;
 import com.example.smartair.callbacks.StringListCallback;
 import com.example.smartair.models.childcollections.HistoryEntry;
+import com.example.smartair.services.IncidentService;
+import com.example.smartair.services.ReportService;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,6 +49,11 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     // List of Providers to display
     private final List<Provider> providersList;
     private final Context context;
+    private final HistoryService historyService;
+    private final IncidentService incidentService;
+    private final ReportService reportService;
+    private final InventoryService inventoryService; // <--- ADD THIS
+    private ProviderAccess providerAccess;
 
     private final ProviderRepository providerRepository;
     private final ChildRepository childRepository;
@@ -57,6 +71,12 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         this.providerRepository = new ProviderRepository();
         this.parent = parent;
         this.childRepository = new ChildRepository();
+
+        this.historyService = new HistoryService();
+        this.incidentService = new IncidentService();
+        this.reportService = new ReportService();
+        this.inventoryService = new InventoryService(); // <--- Initialize here
+
         Toast.makeText(context, "DEBUG: Adapter Initialized", Toast.LENGTH_SHORT).show();
     }
 
@@ -91,6 +111,8 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
     @Override
     public void onBindViewHolder(@NonNull ProviderViewHolder holder, int position) {
+
+        providerAccess = new ProviderAccess();
         Provider currentProvider = providersList.get(position);
 
         // 1. SAFEGUARD: Ensure TextView exists before calling setText()
@@ -202,7 +224,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         // CRITICAL CHECK for NullPointerException
         if (closeButton == null || nextButton == null || toggleCoughing == null) {
             Toast.makeText(context, "ERROR: Missing view ID in select_symptoms.xml!", Toast.LENGTH_LONG).show();
-            // To prevent crashing on setOnClickListener, you can return here.
             return;
         }
 
@@ -333,7 +354,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         Button closeButton = dialogView.findViewById(R.id.btnBack);
         Button nextButton = dialogView.findViewById(R.id.btnNext);
 
-        // CRITICAL CHECK for NullPointerException
         if (closeButton == null || nextButton == null || toggleDustMite == null) {
             Toast.makeText(context, "ERROR: Missing view ID in select_triggers.xml!", Toast.LENGTH_LONG).show();
             return;
@@ -496,16 +516,13 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
-        // FIX: Cast to Button, not Switch. XML defines it as <Button>.
-        Button closeButton = dialogView.findViewById(R.id.dialog_close_button);
-        Button nextButton = dialogView.findViewById(R.id.dialog_next_button);
+        Button closeButton = dialogView.findViewById(R.id.btnExit);
+        Button nextButton = dialogView.findViewById(R.id.btnNext);
 
-        // CRITICAL CHECK for NullPointerException
         if (closeButton == null || nextButton == null) {
             Toast.makeText(context, "ERROR: Missing button ID in dialog_manage_data.xml!", Toast.LENGTH_LONG).show();
             return;
         }
-
         SwitchCompat toggleRescue = dialogView.findViewById(R.id.toggle_rescuelog_data);
         SwitchCompat toggleSymptoms = dialogView.findViewById(R.id.toggle_symptoms_tracking);
         SwitchCompat toggleTriggers = dialogView.findViewById(R.id.toggle_triggers_tracking);
@@ -513,29 +530,30 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         SwitchCompat toggleTriageIncident = dialogView.findViewById(R.id.toggle_triageincidents_tracking);
         SwitchCompat toggleSummaryCharts = dialogView.findViewById(R.id.toggle_summarycharts_tracking);
 
+
         if (toggleRescue != null)
             toggleRescue.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeeRescueAttempts(isChecked);
             });
         if (toggleSymptoms != null)
             toggleSymptoms.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeeSymptoms(isChecked);
             });
         if (toggleTriggers != null)
             toggleTriggers.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeeTriggers(isChecked);
             });
         if (togglePeakFlow != null)
             togglePeakFlow.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeePeakFlow(isChecked);
             });
         if (toggleTriageIncident != null)
             toggleTriageIncident.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeeTriageIncidents(isChecked);
             });
         if (toggleSummaryCharts != null)
             toggleSummaryCharts.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                //TODO: Set Report Toggle
+                providerAccess.setCanSeeTrends(isChecked);
             });
 
         closeButton.setOnClickListener(v -> dialog.dismiss());
@@ -611,7 +629,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
                 sendHistory(provider, duration[0]);
             } else {
                 Toast.makeText(context, "DEBUG: Sending Realtime Report.", Toast.LENGTH_SHORT).show();
-                sendRealtimeReport(provider);
+                sendRealtimeReport(provider, duration[0]);
             }
             dialog.dismiss();
         });
@@ -657,24 +675,136 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         Toast.makeText(context, "DEBUG: Delete Dialog Shown", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendRealtimeReport(Provider currentProvider) {
-        Toast.makeText(context, "DEBUG: Running sendRealtimeReport logic", Toast.LENGTH_SHORT).show();
-        // Access map here to determine master switch state
+    private void sendRealtimeReport(Provider currentProvider, int duration) {
+        Toast.makeText(context, "DEBUG: Running sendRealtimeReport logic for " + duration + " months", Toast.LENGTH_SHORT).show();
+
+        // 1. Validate Duration and Calculate Date Range
+        if (duration <= 0 || duration > 6) {
+            Toast.makeText(context, "Error: Invalid duration selected for report.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        Date end = calendar.getTime();
+        calendar.add(Calendar.MONTH, -duration);
+        Date start = calendar.getTime();
+        String durationLabel = duration + " Months";
+
+        // Access map for the CURRENT provider being shared to
+        Map<String, ProviderAccess> accessToShare = new HashMap<>();
+        // providerAccess holds the toggled data permissions from showManageDataDialog
+        accessToShare.put(currentProvider.getProviderUid(), providerAccess);
+
         if (currentProvider.getChildren() != null) {
             for (Child child : currentProvider.getChildren()) {
                 String key = currentProvider.getProviderUid() + "_" + child.getChildUid();
-                Boolean hasAccess = providerChildAccessMap.getOrDefault(key, false);
+                Boolean hasMasterAccess = providerChildAccessMap.getOrDefault(key, false);
 
-                if (Boolean.TRUE.equals(hasAccess)) {
-                    // Proceed with report generation for this child with master switch = TRUE
-                    // TODO: Add report logic
+                if (Boolean.TRUE.equals(hasMasterAccess)) {
+                    final String childUid = child.getChildUid();
+                    final Child currentChild = child;
+
+                    Log.d("ProvidersAdapter", "Starting async fetch for child: " + child.getName() + " (" + childUid + ")");
+
+                    // --- CHAINED ASYNCHRONOUS LOGIC (History -> Incidents -> Inventory -> Report) ---
+
+                    // 2. Fetch History Entries (MedLogs & Checkins)
+                    historyService.getAllHistoryLogs(childUid, start, end, new ResultCallback<List<HistoryEntry>>() {
+                        @Override
+                        public void onSuccess(List<HistoryEntry> historyEntries) {
+                            Log.d("ProvidersAdapter", "History entries fetched: " + (historyEntries != null ? historyEntries.size() : "null"));
+
+                            // 3. On History Success, Fetch Incidents
+                            incidentService.getAllIncidents(childUid, start, end, new ResultCallback<List<Incident>>() {
+                                @Override
+                                public void onSuccess(List<Incident> incidents) {
+                                    Log.d("ProvidersAdapter", "Incidents fetched: " + (incidents != null ? incidents.size() : "null"));
+
+                                    // 4. Fetch Inventory (Controller)
+                                    inventoryService.updateInventoryAfterDose(childUid, "controller", 0, new InventoryService.InventoryCallback() {
+                                        @Override
+                                        public void onSuccess(@Nullable InventoryItem inventoryItem, @Nullable Alert alert) {
+                                            Log.d("ProvidersAdapter", "Inventory fetched: " + (inventoryItem != null ? "Found" : "Null/Standalone"));
+                                            
+                                            // Fallback to placeholder if null (standalone child or missing data)
+                                            InventoryItem finalInventory = inventoryItem != null ? inventoryItem : new InventoryItem();
+
+                                            try {
+                                                // 5. Generate and Send Report
+                                                String reportDocumentId = reportService.generateReport(
+                                                        childUid,
+                                                        null, // ChildReport report (Metadata model, often populated by ReportService)
+                                                        durationLabel,
+                                                        start,
+                                                        end,
+                                                        accessToShare,
+                                                        currentChild,
+                                                        finalInventory,
+                                                        historyEntries,
+                                                        incidents
+                                                );
+                                                Log.d("ProvidersAdapter", "Report generated successfully: " + reportDocumentId);
+                                                Toast.makeText(context, "Realtime Report sent for " + currentChild.getName() + ": " + reportDocumentId, Toast.LENGTH_LONG).show();
+                                            } catch (Exception e) {
+                                                Log.e("ProvidersAdapter", "Error generating report", e);
+                                                e.printStackTrace();
+                                                Toast.makeText(context, "Error generating report: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            Log.e("ProvidersAdapter", "Error fetching inventory, proceeding with placeholder", e);
+                                            
+                                            // Proceed with placeholder on error
+                                            InventoryItem placeholderInventory = new InventoryItem();
+                                            
+                                            try {
+                                                String reportDocumentId = reportService.generateReport(
+                                                        childUid,
+                                                        null,
+                                                        durationLabel,
+                                                        start,
+                                                        end,
+                                                        accessToShare,
+                                                        currentChild,
+                                                        placeholderInventory,
+                                                        historyEntries,
+                                                        incidents
+                                                );
+                                                Log.d("ProvidersAdapter", "Report generated successfully (with placeholder inv): " + reportDocumentId);
+                                                Toast.makeText(context, "Realtime Report sent for " + currentChild.getName() + ": " + reportDocumentId, Toast.LENGTH_LONG).show();
+                                            } catch (Exception ex) {
+                                                Log.e("ProvidersAdapter", "Error generating report (fallback)", ex);
+                                                Toast.makeText(context, "Error generating report: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e("ProvidersAdapter", "Error retrieving incidents", e);
+                                    Toast.makeText(context, "Failed to retrieve incident data for " + currentChild.getName() + ".", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e("ProvidersAdapter", "Error retrieving history logs", e);
+                            Toast.makeText(context, "Failed to retrieve history data for " + currentChild.getName() + ".", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 } else {
-                    // Master switch = FALSE (Revoked)
-                    // TODO: Handle revoked access logic
+                    Log.d("ProvidersAdapter", "Access revoked for child: " + child.getName());
+                    Toast.makeText(context, "Access revoked for " + child.getName() + ". Report not sent.", Toast.LENGTH_SHORT).show();
                 }
             }
+        } else {
+            Log.d("ProvidersAdapter", "Provider has no children.");
         }
-        Toast.makeText(context, "Report sent (simulated)", Toast.LENGTH_SHORT).show();
     }
 
     private void sendHistory(Provider currentProvider, int duration) {
