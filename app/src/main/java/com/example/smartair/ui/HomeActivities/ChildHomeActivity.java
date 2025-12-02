@@ -428,7 +428,8 @@ public class ChildHomeActivity extends AppCompatActivity {
                         if (ts == null) continue;
                         if (!toDateKey(ts).equals(todayKey)) continue;
 
-                        Long pef = checkin.getPeakFlow();
+                        // Convert int to Long for comparison
+                        Long pef = (long) checkin.getPeakFlow();
                         if (pef == null) continue;
 
                         if (latestCheckinTime == null || ts.compareTo(latestCheckinTime) > 0) {
