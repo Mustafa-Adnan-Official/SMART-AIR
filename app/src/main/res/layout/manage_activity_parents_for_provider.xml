@@ -10,7 +10,7 @@
         android:id="@+id/header_image"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:src="@drawable/topofpage"
+        android:src="@drawable/smartair_official2"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

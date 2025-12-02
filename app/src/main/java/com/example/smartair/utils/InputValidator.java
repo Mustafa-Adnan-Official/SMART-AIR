@@ -2,6 +2,7 @@ package com.example.smartair.utils;
 
 import android.text.TextUtils;
 import android.util.Patterns;
+import java.util.regex.Pattern;
 
 /**
  * Purpose: Centralized input validation helpers used by signup/login presenters.
@@ -12,10 +13,16 @@ import android.util.Patterns;
  */
 public class InputValidator {
 
+    private static final Pattern EMAIL_FALLBACK_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+
     /** Valid email using Android's built-in email pattern. */
     public static boolean isValidEmail(String email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        if (pattern == null) { // Fallback for unit tests where Patterns.EMAIL_ADDRESS is null
+            pattern = EMAIL_FALLBACK_PATTERN;
+        }
         return !TextUtils.isEmpty(email)
-                && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+                && pattern.matcher(email).matches();
     }
 
     /**
