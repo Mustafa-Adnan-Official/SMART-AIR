@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.smartair.ui.checkin.DailyCheckinActivity;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -53,6 +54,8 @@ public class ChildHomeActivity extends AppCompatActivity {
     private Button btnRescueInhaler;
     private Button btnControllerMedicine;
     private Button btnAchievements;
+
+    private String childName;
 
     private TextView textChildName;
     private TextView textControllerStreak;
@@ -129,7 +132,23 @@ public class ChildHomeActivity extends AppCompatActivity {
 
     // ---------------- Binding & Clicks ----------------
 
+    FirebaseUser user;
     private void bindViews() {
+        // Fetch Child Name
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore.getInstance().collection("children")
+                    .document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            childName = documentSnapshot.getString("name");
+                        }
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(ChildHomeActivity.this, "Failed to load name", Toast.LENGTH_SHORT).show());
+        }
+
+        // Top bar
         btnSettings = findViewById(R.id.btn_settings);
         btnProfilePicture = findViewById(R.id.btn_profile_picture);
 
@@ -175,7 +194,11 @@ public class ChildHomeActivity extends AppCompatActivity {
         btnDailyCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Daily check-in flow already implemented by other team member.
+                Intent intent = new Intent(ChildHomeActivity.this, DailyCheckinActivity.class);
+                intent.putExtra("USER_ROLE", "Child");
+                intent.putExtra("USER_NAME", childName);
+                intent.putExtra("USER_ID", user.getUid());
+                startActivity(intent);
             }
         });
 

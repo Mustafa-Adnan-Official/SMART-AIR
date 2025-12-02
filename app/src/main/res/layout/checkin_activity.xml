@@ -10,7 +10,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,6 +77,7 @@
                     app:backgroundTint="@null"
                     android:fontFamily="@font/codec_pro_regular"
                     android:text="Okay"
+
 
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -169,7 +171,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom = "13dp"
+                >
 
                 <Button
                     android:id="@+id/symptom_activity_difficulty_button"
@@ -203,6 +207,27 @@
                     android:layout_margin="4dp"
                     />
             </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/symptoms_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Other: "
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:background = "@drawable/outline_button_bg"
+
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/symptoms_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLength="4"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/codec_pro_regular"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
@@ -346,17 +371,17 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/other_input_layout"
+                android:id="@+id/trigger_input_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Other: "
+                android:hint="Other Triggers: "
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:background = "@drawable/outline_button_bg"
 
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/other_edit_text"
+                    android:id="@+id/trigger_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"

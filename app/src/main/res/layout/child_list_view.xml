@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text = "Child 1"
+    android:background = "@drawable/rounded_managedata_background"
+    android:textColor = "@color/white"
+    android:id = "@+id/child_row"
+
+    >
+
+</Button>

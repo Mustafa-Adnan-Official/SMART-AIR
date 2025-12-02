@@ -2,6 +2,8 @@ package com.example.smartair.models.users;
 
 import com.google.firebase.Timestamp;
 
+import java.util.List;
+
 /**
  * Purpose: Represents a child document stored in /children/{childUid}.
  * Layer: Model
@@ -37,6 +39,8 @@ public class Child {
     private int controllerAdherence;  // optional summary field
     private Timestamp createdAt;
 
+    private List<String> providers;
+
     // --- R3 Achievements / Badges (for later, but you can leave these as plain fields if needed) ---
 
     private int currentControllerStreak;
@@ -70,7 +74,9 @@ public class Child {
                  int personalBest,
                  int controllerAdherence,
                  boolean onboarded,
-                 Timestamp createdAt) {
+                 Timestamp createdAt,
+                List<String> providers
+    ) {
 
         this.childUid = childUid;
         this.name = name;
@@ -84,6 +90,7 @@ public class Child {
         this.onboarded = onboarded;
         this.createdAt = createdAt;
         this.controllerAdherence = controllerAdherence;
+        this.providers = providers;
     }
 
     public String getChildUid() {
@@ -182,5 +189,13 @@ public class Child {
         this.controllerAdherence = newValue;
     }
 
-    // (You can keep/add getters & setters for the achievement fields as needed)
+
+    public List<String> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<String> providers) {
+        this.providers = providers;
+    }
+
 }

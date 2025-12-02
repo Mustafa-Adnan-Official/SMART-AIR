@@ -42,10 +42,19 @@
         <activity android:name=".ui.HomeActivities.ChildHomeActivity" />
         <activity android:name=".ui.HomeActivities.ProviderHomeActivity" />
 
+        <!-- Settings / Management -->
+        <activity android:name=".ui.ActivitySettingsChild" />
+        <activity android:name=".ui.ActivitySettingsProvider" />
+
         <!-- Onboarding -->
         <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
         <activity android:name=".ui.onboarding.ParentOnboardingActivity" />
         <activity android:name=".ui.onboarding.ProviderOnboardingActivity" />
+        
+        <activity android:name=".ui.checkin.DailyCheckinActivity" />
+        <activity android:name=".ui.checkin.DailyCheckinActivityParent" />
+        
+        <activity android:name=".ui.historyBrowser.HistoryBrowserActivity" />
 
         <!-- R3: Medicine logging -->
         <activity android:name=".ui.meds.RescueSessionActivity"
