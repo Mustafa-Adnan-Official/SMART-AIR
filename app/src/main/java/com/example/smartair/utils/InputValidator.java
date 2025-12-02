@@ -80,6 +80,6 @@ public class InputValidator {
         if (TextUtils.isEmpty(pac)) {
             return false;
         }
-        return pac.matches("PA-[A-Z0-9]{4}-[A-Z0-9]{2}");
+        return pac.matches("[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{2}");
     }
 }

@@ -1,27 +1,32 @@
 package com.example.smartair.ui.HomeActivities;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartair.R;
+import com.example.smartair.models.childcollections.Checkin;
 import com.example.smartair.models.childcollections.MedLog;
-import com.example.smartair.ui.r3.meds.ControllerSessionActivity;
-import com.example.smartair.ui.r3.meds.RescueSessionActivity;
-import com.example.smartair.ui.r3.motivation.ChildAchievementsActivity;
 import com.example.smartair.services.AuthService;
+import com.example.smartair.services.ZoneService;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.smartair.ui.checkin.DailyCheckinActivity;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,11 +37,11 @@ import java.util.Map;
  * Child home screen.
  *
  * Responsibilities:
- * - Greet child by name (from children/{childUid}.name).
- * - Show controller streak and technique streak (computed from medLogs).
+ * - Greet child by name.
+ * - Show today's PEF zone tile from latest PEF of today (medLogs or checkins).
+ * - Show controller streak and technique streak.
  * - Navigate to Rescue / Controller sessions and Achievements screen.
- * - If child is under a parent (hasOwnEmail == false), gate med logging
- *   based on inventory docs.
+ * - Gate med logging based on inventory for children under a parent.
  */
 public class ChildHomeActivity extends AppCompatActivity {
 
@@ -50,13 +55,23 @@ public class ChildHomeActivity extends AppCompatActivity {
     private Button btnControllerMedicine;
     private Button btnAchievements;
 
+    private String childName;
+
     private TextView textChildName;
     private TextView textControllerStreak;
     private TextView textTechniqueStreak;
 
+    // PEF zone banner
+    private LinearLayout bannerPefZone;
+    private TextView textPefValue;
+    private TextView textPefSubtitle;
+
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private String childUid;
+
+    // PB from children/{childUid}.personalBest
+    private int personalBest = 0;
 
     // If true  -> child has own email (no parent inventory, skip checks)
     // If false -> child is under parent (enforce inventory)
@@ -69,6 +84,14 @@ public class ChildHomeActivity extends AppCompatActivity {
         boolean techniqueUsed;
     }
 
+    // Colours for zone banner
+    private static final int COLOR_GREEN = Color.parseColor("#2E7D32");
+    private static final int COLOR_YELLOW = Color.parseColor("#F9A825");
+    private static final int COLOR_RED = Color.parseColor("#C62828");
+    private static final int COLOR_DEFAULT_BG = Color.parseColor("#143C8F"); // fallback
+    private static final int COLOR_TEXT_WHITE = Color.parseColor("#FFFFFF");
+    private static final int COLOR_TEXT_MUTED = Color.parseColor("#757575");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +103,6 @@ public class ChildHomeActivity extends AppCompatActivity {
         bindViews();
         setupClickListeners();
 
-        // Get currently logged-in Firebase user (child)
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "No logged-in child. Please sign in again.", Toast.LENGTH_SHORT).show();
@@ -90,7 +112,7 @@ public class ChildHomeActivity extends AppCompatActivity {
 
         childUid = user.getUid();
 
-        // Load name + hasOwnEmail and initial streaks
+        // Load name + PB + hasOwnEmail and initial streaks + zone
         loadChildNameAndFlags();
         loadStreaksForChild();
     }
@@ -98,15 +120,35 @@ public class ChildHomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // When coming back from logging meds / technique, recompute streaks
         if (childUid != null) {
+            // Reload name + hasOwnEmail + personalBest, then PEF zone
+            loadChildNameAndFlags();
+
+            // Reload streaks too
             loadStreaksForChild();
         }
     }
 
+
     // ---------------- Binding & Clicks ----------------
 
+    FirebaseUser user;
     private void bindViews() {
+        // Fetch Child Name
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore.getInstance().collection("children")
+                    .document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            childName = documentSnapshot.getString("name");
+                        }
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(ChildHomeActivity.this, "Failed to load name", Toast.LENGTH_SHORT).show());
+        }
+
+        // Top bar
         btnSettings = findViewById(R.id.btn_settings);
         btnProfilePicture = findViewById(R.id.btn_profile_picture);
 
@@ -120,6 +162,10 @@ public class ChildHomeActivity extends AppCompatActivity {
         textChildName = findViewById(R.id.text_child_name);
         textControllerStreak = findViewById(R.id.text_controller_streak);
         textTechniqueStreak = findViewById(R.id.text_technique_streak);
+
+        bannerPefZone = findViewById(R.id.banner_pef_zone);
+        textPefValue = findViewById(R.id.text_pef_value);
+        textPefSubtitle = findViewById(R.id.text_pef_subtitle);
     }
 
     private void setupClickListeners() {
@@ -148,14 +194,18 @@ public class ChildHomeActivity extends AppCompatActivity {
         btnDailyCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: open daily check-in flow
+                Intent intent = new Intent(ChildHomeActivity.this, DailyCheckinActivity.class);
+                intent.putExtra("USER_ROLE", "Child");
+                intent.putExtra("USER_NAME", childName);
+                intent.putExtra("USER_ID", user.getUid());
+                startActivity(intent);
             }
         });
 
         btnTroubleBreathing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: open emergency instructions
+                // Will open triage flow in R4 (Module C).
             }
         });
 
@@ -189,7 +239,7 @@ public class ChildHomeActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(
                         ChildHomeActivity.this,
-                        ChildAchievementsActivity.class
+                        com.example.smartair.ui.motivation.ChildAchievementsActivity.class
                 );
                 intent.putExtra("childUid", currentChildUid);
                 startActivity(intent);
@@ -197,12 +247,14 @@ public class ChildHomeActivity extends AppCompatActivity {
         });
     }
 
-    // ---------------- Load Child Name + hasOwnEmail ----------------
+    // ---------------- Load Child Name + flags + PB ----------------
 
     /**
      * Reads children/{childUid}:
-     *  - name → text_child_name
-     *  - hasOwnEmail → decides if inventory checks are enforced
+     *  - name
+     *  - hasOwnEmail
+     *  - personalBest
+     * Then triggers today's PEF zone load.
      */
     private void loadChildNameAndFlags() {
         if (childUid == null) return;
@@ -218,38 +270,42 @@ public class ChildHomeActivity extends AppCompatActivity {
                         }
 
                         Boolean own = snapshot.getBoolean("hasOwnEmail");
-                        // Default to true (standalone child) if field missing
                         hasOwnEmail = (own != null) ? own : Boolean.TRUE;
+
+                        Long pb = snapshot.getLong("personalBest");
+                        if (pb != null) {
+                            personalBest = pb.intValue();
+                        } else {
+                            personalBest = 0;
+                        }
                     } else {
                         hasOwnEmail = Boolean.TRUE;
+                        personalBest = 0;
                     }
+
+                    // Once PB is known, compute zone from today's PEF.
+                    loadTodaysPefZone();
                 })
                 .addOnFailureListener(e -> {
-                    // On failure, assume standalone child so we don't block them
                     hasOwnEmail = Boolean.TRUE;
+                    personalBest = 0;
+                    // Still try to load today's PEF; zone will fall back to N/A.
+                    loadTodaysPefZone();
                 });
     }
 
     // ---------------- Inventory gating ----------------
 
-    /**
-     * Handles click on Rescue / Controller button.
-     *
-     * If hasOwnEmail == true or not loaded yet → open screen directly.
-     * If hasOwnEmail == false → check inventory doc first.
-     */
     private void handleMedButtonClick(String medicineType) {
-        // Standalone child → no parent-managed inventory, skip check
         if (!Boolean.FALSE.equals(hasOwnEmail)) {
             openMedScreen(medicineType);
             return;
         }
 
-        // Child under parent → enforce inventory existence
         db.collection("children")
                 .document(childUid)
                 .collection("inventory")
-                .document(medicineType) // "rescue" or "controller"
+                .document(medicineType)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     if (!snapshot.exists()) {
@@ -287,23 +343,164 @@ public class ChildHomeActivity extends AppCompatActivity {
 
     private void openMedScreen(String medicineType) {
         if ("rescue".equals(medicineType)) {
-            Intent i = new Intent(ChildHomeActivity.this, RescueSessionActivity.class);
+            Intent i = new Intent(ChildHomeActivity.this, com.example.smartair.ui.meds.RescueSessionActivity.class);
             startActivity(i);
         } else {
-            Intent i = new Intent(ChildHomeActivity.this, ControllerSessionActivity.class);
+            Intent i = new Intent(ChildHomeActivity.this, com.example.smartair.ui.meds.ControllerSessionActivity.class);
             startActivity(i);
         }
     }
 
-    // ---------------- Streak Logic (unchanged) ----------------
+    // ---------------- Today's PEF Zone logic ----------------
 
     /**
-     * Loads medLogs for this child and computes:
-     * - Controller streak (days in a row with any controller dose)
-     * - Technique streak (days in a row with any controller dose that used technique trainer)
-     *
-     * Both streaks reset when a day is missed.
+     * Finds the latest PEF of today (from medLogs or checkins) and updates the banner.
+     * If there is no PEF today or PB is not set, shows N/A and keeps banner safe.
      */
+    private void loadTodaysPefZone() {
+        if (childUid == null) {
+            return;
+        }
+
+        if (personalBest <= 0) {
+            showPefZoneUnknown("N/A", "Set PB in parent app");
+            return;
+        }
+
+        final String todayKey = getTodayKey();
+
+        db.collection("children")
+                .document(childUid)
+                .collection("medLogs")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(20)
+                .get()
+                .addOnSuccessListener(medSnapshot -> {
+
+                    Long latestMedPef = null;
+                    Timestamp latestMedTime = null;
+
+                    for (QueryDocumentSnapshot doc : medSnapshot) {
+                        MedLog log = doc.toObject(MedLog.class);
+                        if (log == null) continue;
+
+                        Timestamp ts = log.getCreatedAt();
+                        if (ts == null) continue;
+                        if (!toDateKey(ts).equals(todayKey)) continue;
+
+                        Long pef = log.getPeakFlow();
+                        if (pef == null) continue;
+
+                        if (latestMedTime == null || ts.compareTo(latestMedTime) > 0) {
+                            latestMedTime = ts;
+                            latestMedPef = pef;
+                        }
+                    }
+
+                    // hand off to helper for checkins + final decision
+                    loadTodaysPefZoneFromCheckins(todayKey, latestMedPef, latestMedTime);
+                })
+                .addOnFailureListener(e -> {
+                    showPefZoneUnknown("N/A", "No PEF today");
+                });
+    }
+
+    private void loadTodaysPefZoneFromCheckins(String todayKey,
+                                               Long latestMedPef,
+                                               Timestamp latestMedTime) {
+
+        db.collection("children")
+                .document(childUid)
+                .collection("checkins")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(20)
+                .get()
+                .addOnSuccessListener(checkinSnapshot -> {
+
+                    Long latestCheckinPef = null;
+                    Timestamp latestCheckinTime = null;
+
+                    for (QueryDocumentSnapshot doc : checkinSnapshot) {
+                        Checkin checkin = doc.toObject(Checkin.class);
+                        if (checkin == null) continue;
+
+                        Timestamp ts = checkin.getCreatedAt();
+                        if (ts == null) continue;
+                        if (!toDateKey(ts).equals(todayKey)) continue;
+
+                        Long pef = checkin.getPeakFlow();
+                        if (pef == null) continue;
+
+                        if (latestCheckinTime == null || ts.compareTo(latestCheckinTime) > 0) {
+                            latestCheckinTime = ts;
+                            latestCheckinPef = pef;
+                        }
+                    }
+
+                    Long latestPef = null;
+                    if (latestMedTime != null &&
+                            (latestCheckinTime == null || latestMedTime.compareTo(latestCheckinTime) >= 0)) {
+                        latestPef = latestMedPef;
+                    } else if (latestCheckinTime != null) {
+                        latestPef = latestCheckinPef;
+                    }
+
+                    if (latestPef == null) {
+                        showPefZoneUnknown("N/A", "No PEF today");
+                        return;
+                    }
+
+                    ZoneService.ZoneResult result =
+                            ZoneService.computeZone(latestPef, personalBest);
+
+                    if (result.getZone() == ZoneService.PefZone.UNKNOWN) {
+                        showPefZoneUnknown("N/A", "No PEF today");
+                        return;
+                    }
+
+                    showPefZone(result);
+                })
+                .addOnFailureListener(e -> {
+                    showPefZoneUnknown("N/A", "No PEF today");
+                });
+    }
+
+    private void showPefZoneUnknown(String valueText, String subtitleText) {
+        textPefValue.setText(valueText);
+        textPefSubtitle.setText(subtitleText);
+        setPefZoneBackgroundColor(COLOR_DEFAULT_BG);
+        textPefValue.setTextColor(COLOR_TEXT_WHITE);
+        textPefSubtitle.setTextColor(COLOR_TEXT_MUTED);
+    }
+
+    private void showPefZone(ZoneService.ZoneResult result) {
+        int percent = result.getPercentOfPb();
+        textPefValue.setText(percent + "% PEF");
+        textPefSubtitle.setText("of PB");
+
+        int bgColor;
+        switch (result.getZone()) {
+            case GREEN:
+                bgColor = COLOR_GREEN;
+                break;
+            case YELLOW:
+                bgColor = COLOR_YELLOW;
+                break;
+            case RED:
+                bgColor = COLOR_RED;
+                break;
+            default:
+                bgColor = COLOR_DEFAULT_BG;
+                break;
+        }
+
+        setPefZoneBackgroundColor(bgColor);
+        textPefValue.setTextColor(COLOR_TEXT_WHITE);
+        textPefSubtitle.setTextColor(COLOR_TEXT_WHITE);
+    }
+
+    // ---------------- Streak Logic (unchanged) ----------------
+
     private void loadStreaksForChild() {
         if (childUid == null) return;
 
@@ -311,7 +508,7 @@ public class ChildHomeActivity extends AppCompatActivity {
                 .document(childUid)
                 .collection("medLogs")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                .limit(200) // plenty for recent streaks
+                .limit(200)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     Map<String, DayUsage> usageByDay = new HashMap<>();
@@ -323,7 +520,7 @@ public class ChildHomeActivity extends AppCompatActivity {
                         Timestamp ts = log.getCreatedAt();
                         if (ts == null) continue;
 
-                        String dateKey = toDateKey(ts); // e.g., "2025-11-30"
+                        String dateKey = toDateKey(ts);
                         DayUsage usage = usageByDay.get(dateKey);
                         if (usage == null) {
                             usage = new DayUsage();
@@ -357,30 +554,28 @@ public class ChildHomeActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Converts a Timestamp to a simple yyyy-MM-dd key in device local time.
-     */
     private String toDateKey(Timestamp ts) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(ts.toDate());
         int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1; // 0-based
+        int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         return String.format(Locale.US, "%04d-%02d-%02d", year, month, day);
     }
 
-    /**
-     * Computes a streak ending today.
-     *
-     * @param usageByDay map from "yyyy-MM-dd" -> DayUsage
-     * @param isController true  -> use controllerUsed
-     *                     false -> use techniqueUsed
-     */
+    private String getTodayKey() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return String.format(Locale.US, "%04d-%02d-%02d", year, month, day);
+    }
+
     private int computeStreak(Map<String, DayUsage> usageByDay, boolean isController) {
         int streak = 0;
 
-        Calendar cal = Calendar.getInstance(); // today
+        Calendar cal = Calendar.getInstance();
 
         while (true) {
             int year = cal.get(Calendar.YEAR);
@@ -398,15 +593,23 @@ public class ChildHomeActivity extends AppCompatActivity {
             }
 
             if (!used) {
-                // No logs on this day for the type we care about -> streak ends
                 break;
             }
 
             streak++;
-            // Move to previous day
             cal.add(Calendar.DAY_OF_MONTH, -1);
         }
 
         return streak;
+    }
+
+    private void setPefZoneBackgroundColor(int color) {
+        Drawable background = bannerPefZone.getBackground();
+        if (background instanceof GradientDrawable) {
+            ((GradientDrawable) background.mutate()).setColor(color);
+        } else {
+            // Fallback – should rarely happen
+            bannerPefZone.setBackgroundColor(color);
+        }
     }
 }

@@ -40,7 +40,7 @@ public class ParentSignupActivity extends AppCompatActivity implements ParentSig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.account_acitivity_parent_su);
+        setContentView(R.layout.account_activity_parent_su);
 
         inputName = findViewById(R.id.input_name);
         inputEmail = findViewById(R.id.input_email);
