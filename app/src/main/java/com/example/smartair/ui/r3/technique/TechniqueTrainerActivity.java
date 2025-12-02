@@ -32,7 +32,7 @@ public class TechniqueTrainerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.technique_trainer);
+        setContentView(R.layout.medicine_dialog_technique_trainer);
 
         // Get child UID from intent
         childUid = getIntent().getStringExtra("childUid");

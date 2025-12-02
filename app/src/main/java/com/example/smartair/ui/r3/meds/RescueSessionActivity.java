@@ -44,7 +44,7 @@ public class RescueSessionActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rescue_session);
+        setContentView(R.layout.medicine_dialog_rescue_session);
 
         // Get childUid from AuthService (current logged-in child)
         AuthService authService = new AuthService();
