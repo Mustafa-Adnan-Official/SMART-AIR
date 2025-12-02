@@ -1,4 +1,4 @@
-package com.example.smartair.ui.r3.technique;
+package com.example.smartair.ui.technique;
 
 /**
  * Pure UI-flow logic for the technique helper.

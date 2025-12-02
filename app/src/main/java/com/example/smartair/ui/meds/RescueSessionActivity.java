@@ -1,8 +1,9 @@
-package com.example.smartair.ui.r3.meds;
+package com.example.smartair.ui.meds;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,24 +20,23 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * R3: Child logs a CONTROLLER dose.
+ * R3: Child logs a RESCUE dose.
  * Uses ChildMedLogPresenter which talks to MedLogService + InventoryService + AchievementService.
  */
-public class ControllerSessionActivity extends AppCompatActivity
+public class RescueSessionActivity extends AppCompatActivity
         implements ChildMedLogPresenter.View {
 
     // UI
     private Button btnGood, btnOkay, btnBad;
     private Button btnDoseValue, btnDosePlus, btnDoseMinus;
     private Button btnNowBetter, btnNowSame, btnNowWorse;
-    private Button btnOpenTrainer;
-    private Button btnLogYes, btnLogNo;
+    private Button btnSaveRescue;
+    private EditText inputPEF;
 
     // State
     private long doseCount = 1;
     @Nullable private String feelingBefore = null; // "good" | "okay" | "bad"
     @Nullable private String feelingAfter = null;  // "better" | "same" | "worse"
-    private boolean techniqueTrainerUsed = false;
 
     private ChildMedLogPresenter presenter;
     private String childUid;
@@ -44,9 +44,9 @@ public class ControllerSessionActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.medicine_dialog_controller_session);
+        setContentView(R.layout.medicine_dialog_rescue_session);
 
-        // Get childUid from AuthService
+        // Get childUid from AuthService (current logged-in child)
         AuthService authService = new AuthService();
         childUid = authService.getCurrentUserUid();
         if (childUid == null || childUid.trim().isEmpty()) {
@@ -55,6 +55,7 @@ public class ControllerSessionActivity extends AppCompatActivity
             return;
         }
 
+        // Init presenter & services
         presenter = new ChildMedLogPresenter(
                 this,
                 new MedLogService(),
@@ -71,21 +72,21 @@ public class ControllerSessionActivity extends AppCompatActivity
         btnOkay = findViewById(R.id.btnOkay);
         btnBad = findViewById(R.id.btnBad);
 
-        btnDoseValue = findViewById(R.id.btn_dose_value);
-        btnDosePlus = findViewById(R.id.btn_dose_plus);
-        btnDoseMinus = findViewById(R.id.btn_dose_minus);
-
-        btnOpenTrainer = findViewById(R.id.btn_open_trainer);
+        btnDoseValue = findViewById(R.id.btnDoseValue);
+        btnDosePlus = findViewById(R.id.btnDosePlus);
+        btnDoseMinus = findViewById(R.id.btnDoseMinus);
 
         btnNowBetter = findViewById(R.id.btnNowBetter);
         btnNowSame = findViewById(R.id.btnNowSame);
         btnNowWorse = findViewById(R.id.btnNowWorse);
 
-        btnLogYes = findViewById(R.id.btn_log_yes);
-        btnLogNo = findViewById(R.id.btn_log_no);
+        inputPEF = findViewById(R.id.inputPEF);
+        btnSaveRescue = findViewById(R.id.btnSaveRescue);
 
+        // initial dose text
         btnDoseValue.setText(String.valueOf(doseCount));
 
+        // ensure all feeling buttons start unselected
         clearBeforeFeelingSelection();
         clearAfterFeelingSelection();
     }
@@ -107,7 +108,7 @@ public class ControllerSessionActivity extends AppCompatActivity
             setBeforeFeelingSelection(btnBad);
         });
 
-        // Dose counter
+        // Dose count
         btnDosePlus.setOnClickListener(v -> {
             doseCount++;
             btnDoseValue.setText(String.valueOf(doseCount));
@@ -118,17 +119,6 @@ public class ControllerSessionActivity extends AppCompatActivity
                 doseCount--;
                 btnDoseValue.setText(String.valueOf(doseCount));
             }
-        });
-
-        // Technique trainer button
-        btnOpenTrainer.setOnClickListener(v -> {
-            techniqueTrainerUsed = true;
-            Intent i = new Intent(
-                    ControllerSessionActivity.this,
-                    com.example.smartair.ui.r3.technique.TechniqueTrainerActivity.class
-            );
-            i.putExtra("childUid", childUid);
-            startActivity(i);
         });
 
         // After feeling
@@ -147,9 +137,8 @@ public class ControllerSessionActivity extends AppCompatActivity
             setAfterFeelingSelection(btnNowWorse);
         });
 
-        // Log session?
-        btnLogYes.setOnClickListener(v -> onLogSessionClicked());
-        btnLogNo.setOnClickListener(v -> finish());
+        // Save / log rescue dose
+        btnSaveRescue.setOnClickListener(v -> onSaveClicked());
     }
 
     // --- Selection helpers for "before" buttons ---
@@ -180,51 +169,58 @@ public class ControllerSessionActivity extends AppCompatActivity
         btnNowWorse.setSelected(selected == btnNowWorse);
     }
 
-    private void onLogSessionClicked() {
+    private void onSaveClicked() {
         if (feelingBefore == null || feelingAfter == null) {
             Toast.makeText(this, "Please select how you felt before and after.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Parse PEF if entered
         Long peakFlow = null;
+        String pefText = inputPEF.getText().toString().trim();
+        if (!TextUtils.isEmpty(pefText)) {
+            try {
+                peakFlow = Long.parseLong(pefText);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "PEF must be a number.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // No symptoms on this screen yet; you can plug them in later
         List<String> symptoms = Collections.emptyList();
 
-        presenter.logControllerDose(
+        presenter.logRescueDose(
                 childUid,
                 doseCount,
-                techniqueTrainerUsed,
                 peakFlow,
                 symptoms,
                 feelingBefore,
                 feelingAfter,
-                null  // breathRating placeholder
+                null  // breathRating – you can map your wording if needed
         );
     }
 
-    // ------------ ChildMedLogPresenter.View ------------
+    // ---------------- ChildMedLogPresenter.View ----------------
 
     @Override
     public void showLoading() {
-        btnLogYes.setEnabled(false);
-        btnLogNo.setEnabled(false);
+        btnSaveRescue.setEnabled(false);
     }
 
     @Override
     public void hideLoading() {
-        btnLogYes.setEnabled(true);
-        btnLogNo.setEnabled(true);
+        btnSaveRescue.setEnabled(true);
     }
 
     @Override
     public void showSuccess(MedLog log) {
-        Toast.makeText(this, "Controller dose logged ✅", Toast.LENGTH_SHORT).show();
-        finish();
+        Toast.makeText(this, "Rescue dose logged ✅", Toast.LENGTH_SHORT).show();
+        finish(); // close screen / go back to home
     }
 
     @Override
     public void showError(String message) {
-        Toast.makeText(this,
-                message != null ? message : "Something went wrong",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message != null ? message : "Something went wrong", Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.smartair.ui.r3.technique;
+package com.example.smartair.ui.technique;
 
 import android.net.Uri;
 import android.os.Bundle;

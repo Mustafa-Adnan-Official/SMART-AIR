@@ -57,18 +57,18 @@
         <activity android:name=".ui.historyBrowser.HistoryBrowserActivity" />
 
         <!-- R3: Medicine logging -->
-        <activity android:name=".ui.r3.meds.RescueSessionActivity"
+        <activity android:name=".ui.meds.RescueSessionActivity"
             android:exported="false" />
 
-        <activity android:name=".ui.r3.meds.ControllerSessionActivity"
+        <activity android:name=".ui.meds.ControllerSessionActivity"
             android:exported="false" />
 
         <!-- R3: Technique trainer -->
-        <activity android:name=".ui.r3.technique.TechniqueTrainerActivity"
+        <activity android:name=".ui.technique.TechniqueTrainerActivity"
             android:exported="false" />
 
         <!-- R3: Achievements -->
-        <activity android:name=".ui.r3.motivation.ChildAchievementsActivity"
+        <activity android:name=".ui.motivation.ChildAchievementsActivity"
             android:exported="false" />
 
     </application>
