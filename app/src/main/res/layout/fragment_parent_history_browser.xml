@@ -39,6 +39,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+
+
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -72,8 +75,20 @@
                     android:layout_marginStart="8dp"
                     android:text="History Browser"
                     android:textSize="26sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
+
+
             </LinearLayout>
+
+            <Button
+
+                android:id = "@+id/select_filter_button"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_gravity="center_horizontal"
+                android:text = "Filters"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/historyRecyclerView"

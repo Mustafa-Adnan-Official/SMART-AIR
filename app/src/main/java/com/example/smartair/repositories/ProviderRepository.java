@@ -1,11 +1,16 @@
 package com.example.smartair.repositories;
 
+import com.example.smartair.callbacks.ResultCallback;
+import com.example.smartair.models.users.Child;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FieldValue;
-import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.lang.InterruptedException;
 
 public class ProviderRepository {
 
@@ -27,42 +32,37 @@ public class ProviderRepository {
           .update("prefix", newPrefix);
     }
 
-    public boolean getAccessBool(String childUid, String providerUid) {
-
-        try {
-            DocumentSnapshot documentSnapshot = Tasks.await(
-                    db.collection("providers")
-                            .document(providerUid)
-                            .collection("childLink")
-                            .document(childUid)
-                            .get()
-            );
-
-            if (documentSnapshot.exists()) {
-                Boolean accessStatus = documentSnapshot.getBoolean("accessField");
-                return accessStatus != null && accessStatus;
-            }
-
-            return false;
-
-        } catch (ExecutionException e) {
-            System.err.println("Firestore Execution Error: " + e.getMessage());
-            return false;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Thread Interrupted: " + e.getMessage());
-            return false;
-        }
-    }
-
-
-    public void setAccessBool(String childUid, String providerUid, boolean Value) {
+    public void getChildrenForProvider(String providerUID, ResultCallback<List<Child>> callback) {
         db.collection("providers")
-                .document(providerUid)
-                .collection("childLink")
-                .document(childUid)
-                .update("accessField", Value);
+                .document(providerUID)
+                .collection("parentLinks")
+                .get()
+                .addOnSuccessListener(parentSnapshots -> {
+                    List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+                    for (DocumentSnapshot parentDoc : parentSnapshots.getDocuments()) {
+                        String pUid = parentDoc.getId();
+                        tasks.add(db.collection("children")
+                                .whereEqualTo("parentUid", pUid)
+                                .get());
+                    }
 
+                    Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
+                        List<Child> allChildren = new ArrayList<>();
+                        for (Object result : results) {
+                            QuerySnapshot querySnap = (QuerySnapshot) result;
+                            for (DocumentSnapshot childDoc : querySnap) {
+                                Child child = childDoc.toObject(Child.class);
+                                if (child != null) {
+                                    child.setChildUid(childDoc.getId());
+                                    allChildren.add(child);
+                                }
+                            }
+                        }
+                        callback.onSuccess(allChildren);
+                    }).addOnFailureListener(callback::onError);
 
+                })
+                .addOnFailureListener(callback::onError);
     }
+
 }

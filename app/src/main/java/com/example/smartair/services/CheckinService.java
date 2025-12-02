@@ -2,6 +2,7 @@ package com.example.smartair.services;
 
 import com.example.smartair.callbacks.CheckinListCallback;
 import com.example.smartair.callbacks.SimpleResultCallback;
+import com.example.smartair.callbacks.StringListCallback;
 import com.example.smartair.models.childcollections.Checkin;
 import com.example.smartair.utils.SimpleDateFormat;
 import com.google.firebase.firestore.*;
@@ -59,6 +60,71 @@ public class CheckinService {
                 .addOnFailureListener(e -> {
                    callback.onFailure(e);
                 });
+
+    }
+
+    public void getSymptoms(String childUid, StringListCallback callback){
+        List<String> symptomsList;
+        getCheckins(childUid, new CheckinListCallback() {
+            @Override
+            public void onSuccess(List<Checkin> checkins) {
+                List<String> symptoms = new ArrayList<>();
+
+                for(Checkin checkin : checkins) {
+                    List<String> currentSymptoms = checkin.getSymptoms();
+                    if (currentSymptoms != null) {
+                        for(String symptom : currentSymptoms){
+                            if (!symptoms.contains(symptom)){
+                                symptoms.add(symptom);
+                            }
+                        }
+                    }
+
+                }
+                callback.onSuccess(symptoms);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+
+
+            }
+        });
+
+    }
+
+
+    public void getTriggers(String childUid, StringListCallback callback){
+        List<String> symptomsList;
+        getCheckins(childUid, new CheckinListCallback() {
+            @Override
+            public void onSuccess(List<Checkin> checkins) {
+                List<String> triggers = new ArrayList<>();
+
+                for(Checkin checkin : checkins) {
+                    List<String> currentTriggers = checkin.getTriggers();
+                    if (currentTriggers != null) {
+                        for(String currentTrigger : currentTriggers){
+                            if (!triggers.contains(currentTrigger)){
+                                triggers.add(currentTrigger);
+                            }
+                        }
+                    }
+
+                }
+                callback.onSuccess(triggers);
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+
+
+            }
+        });
 
     }
 }

@@ -49,6 +49,8 @@
         
         <activity android:name=".ui.checkin.DailyCheckinActivity" />
         <activity android:name=".ui.checkin.DailyCheckinActivityParent" />
+        
+        <activity android:name=".ui.historyBrowser.HistoryBrowserActivity" />
 
         <!-- (If you still have the old MainActivity and don't need it, you can remove it) -->
     </application>

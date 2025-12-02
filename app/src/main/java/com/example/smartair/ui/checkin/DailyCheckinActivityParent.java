@@ -39,10 +39,12 @@ public class DailyCheckinActivityParent extends AppCompatActivity {
     private Button btnTriggerPets;
     private Button btnTriggerIllness;
     private Button btnTriggerSmoke;
-    private TextInputEditText etPeakFlow, etOther;
+    private TextInputEditText etPeakFlow;
+    private TextInputEditText  etOtherTrigger;
+    private TextInputEditText etOtherSymptom;
+
     private Button btnSave;
     
-    private AutoCompleteTextView childSelectionDropdown;
 
     private String selectedFeeling = "Great"; // Default
     private List<String> selectedSymptoms = new ArrayList<>();
@@ -65,8 +67,7 @@ public class DailyCheckinActivityParent extends AppCompatActivity {
         childRepository = new ChildRepository();
 
         // Initialize Views
-        childSelectionDropdown = findViewById(R.id.child_selection_autocomplete);
-        
+
         btnFeelingGreat = findViewById(R.id.checkin_feeling_great_button);
         btnFeelingOkay = findViewById(R.id.checkin_feeling_okay_button);
         btnFeelingBad = findViewById(R.id.checkin_feeling_bad_button);
@@ -84,16 +85,22 @@ public class DailyCheckinActivityParent extends AppCompatActivity {
         btnTriggerSmoke = findViewById(R.id.trigger_smoke_button);
 
         etPeakFlow = findViewById(R.id.peakflow_edit_text);
-        etOther = findViewById(R.id.other_edit_text);
+
+        etOtherTrigger = findViewById(R.id.trigger_edit_text);
+        etOtherSymptom = findViewById(R.id.symptoms_edit_text);
+
+
         btnSave = findViewById(R.id.checkin_save_button);
 
         userRole = getIntent().getStringExtra("USER_ROLE");
         name = getIntent().getStringExtra("USER_NAME");
+        selectedChildUid = getIntent().getStringExtra("CHILD_UID");
+
+
 
         CheckinService checkinService = new CheckinService();
         
         // Setup Child Dropdown
-        setupChildDropdown();
 
         // Feeling Logic (Single Selection)
         View.OnClickListener feelingListener = v -> {
@@ -137,38 +144,7 @@ public class DailyCheckinActivityParent extends AppCompatActivity {
         btnSave.setOnClickListener(v -> saveCheckin(checkinService));
     }
     
-    private void setupChildDropdown() {
-        String parentUid = FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
-        
-        if (parentUid != null) {
-            childRepository.getChildrenForParent(parentUid, new ResultCallback<List<Child>>() {
-                @Override
-                public void onSuccess(List<Child> children) {
-                    List<String> childNames = new ArrayList<>();
-                    childNameToUidMap.clear();
-                    
-                    for (Child child : children) {
-                        childNames.add(child.getName());
-                        childNameToUidMap.put(child.getName(), child.getChildUid());
-                    }
-                    
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(DailyCheckinActivityParent.this, android.R.layout.simple_dropdown_item_1line, childNames);
-                    childSelectionDropdown.setAdapter(adapter);
-                    
-                    childSelectionDropdown.setOnItemClickListener((parent, view, position, id) -> {
-                        String selectedName = adapter.getItem(position);
-                        selectedChildUid = childNameToUidMap.get(selectedName);
-                        // Toast.makeText(DailyCheckinActivityParent.this, "Selected: " + selectedName, Toast.LENGTH_SHORT).show();
-                    });
-                }
 
-                @Override
-                public void onError(Exception e) {
-                    Toast.makeText(DailyCheckinActivityParent.this, "Failed to load children: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
 
     private void setupMultiSelectButton(Button btn, String value, List<String> list) {
         btn.setSelected(false);
@@ -188,15 +164,30 @@ public class DailyCheckinActivityParent extends AppCompatActivity {
     }
 
     private void saveCheckin(CheckinService checkInService) {
-        if (selectedChildUid == null) {
-            Toast.makeText(this, "Please select a child first", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         String peakFlowStr = etPeakFlow.getText().toString();
-        String otherStr = etOther.getText().toString();
+        String otherTriggerStr = etOtherTrigger.getText().toString();
+        String otherSymptomStr = etOtherSymptom.getText().toString();
 
-        // Use Parent's name (fetched from intent) as Author
+
+        if (!otherTriggerStr.isEmpty()) {
+            String[] triggers = otherTriggerStr.split(",");
+            for (String trigger : triggers) {
+                String trimmed = trigger.trim();
+                if (!trimmed.isEmpty() && !selectedTriggers.contains(trimmed))
+                    selectedTriggers.add(trimmed);
+            }
+        }
+
+        if (!otherSymptomStr.isEmpty()) {
+            String[] symptoms = otherSymptomStr.split(",");
+            for (String symptom : symptoms) {
+                String trimmed = symptom.trim();
+                if (!trimmed.isEmpty() && !selectedSymptoms.contains(trimmed))
+                    selectedSymptoms.add(trimmed);
+            }
+        }
+
         EntryAuthor entryAuthor = new EntryAuthor(name, userRole);
 
         int peakFlow = 0;

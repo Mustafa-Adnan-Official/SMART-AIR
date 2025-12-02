@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:focusable="false"
+                android:focusable="true"
                 android:clickable="true"
                 android:textStyle="bold"
                 android:fontFamily="@font/codec_pro_regular"/>
@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:focusable="false"
+                android:focusable="true"
                 android:clickable="true"
                 android:textStyle="bold"
                 android:fontFamily="@font/codec_pro_regular"/>
@@ -175,7 +175,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:focusable="false"
+                android:focusable="true"
                 android:clickable="true"
                 android:textStyle="bold"
                 android:fontFamily="@font/codec_pro_regular"/>
@@ -219,7 +219,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:focusable="false"
+                android:focusable="true"
                 android:clickable="true"
                 android:textStyle="bold"
                 android:fontFamily="@font/codec_pro_regular"/>

@@ -8,11 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartair.R;
+import com.example.smartair.callbacks.ResultCallback;
 import com.example.smartair.models.users.Child;
 import com.example.smartair.models.users.Parent;
 import com.example.smartair.models.users.Provider;
+import com.example.smartair.repositories.ChildRepository;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,40 +39,123 @@ public class ActivitySettingsProvider extends AppCompatActivity {
         providerRecyclerView = findViewById(R.id.providers_recycler_view);
         providerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        loadProvidersData();
+        // loadProvidersData();
+        loadMockData();
+        // setupRecyclerView called after data load
+    }
+
+    private void loadMockData() {
+        // Mock Parent
+        currentParent = new Parent();
+        currentParent.setParentUid("mockParentUid");
+        currentParent.setName("Mock Parent");
+
+        // Mock Children
+        List<Child> mockChildren = new ArrayList<>();
+        Child child1 = new Child();
+        child1.setChildUid("child1");
+        child1.setName("Alice");
+        child1.setParentUid("mockParentUid");
+        mockChildren.add(child1);
+
+        Child child2 = new Child();
+        child2.setChildUid("child2");
+        child2.setName("Bob");
+        child2.setParentUid("mockParentUid");
+        mockChildren.add(child2);
+
+        // Mock Providers
+        providerList.clear();
+        Provider provider1 = new Provider();
+        provider1.setProviderUid("provider1");
+        provider1.setName("Dr. Smith");
+        provider1.setChildren(mockChildren);
+        providerList.add(provider1);
+
+        Provider provider2 = new Provider();
+        provider2.setProviderUid("provider2");
+        provider2.setName("Nurse Joy");
+        provider2.setChildren(mockChildren);
+        providerList.add(provider2);
+
+        Toast.makeText(this, "Mock data loaded", Toast.LENGTH_SHORT).show();
+
         setupRecyclerView();
     }
 
+
+    /*
     private void loadProvidersData() {
-
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String parentUid = currentUser.getUid();
-            // Note: Implementation would involve fetching the Parent document, 
-            // then fetching associated Provider documents, and finally populating 
-            // those Provider objects with the Parent's Children list to allow access toggling.
-            
-            // Example structure (pseudo-code):
-            // parentRepository.getParent(parentUid, parent -> {
-            //      this.currentParent = parent;
-            //      childRepository.getChildrenForParent(parentUid, children -> {
-            //           // fetch providers...
-            //           // for each provider, provider.setChildren(children);
-            //           // update list and notify adapter
-            //      });
-            // });
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            ChildRepository childRepository = new ChildRepository();
+
+            // 1. Fetch Parent Data
+            db.collection("parents").document(parentUid).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    currentParent = documentSnapshot.toObject(Parent.class);
+                    
+                    // 2. Fetch Children
+                    childRepository.getChildrenForParent(parentUid, new ResultCallback<List<Child>>() {
+                        @Override
+                        public void onSuccess(List<Child> children) {
+                            
+                            // 3. Fetch Providers
+                            List<String> providerUIDs = currentParent.getProviderUIDs(); // Assuming getter exists (it did in Parent.java)
+                            
+                            if (providerUIDs == null || providerUIDs.isEmpty()) {
+                                setupRecyclerView(); // No providers, just show empty or headers
+                                return;
+                            }
+
+                            List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+                            for (String pUid : providerUIDs) {
+                                tasks.add(db.collection("providers").document(pUid).get());
+                            }
+
+                            Tasks.whenAllSuccess(tasks).addOnSuccessListener(objects -> {
+                                providerList.clear();
+                                for (Object obj : objects) {
+                                    DocumentSnapshot snap = (DocumentSnapshot) obj;
+                                    if (snap.exists()) {
+                                        Provider provider = snap.toObject(Provider.class);
+                                        if (provider != null) {
+                                            // Populate provider with the Parent's children so the adapter can show toggles
+                                            provider.setChildren(children);
+                                            providerList.add(provider);
+                                        }
+                                    }
+                                }
+                                setupRecyclerView();
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(ActivitySettingsProvider.this, "Error fetching providers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(ActivitySettingsProvider.this, "Error fetching children: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, "Error fetching parent: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
-
     }
+
+
+*/
 
     private void setupRecyclerView() {
         if (currentParent == null) {
-            // Fallback or loading state
-            currentParent = new Parent();
-            currentParent.setParentUid("mock_parent_uid");
+            // Fallback if parent load failed but we reached here (unlikely)
+            currentParent = new Parent(); 
         }
         providerAdapter = new ProvidersAdapter(this, providerList, currentParent);
         providerRecyclerView.setAdapter(providerAdapter);

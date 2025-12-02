@@ -2,15 +2,13 @@ package com.example.smartair.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import androidx.appcompat.widget.SwitchCompat;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,24 +16,40 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartair.R;
+import com.example.smartair.callbacks.ResultCallback;
 import com.example.smartair.models.users.Child;
 import com.example.smartair.models.users.Parent;
 import com.example.smartair.models.users.Provider;
 import com.example.smartair.repositories.ChildRepository;
 import com.example.smartair.repositories.ProviderRepository;
+import com.example.smartair.services.CheckinService;
+import com.example.smartair.services.HistoryService;
+import com.example.smartair.callbacks.StringListCallback;
+import com.example.smartair.models.childcollections.HistoryEntry;
 
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.ProviderViewHolder> {
 
     // List of Providers to display
-    private List<Provider> providersList;
-    private Context context;
+    private final List<Provider> providersList;
+    private final Context context;
 
-    private ProviderRepository providerRepository;
-    private ChildRepository childRepository;
-    private Parent parent;
-    private String childUid;
+    private final ProviderRepository providerRepository;
+    private final ChildRepository childRepository;
+    private final Parent parent;
+
+    // Map to store access state locally: Key = "providerUid_childUid", Value = Boolean
+    private final Map<String, Boolean> providerChildAccessMap = new HashMap<>();
+
+    private final List<String> allCheckedSymptoms = new ArrayList<>();
+    private final List<String> allCheckedTriggers = new ArrayList<>();
 
     public ProvidersAdapter(Context context, List<Provider> providersList, Parent parent){
         this.providersList = providersList;
@@ -43,6 +57,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         this.providerRepository = new ProviderRepository();
         this.parent = parent;
         this.childRepository = new ChildRepository();
+        Toast.makeText(context, "DEBUG: Adapter Initialized", Toast.LENGTH_SHORT).show();
     }
 
     public static class ProviderViewHolder extends RecyclerView.ViewHolder {
@@ -56,11 +71,12 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
         public ProviderViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.providerHeader);
-            deleteButton = itemView.findViewById(R.id.delete_child_button);
+            nameTextView = itemView.findViewById(R.id.providerName);
+            deleteButton = itemView.findViewById(R.id.deleteProvider);
             sendReportButton = itemView.findViewById(R.id.sendReportBtn);
             childModulesContainer = itemView.findViewById(R.id.childrenContainer);
             sendHistoryButton = itemView.findViewById(R.id.sendHistoryBtn);
+            Toast.makeText(itemView.getContext(), "DEBUG: ViewHolder Created", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -69,6 +85,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     public ProviderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.provider_card, parent, false);
+        Toast.makeText(itemView.getContext(), "DEBUG: onCreateViewHolder (Inflating Card)", Toast.LENGTH_SHORT).show();
         return new ProviderViewHolder(itemView);
     }
 
@@ -76,48 +93,88 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
     public void onBindViewHolder(@NonNull ProviderViewHolder holder, int position) {
         Provider currentProvider = providersList.get(position);
 
-        holder.nameTextView.setText(currentProvider.getName());
-        
+        // 1. SAFEGUARD: Ensure TextView exists before calling setText()
+        if (holder.nameTextView != null) {
+            holder.nameTextView.setText(currentProvider.getName());
+        }
+
         if (holder.childModulesContainer != null) {
             holder.childModulesContainer.removeAllViews();
         }
 
-        if (currentProvider.getChildren() != null && holder.childModulesContainer != null) {
+        Toast.makeText(context, "DEBUG: onBindViewHolder: Pos " + position + " (" + currentProvider.getName() + ")", Toast.LENGTH_SHORT).show(); // 4. BIND START
+
+        // Retrieve parent UID safely once outside the inner loop
+        final String adapterParentUid = (parent != null) ? parent.getParentUid() : null;
+
+        // Check if there are children to process AND if we have a valid Parent UID to compare against
+        if (currentProvider.getChildren() != null && holder.childModulesContainer != null && adapterParentUid != null) {
+
+            Toast.makeText(context, "DEBUG: Entering Children Loop", Toast.LENGTH_SHORT).show(); // NEW DEBUG TOAST
+
             for (Child child : currentProvider.getChildren()) {
-                if (parent != null && child.getParentUid() != null && 
-                    child.getParentUid().equals(parent.getParentUid())) {
-                    
-                    childUid = child.getChildUid();
+
+                // 2. SAFEGUARD: Ensure Child Parent UID exists before comparison
+                String childParentUid = child.getParentUid();
+
+                if (childParentUid != null && childParentUid.equals(adapterParentUid)) {
+
+                    final String currentChildUid = child.getChildUid();
+
+                    // 3. SAFEGUARD: Check if the child row layout can be inflated
                     View childView = LayoutInflater.from(context).inflate(R.layout.provider_child_row, holder.childModulesContainer, false);
 
-                    TextView childName = childView.findViewById(R.id.childName);
+                    if (childView != null) {
+                        TextView childName = childView.findViewById(R.id.childName);
+                        SwitchCompat accessSwitch = childView.findViewById(R.id.switch_child);
 
-                    Switch accessSwitch = childView.findViewById(R.id.switch_child);
+                        if (childName != null) {
+                            childName.setText(child.getName());
+                        }
 
-                    childName.setText(child.getName());
+                        // Key for the map
+                        String accessKey = currentProvider.getProviderUid() + "_" + currentChildUid;
 
-                    accessSwitch.setChecked(false); 
+                        // Default to false if not in map, or use existing value
+                        if (!providerChildAccessMap.containsKey(accessKey)) {
+                            providerChildAccessMap.put(accessKey, false);
+                        }
 
-                    accessSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                        providerRepository.setAccessBool(childUid, currentProvider.getProviderUid(), isChecked);
-                        Toast.makeText(context, "Child Access Changed", Toast.LENGTH_SHORT).show();
-                    });
-                    holder.childModulesContainer.addView(childView);
+                        // 4. SAFEGUARD: Check if the Switch was found
+                        if (accessSwitch != null) {
+                            Boolean isChecked = providerChildAccessMap.get(accessKey);
+                            if (isChecked != null) {
+                                accessSwitch.setChecked(isChecked);
+                            }
+
+                            accessSwitch.setOnCheckedChangeListener((buttonView, b) -> {
+                                providerChildAccessMap.put(accessKey, b);
+                                // providerRepository.setAccessBool(currentChildUid, currentProvider.getProviderUid(), isChecked); // Removed immediate call
+                                Toast.makeText(context, "Access " + (b ? "Enabled" : "Revoked") + " (Pending Send)", Toast.LENGTH_SHORT).show();
+                            });
+                            holder.childModulesContainer.addView(childView);
+                        } else {
+                            Toast.makeText(context, "ERROR: Missing switch_child in provider_child_row!", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(context, "ERROR: Failed to inflate provider_child_row!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }
 
-        holder.deleteButton.setOnClickListener(v -> {
-            showDeleteProviderDialog(context, currentProvider, position);
-        });
+        Toast.makeText(context, "DEBUG: onBindViewHolder: Children Modules Checked", Toast.LENGTH_SHORT).show(); // 5. BIND END
 
-        holder.sendReportButton.setOnClickListener(v -> {
-            showManageDataDialog(context, currentProvider);
-        });
+        // 5. SAFEGUARD: Ensure buttons exist before setting listeners
+        if (holder.deleteButton == null || holder.sendReportButton == null || holder.sendHistoryButton == null) {
+            Toast.makeText(context, "ERROR: Missing action buttons in provider_card!", Toast.LENGTH_LONG).show();
+        } else {
+            holder.deleteButton.setOnClickListener(v -> showDeleteProviderDialog(context, position));
 
-        holder.sendHistoryButton.setOnClickListener(v -> {
-            showHistorySymptoms(context, currentProvider);
-        });
+            holder.sendReportButton.setOnClickListener(v -> showManageDataDialog(context, currentProvider));
+
+            holder.sendHistoryButton.setOnClickListener(v -> showHistorySymptoms(context, currentProvider));
+        }
     }
 
     @Override
@@ -127,125 +184,313 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
 
     private void showHistorySymptoms(Context context, Provider provider) {
+        Toast.makeText(context, "DEBUG: Starting showHistorySymptoms", Toast.LENGTH_SHORT).show(); // 6. DIALOG START
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.select_symptoms, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
-        Switch toggleCoughing = dialogView.findViewById(R.id.switch_coughing);
-        Switch toggleShortness = dialogView.findViewById(R.id.switch_shortness);
-        Switch toggleTightness = dialogView.findViewById(R.id.switch_chesttightness);
+        Toast.makeText(context, "DEBUG: HistorySymptoms Dialog Inflated", Toast.LENGTH_SHORT).show(); // 7. DIALOG INFLATED
+
+        SwitchCompat toggleCoughing = dialogView.findViewById(R.id.switch_coughing);
+        SwitchCompat toggleShortness = dialogView.findViewById(R.id.switch_shortness);
+        SwitchCompat toggleTightness = dialogView.findViewById(R.id.switch_chesttightness);
 
         Button closeButton = dialogView.findViewById(R.id.btnExit);
         Button nextButton = dialogView.findViewById(R.id.btnNext);
 
-        if (provider.getChildren() != null) {
+        // CRITICAL CHECK for NullPointerException
+        if (closeButton == null || nextButton == null || toggleCoughing == null) {
+            Toast.makeText(context, "ERROR: Missing view ID in select_symptoms.xml!", Toast.LENGTH_LONG).show();
+            // To prevent crashing on setOnClickListener, you can return here.
+            return;
+        }
+
+        List<String> allDistinctSymptoms = new ArrayList<>(Arrays.asList("Coughing/Wheezing", "Shortness of Breath", "Chest Tightness"));
+        List<String> allSymptoms = new ArrayList<>();
+        List<String> addedSymptoms = new ArrayList<>();
+
+        final String adapterParentUid = (parent != null) ? parent.getParentUid() : null;
+
+        if (provider.getChildren() != null && adapterParentUid != null) {
             for (Child child : provider.getChildren()) {
-                if (parent != null && child.getParentUid() != null &&
-                        child.getParentUid().equals(parent.getParentUid())) {
+                if (child.getParentUid() != null && child.getParentUid().equals(adapterParentUid)) {
 
-                    childUid = child.getChildUid();
-                    View symptomView = LayoutInflater.from(context).inflate(R.layout.symptoms_child_module, dialogView.findViewById(R.id.containerSymptoms), false);
+                    CheckinService checkin1 = new CheckinService();
 
-                    //Get CheckIn Data into list from Child
+                    checkin1.getSymptoms(child.getChildUid(), new StringListCallback() {
+                        @Override
+                        public void onSuccess(List<String> distinctSymptomsList) {
+                            Toast.makeText(context, "DEBUG: HistorySymptoms - Async Success", Toast.LENGTH_SHORT).show(); // 8. ASYNC SUCCESS
 
+                            if (dialog.isShowing()) {
+                                allSymptoms.addAll(distinctSymptomsList);
 
-                    TextView symptomName = symptomView.findViewById(R.id.symptomName);
-                    Switch symptomSwitch = symptomView.findViewById(R.id.switch_symptom);
+                                for (String symptom : distinctSymptomsList) {
+                                    if (!addedSymptoms.contains(symptom) && !allDistinctSymptoms.contains(symptom)) {
+                                        addedSymptoms.add(symptom);
+                                        addDynamicSymptomSwitch(context, dialogView, symptom);
+                                    }
+                                }
+                            }
+                        }
 
-                    symptomSwitch.setChecked(false);
-
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(context, "Failed to load symptoms: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }
 
+        Toast.makeText(context, "DEBUG: HistorySymptoms - Listeners set", Toast.LENGTH_SHORT).show(); // 10. LISTENERS SET
 
         toggleCoughing.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedSymptoms.add("Coughing/Wheezing");
+            } else {
+                allCheckedSymptoms.remove("Coughing/Wheezing");
+            }
         });
 
         toggleShortness.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedSymptoms.add("Shortness of Breath");
+            } else {
+                allCheckedSymptoms.remove("Shortness of Breath");
+            }
         });
 
         toggleTightness.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedSymptoms.add("Chest Tightness");
+            } else {
+                allCheckedSymptoms.remove("Chest Tightness");
+            }
         });
 
         closeButton.setOnClickListener(v -> dialog.dismiss());
         nextButton.setOnClickListener(v -> {
-
+            dialog.dismiss(); // Dismiss current dialog before showing next
             showTriggersSymptoms(context, provider);
         });
         dialog.show();
-
-
+        Toast.makeText(context, "DEBUG: HistorySymptoms - Dialog Shown", Toast.LENGTH_SHORT).show(); // 11. DIALOG SHOWING
     }
+
+    private void addDynamicSymptomSwitch(Context context, View dialogView, String symptom) {
+        ViewGroup container = dialogView.findViewById(R.id.containerSymptoms);
+
+        if (container != null) {
+            View symptomView = LayoutInflater.from(context).inflate(R.layout.symptomstriggers_child_module, container, false);
+
+            if (symptomView != null) {
+                TextView symptomName = symptomView.findViewById(R.id.symptomName);
+                SwitchCompat symptomSwitch = symptomView.findViewById(R.id.switch_symptom);
+
+                if (symptomSwitch != null && symptomName != null) {
+                    symptomSwitch.setChecked(false);
+                    symptomName.setText(symptom);
+                    container.addView(symptomView);
+
+                    Toast.makeText(context, "DEBUG: Added dynamic symptom: " + symptom, Toast.LENGTH_SHORT).show();
+
+                    symptomSwitch.setOnCheckedChangeListener((buttonView1, isChecked1) -> {
+                        if (isChecked1) {
+                            allCheckedSymptoms.add(symptom);
+                        } else {
+                            allCheckedSymptoms.remove(symptom);
+                        }
+                    });
+                }
+            }
+        } else {
+            Toast.makeText(context, "ERROR: containerSymptoms is NULL!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void showTriggersSymptoms(Context context, Provider provider) {
+        Toast.makeText(context, "DEBUG: Starting showTriggersSymptoms", Toast.LENGTH_SHORT).show(); // 12. DIALOG START
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.select_triggers, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
-        Switch toggleDustMite = dialogView.findViewById(R.id.switch_dustmite);
-        Switch togglePets = dialogView.findViewById(R.id.switch_pets);
-        Switch toggleSmoke = dialogView.findViewById(R.id.switch_smoke);
-        Switch toggleOdor = dialogView.findViewById(R.id.switch_odors);
-        Switch toggleColdAir = dialogView.findViewById(R.id.switch_coldair);
-        Switch toggleIllness = dialogView.findViewById(R.id.switch_illness);
-        Switch toggleExercise = dialogView.findViewById(R.id.switch_exercise);
+        Toast.makeText(context, "DEBUG: TriggersSymptoms Dialog Inflated", Toast.LENGTH_SHORT).show(); // 13. DIALOG INFLATED
+
+        SwitchCompat toggleDustMite = dialogView.findViewById(R.id.switch_dustmite);
+        SwitchCompat togglePets = dialogView.findViewById(R.id.switch_pets);
+        SwitchCompat toggleSmoke = dialogView.findViewById(R.id.switch_smoke);
+        SwitchCompat toggleOdor = dialogView.findViewById(R.id.switch_odors);
+        SwitchCompat toggleColdAir = dialogView.findViewById(R.id.switch_coldair);
+        SwitchCompat toggleIllness = dialogView.findViewById(R.id.switch_illness);
+        SwitchCompat toggleExercise = dialogView.findViewById(R.id.switch_exercise);
 
 
         Button closeButton = dialogView.findViewById(R.id.btnBack);
-        Button nextButton = dialogView.findViewById(R.id.btnBack);
+        Button nextButton = dialogView.findViewById(R.id.btnNext);
+
+        // CRITICAL CHECK for NullPointerException
+        if (closeButton == null || nextButton == null || toggleDustMite == null) {
+            Toast.makeText(context, "ERROR: Missing view ID in select_triggers.xml!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        List<String> allDistinctTriggers = new ArrayList<>(Arrays.asList("Dust Mites", "Pets", "Smoke", "Strong Odors/ Perfumes", "Cold Air", "Illness", "Exercise"));
+
+
+
+        List<String> allExtraTriggers = new ArrayList<>();
+        List<String> addedExtraTriggers = new ArrayList<>();
+
+        final String adapterParentUid = (parent != null) ? parent.getParentUid() : null;
+
+        if (provider.getChildren() != null && adapterParentUid != null) {
+            for (Child child : provider.getChildren()) {
+                if (child.getParentUid() != null && child.getParentUid().equals(adapterParentUid)) {
+
+                    CheckinService checkin1 = new CheckinService();
+
+                    checkin1.getTriggers(child.getChildUid(), new StringListCallback() {
+                        @Override
+                        public void onSuccess(List<String> distinctSymptomsList) {
+                            Toast.makeText(context, "DEBUG: TriggersSymptoms - Async Success", Toast.LENGTH_SHORT).show(); // 14. ASYNC SUCCESS
+                            if (dialog.isShowing()) {
+
+                                allExtraTriggers.addAll(distinctSymptomsList);
+
+                                for (String symptom : distinctSymptomsList) {
+                                    if (!addedExtraTriggers.contains(symptom) && !allDistinctTriggers.contains(symptom)) {
+                                        addedExtraTriggers.add(symptom);
+                                        addDynamicTriggerSwitch(context, dialogView, symptom);
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(context, "Failed to load triggers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        }
+
+        allDistinctTriggers.addAll(addedExtraTriggers);
+
+        Toast.makeText(context, "DEBUG: TriggersSymptoms - Listeners set", Toast.LENGTH_SHORT).show(); // 16. LISTENERS SET
+
 
         toggleDustMite.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Dust Mites");
+            } else {
+                allCheckedTriggers.remove("Dust Mites");
+            }
+
         });
 
         togglePets.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Pets");
+            } else {
+                allCheckedTriggers.remove("Pets");
+            }
         });
 
         toggleSmoke.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Smoke");
+            } else {
+                allCheckedTriggers.remove("Smoke");
+            }
         });
 
         toggleOdor.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Strong Odors/ Perfumes");
+            } else {
+                allCheckedTriggers.remove("Strong Odors/ Perfumes");
+            }
         });
 
         toggleColdAir.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Cold Air");
+            } else {
+                allCheckedTriggers.remove("Cold Air");
+            }
         });
 
         toggleIllness.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Illness");
+            } else {
+                allCheckedTriggers.remove("Illness");
+            }
         });
 
         toggleExercise.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            //TODO: Implementation
+            if (isChecked) {
+                allCheckedTriggers.add("Exercise");
+            } else {
+                allCheckedTriggers.remove("Exercise");
+            }
         });
 
         closeButton.setOnClickListener(v -> dialog.dismiss());
         nextButton.setOnClickListener(v -> {
-
+            dialog.dismiss(); // Dismiss current dialog before showing next
             showSelectDurationDialog(context, provider, true);
         });
 
-
-
-
+        dialog.show();
+        Toast.makeText(context, "DEBUG: TriggersSymptoms - Dialog Shown", Toast.LENGTH_SHORT).show(); // 17. DIALOG SHOWING
     }
+
+    private void addDynamicTriggerSwitch(Context context, View dialogView, String trigger) {
+        ViewGroup container = dialogView.findViewById(R.id.containerTriggers);
+        if (container != null) {
+            View triggerView = LayoutInflater.from(context).inflate(R.layout.symptomstriggers_child_module, container, false);
+
+            if (triggerView != null) {
+                TextView triggerName = triggerView.findViewById(R.id.symptomName);
+                SwitchCompat triggerSwitch = triggerView.findViewById(R.id.switch_symptom);
+
+                if (triggerSwitch != null && triggerName != null) {
+                    triggerSwitch.setChecked(false);
+                    triggerName.setText(trigger);
+                    container.addView(triggerView);
+
+                    Toast.makeText(context, "DEBUG: Added dynamic trigger: " + trigger, Toast.LENGTH_SHORT).show();
+
+                    triggerSwitch.setOnCheckedChangeListener((buttonView1, isChecked1) -> {
+                        if (isChecked1) {
+                            allCheckedTriggers.add(trigger);
+                        } else {
+                            allCheckedTriggers.remove(trigger);
+                        }
+                    });
+                }
+            }
+        } else {
+            Toast.makeText(context, "ERROR: containerTriggers is NULL after async!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void showManageDataDialog(Context context, Provider provider) {
+        Toast.makeText(context, "DEBUG: Starting showManageDataDialog", Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_manage_data, null);
         builder.setView(dialogView);
@@ -254,13 +499,19 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         // FIX: Cast to Button, not Switch. XML defines it as <Button>.
         Button closeButton = dialogView.findViewById(R.id.dialog_close_button);
         Button nextButton = dialogView.findViewById(R.id.dialog_next_button);
-        
-        Switch toggleRescue = dialogView.findViewById(R.id.toggle_rescuelog_data);
-        Switch toggleSymptoms = dialogView.findViewById(R.id.toggle_symptoms_tracking);
-        Switch toggleTriggers = dialogView.findViewById(R.id.toggle_triggers_tracking);
-        Switch togglePeakFlow = dialogView.findViewById(R.id.toggle_peakflow_tracking);
-        Switch toggleTriageIncident = dialogView.findViewById(R.id.toggle_triageincidents_tracking);
-        Switch toggleSummaryCharts = dialogView.findViewById(R.id.toggle_summarycharts_tracking);
+
+        // CRITICAL CHECK for NullPointerException
+        if (closeButton == null || nextButton == null) {
+            Toast.makeText(context, "ERROR: Missing button ID in dialog_manage_data.xml!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        SwitchCompat toggleRescue = dialogView.findViewById(R.id.toggle_rescuelog_data);
+        SwitchCompat toggleSymptoms = dialogView.findViewById(R.id.toggle_symptoms_tracking);
+        SwitchCompat toggleTriggers = dialogView.findViewById(R.id.toggle_triggers_tracking);
+        SwitchCompat togglePeakFlow = dialogView.findViewById(R.id.toggle_peakflow_tracking);
+        SwitchCompat toggleTriageIncident = dialogView.findViewById(R.id.toggle_triageincidents_tracking);
+        SwitchCompat toggleSummaryCharts = dialogView.findViewById(R.id.toggle_summarycharts_tracking);
 
         if (toggleRescue != null)
             toggleRescue.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -294,9 +545,12 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
         });
         dialog.show();
+        Toast.makeText(context, "DEBUG: ManageData Dialog Shown", Toast.LENGTH_SHORT).show();
     }
 
     private void showSelectDurationDialog(Context context, Provider provider, Boolean isHistory) {
+        Toast.makeText(context, "DEBUG: Starting showSelectDurationDialog (isHistory: " + isHistory + ")", Toast.LENGTH_SHORT).show();
+        final int[] duration = {0};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.select_duration, null);
         builder.setView(dialogView);
@@ -310,7 +564,14 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         Button btnSend = dialogView.findViewById(R.id.btnSend);
         Button btnBack = dialogView.findViewById(R.id.btnBack);
 
+        // CRITICAL CHECK for NullPointerException
+        if (btnSend == null || btnBack == null) {
+            Toast.makeText(context, "ERROR: Missing button ID in select_duration.xml!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         btn3mo.setOnClickListener(v -> {
+            duration[0] = 3;
             btn3mo.setSelected(true);
             btn4mo.setSelected(false);
             btn5mo.setSelected(false);
@@ -318,6 +579,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         });
 
         btn4mo.setOnClickListener(v -> {
+            duration[0] = 4;
             btn3mo.setSelected(false);
             btn4mo.setSelected(true);
             btn5mo.setSelected(false);
@@ -326,6 +588,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         });
 
         btn5mo.setOnClickListener(v -> {
+            duration[0] = 5;
             btn3mo.setSelected(false);
             btn4mo.setSelected(false);
             btn5mo.setSelected(true);
@@ -334,6 +597,7 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         });
 
         btn6mo.setOnClickListener(v -> {
+            duration[0] = 6;
             btn3mo.setSelected(false);
             btn4mo.setSelected(false);
             btn5mo.setSelected(false);
@@ -341,47 +605,127 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
 
         });
 
-        if (isHistory){
-            sendHistory(provider);
-            dialog.dismiss();
-        } else {
-            btnSend.setOnClickListener(v -> {
+        btnSend.setOnClickListener(v -> {
+            if (isHistory) {
+                Toast.makeText(context, "DEBUG: Sending History for " + duration[0] + " months.", Toast.LENGTH_SHORT).show();
+                sendHistory(provider, duration[0]);
+            } else {
+                Toast.makeText(context, "DEBUG: Sending Realtime Report.", Toast.LENGTH_SHORT).show();
                 sendRealtimeReport(provider);
-                dialog.dismiss();
-            });
+            }
+            dialog.dismiss();
+        });
 
-        }
         btnBack.setOnClickListener(v -> dialog.dismiss());
+
         dialog.show();
-
-
+        Toast.makeText(context, "DEBUG: SelectDuration Dialog Shown", Toast.LENGTH_SHORT).show();
     }
-    private void showDeleteProviderDialog(Context context, Provider provider, int position) {
+
+    private void showDeleteProviderDialog(Context context, int position) {
+        Toast.makeText(context, "DEBUG: Starting showDeleteProviderDialog", Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete_provider, null);
         builder.setView(dialogView);
+
         AlertDialog dialog = builder.create();
 
         Button yesButton = dialogView.findViewById(R.id.dialog_yesdeleteprovider_button);
         Button noButton = dialogView.findViewById(R.id.dialog_nodeleteprovider_button);
 
+        // CRITICAL CHECK for NullPointerException
+        if (yesButton == null || noButton == null) {
+            Toast.makeText(context, "ERROR: Missing button ID in dialog_delete_provider.xml!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         yesButton.setOnClickListener(v -> {
             providersList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, providersList.size());
+
+            //TODO: DELETE PROVIDER FROM DATABASE
+
             Toast.makeText(context, "Provider Removed", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
         noButton.setOnClickListener(v -> dialog.dismiss());
+
         dialog.show();
+        Toast.makeText(context, "DEBUG: Delete Dialog Shown", Toast.LENGTH_SHORT).show();
     }
 
-
-    private void sendHistory(Provider currentProvider){
-        //TODO: Send History
-    }
     private void sendRealtimeReport(Provider currentProvider) {
-        //TODO: Do Implementation
+        Toast.makeText(context, "DEBUG: Running sendRealtimeReport logic", Toast.LENGTH_SHORT).show();
+        // Access map here to determine master switch state
+        if (currentProvider.getChildren() != null) {
+            for (Child child : currentProvider.getChildren()) {
+                String key = currentProvider.getProviderUid() + "_" + child.getChildUid();
+                Boolean hasAccess = providerChildAccessMap.getOrDefault(key, false);
+
+                if (Boolean.TRUE.equals(hasAccess)) {
+                    // Proceed with report generation for this child with master switch = TRUE
+                    // TODO: Add report logic
+                } else {
+                    // Master switch = FALSE (Revoked)
+                    // TODO: Handle revoked access logic
+                }
+            }
+        }
+        Toast.makeText(context, "Report sent (simulated)", Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendHistory(Provider currentProvider, int duration) {
+        Toast.makeText(context, "DEBUG: Running sendHistory logic for " + duration + " months", Toast.LENGTH_SHORT).show();
+        if (currentProvider.getChildren() != null) {
+
+            for (Child child : currentProvider.getChildren()) {
+
+                String key = currentProvider.getProviderUid() + "_" + child.getChildUid();
+                Boolean hasAccess = providerChildAccessMap.getOrDefault(key, false);
+                HistoryService historyService = new HistoryService();
+
+                if (Boolean.TRUE.equals(hasAccess)) {
+                    if (duration > 2 && duration < 7){
+                        Calendar calendar = Calendar.getInstance();
+                        Date end = calendar.getTime(); // Current date (End)
+                        calendar.add(Calendar.MONTH, -duration);
+                        Date start = calendar.getTime(); // Start date
+
+                        // Call asynchronous getAllHistoryLogs
+                        historyService.getAllHistoryLogs(child.getChildUid(), start, end, new ResultCallback<List<HistoryEntry>>() {
+                            @Override
+                            public void onSuccess(List<HistoryEntry> historyEntries) {
+                                List<HistoryEntry> filteredEntries = HistoryService.filterSymptomsTriggers(historyEntries, allCheckedSymptoms, allCheckedTriggers);
+
+                                Map<String, Boolean> providerAccessMap = new HashMap<>();
+                                for (Provider prov : providersList) {
+                                    String pKey = prov.getProviderUid() + "_" + child.getChildUid();
+                                    Boolean access = providerChildAccessMap.getOrDefault(pKey, false);
+                                    providerAccessMap.put(prov.getProviderUid(), access);
+                                }
+
+                                String reportID = historyService.generateReport(child.getChildUid(), filteredEntries, start, end, duration + " months", providerAccessMap);
+                                Toast.makeText(context, "Report sent", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Toast.makeText(context, "Failed to send history: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(context, "Invalid Duration (" + duration + ")", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    // Access revoked logic if needed
+                    Toast.makeText(context, "DEBUG: History access revoked for " + child.getName(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

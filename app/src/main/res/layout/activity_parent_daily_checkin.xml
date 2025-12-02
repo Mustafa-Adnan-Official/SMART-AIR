@@ -17,25 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/child_selection_input_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/rounded_settings_background"
-                android:hint="Select Child">
-
-                <AutoCompleteTextView
-                    android:id="@+id/child_selection_autocomplete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:fontFamily="@font/codec_pro_regular"
-                    android:textStyle="bold"
-                    />
-
-            </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -214,6 +195,27 @@
 
             </LinearLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/symptoms_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Other: "
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:background = "@drawable/outline_button_bg"
+
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/symptoms_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLength="4"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/codec_pro_regular"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
 
                 android:layout_width="match_parent"
@@ -335,7 +337,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/other_input_layout"
+                    android:id="@+id/trigger_input_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Other: "
@@ -345,7 +347,7 @@
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/other_edit_text"
+                        android:id="@+id/trigger_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"

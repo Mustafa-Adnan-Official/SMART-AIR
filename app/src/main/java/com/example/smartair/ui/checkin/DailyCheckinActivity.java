@@ -33,7 +33,9 @@ public class DailyCheckinActivity extends AppCompatActivity {
     private Button btnTriggerPets;
     private Button btnTriggerIllness;
     private Button btnTriggerSmoke;
-    private TextInputEditText etPeakFlow, etOther;
+    private TextInputEditText etPeakFlow;
+    private TextInputEditText  etOtherTrigger;
+    private TextInputEditText etOtherSymptom;
     private Button btnSave;
 
     private String selectedFeeling = "";
@@ -73,7 +75,8 @@ public class DailyCheckinActivity extends AppCompatActivity {
         btnTriggerSmoke = findViewById(R.id.trigger_smoke_button);
 
         etPeakFlow = findViewById(R.id.peakflow_edit_text);
-        etOther = findViewById(R.id.other_edit_text);
+        etOtherTrigger = findViewById(R.id.trigger_edit_text);
+        etOtherSymptom = findViewById(R.id.symptoms_edit_text);
         btnSave = findViewById(R.id.checkin_save_button);
 
         userRole = getIntent().getStringExtra("USER_ROLE");
@@ -140,7 +143,27 @@ public class DailyCheckinActivity extends AppCompatActivity {
 
     private void saveCheckin(CheckinService checkInService) {
         String peakFlowStr = etPeakFlow.getText().toString();
-        String otherStr = etOther.getText().toString();
+        String otherTriggerStr = etOtherTrigger.getText().toString();
+        String otherSymptomStr = etOtherSymptom.getText().toString();
+
+        if (!otherTriggerStr.isEmpty()) {
+            String[] triggers = otherTriggerStr.split(",");
+            for (String trigger : triggers) {
+                String trimmed = trigger.trim();
+                if (!trimmed.isEmpty() && !selectedTriggers.contains(trimmed))
+                    selectedTriggers.add(trimmed);
+            }
+        }
+
+        if (!otherSymptomStr.isEmpty()) {
+            String[] symptoms = otherSymptomStr.split(",");
+            for (String symptom : symptoms) {
+                String trimmed = symptom.trim();
+                if (!trimmed.isEmpty() && !selectedSymptoms.contains(trimmed))
+                    selectedSymptoms.add(trimmed);
+            }
+        }
+
 
         EntryAuthor entryAuthor = new EntryAuthor(name, userRole);
 
