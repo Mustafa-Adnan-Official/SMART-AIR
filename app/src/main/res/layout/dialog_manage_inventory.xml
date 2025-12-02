@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     >
 
     <ImageButton
@@ -37,7 +39,8 @@
         android:layout_marginBottom="16dp"
         android:background = "@drawable/inventory_toggle_bg"
         android:layout_marginRight="10dp"
-
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         />
 
         <Button
@@ -53,7 +56,8 @@
             android:layout_marginBottom="16dp"
             android:background = "@drawable/inventory_toggle_bg"
             android:layout_marginLeft = "10dp"
-
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             />
     </LinearLayout>
     <LinearLayout
@@ -146,7 +150,9 @@
         android:background="@drawable/rounded_managedata_background"
         android:fontFamily="@font/codec_pro_regular"
         android:text="New Canister"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"/>
 
     <TextView
         android:id="@+id/inventory_warning_text"

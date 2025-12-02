@@ -235,6 +235,8 @@
         android:text="Log Rescue Dose"
         android:textStyle="bold"
         android:textSize="16sp"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
         android:fontFamily="@font/codec_pro_fixed"
         android:textColor="@android:color/white"
         android:background="@drawable/dark_button_bg" />
