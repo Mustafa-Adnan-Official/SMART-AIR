@@ -1,4 +1,4 @@
-package com.example.smartair.ui.r3.inventory;
+package com.example.smartair.ui.inventory;
 
 import com.example.smartair.models.childcollections.Alert;
 import com.example.smartair.models.childcollections.InventoryItem;

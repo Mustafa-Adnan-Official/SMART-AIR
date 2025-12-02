@@ -1,4 +1,4 @@
-package com.example.smartair.ui.r3.motivation;
+package com.example.smartair.ui.motivation;
 
 import androidx.annotation.NonNull;
 

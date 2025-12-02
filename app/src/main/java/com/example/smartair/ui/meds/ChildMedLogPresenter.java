@@ -1,4 +1,4 @@
-package com.example.smartair.ui.r3.meds;
+package com.example.smartair.ui.meds;
 
 import androidx.annotation.Nullable;
 
