@@ -46,6 +46,11 @@
         <activity android:name=".ui.onboarding.ChildOnboardingActivity" />
         <activity android:name=".ui.onboarding.ParentOnboardingActivity" />
         <activity android:name=".ui.onboarding.ProviderOnboardingActivity" />
+        
+        <activity android:name=".ui.checkin.DailyCheckinActivity" />
+        <activity android:name=".ui.checkin.DailyCheckinActivityParent" />
+        
+        <activity android:name=".ui.historyBrowser.HistoryBrowserActivity" />
 
         <!-- R3: Medicine logging -->
         <activity android:name=".ui.r3.meds.RescueSessionActivity"

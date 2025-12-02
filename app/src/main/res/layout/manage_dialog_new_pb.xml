@@ -22,7 +22,7 @@
         />
 
     <EditText
-        android:id="@+id/adh_edit_text"
+        android:id="@+id/pb_edit_text"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="20dp"
@@ -41,7 +41,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialog_yesconfirmadh_button"
+            android:id="@+id/dialog_yesconfirmpb_button"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -54,7 +54,7 @@
             android:fontFamily="@font/codec_pro_regular"/>
 
         <Button
-            android:id="@+id/dialog_noconfirmadh_button"
+            android:id="@+id/dialog_noconfirmpb_button"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"

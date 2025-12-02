@@ -13,9 +13,11 @@ public class InventoryItem {
 
     private String type;                // "rescue" or "controller"
     private Timestamp expirationDate;
-    private Long expectedDailyUses;
-    private Long dosesRemaining;
-    private Long totalActuations;
+    private int expectedDailyUses;
+    private int dosesRemaining;
+    private int totalActuations;
+    
+    private Timestamp purchaseDate;
 
     /** Required for Firebase deserialization. */
     public InventoryItem() {
@@ -23,14 +25,17 @@ public class InventoryItem {
 
     public InventoryItem(String type,
                          Timestamp expirationDate,
-                         Long expectedDailyUses,
-                         Long dosesRemaining,
-                         Long totalActuations) {
+                         Timestamp purchaseDate,
+                         int expectedDailyUses,
+                         int dosesRemaining,
+                         int totalActuations) {
         this.type = type;
         this.expirationDate = expirationDate;
         this.expectedDailyUses = expectedDailyUses;
         this.dosesRemaining = dosesRemaining;
         this.totalActuations = totalActuations;
+        this.purchaseDate = purchaseDate;
+    
     }
 
     public String getType() {
@@ -48,28 +53,38 @@ public class InventoryItem {
     public void setExpirationDate(Timestamp expirationDate) {
         this.expirationDate = expirationDate;
     }
+    
+    public Timestamp getPurchaseDate() {
+        return purchaseDate;
+    }
 
-    public Long getExpectedDailyUses() {
+    public void setPurchaseDate(Timestamp purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public int getExpectedDailyUses() {
         return expectedDailyUses;
     }
 
-    public void setExpectedDailyUses(Long expectedDailyUses) {
+    public void setExpectedDailyUses(int expectedDailyUses) {
         this.expectedDailyUses = expectedDailyUses;
     }
+    
+    
 
-    public Long getDosesRemaining() {
+    public int getDosesRemaining() {
         return dosesRemaining;
     }
 
-    public void setDosesRemaining(Long dosesRemaining) {
+    public void setDosesRemaining(int dosesRemaining) {
         this.dosesRemaining = dosesRemaining;
     }
 
-    public Long getTotalActuations() {
+    public int getTotalActuations() {
         return totalActuations;
     }
 
-    public void setTotalActuations(Long totalActuations) {
+    public void setTotalActuations(int totalActuations) {
         this.totalActuations = totalActuations;
     }
 }
