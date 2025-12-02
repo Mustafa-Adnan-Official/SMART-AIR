@@ -11,7 +11,7 @@
         android:id="@+id/imageView_logo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/demologo"
+        android:src="@drawable/smartair_official"
         android:adjustViewBounds="true"
         android:scaleType="fitStart"
         app:layout_constraintTop_toTopOf="parent"
