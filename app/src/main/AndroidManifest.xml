@@ -70,7 +70,6 @@
         <!-- R3: Achievements -->
         <activity android:name=".ui.motivation.ChildAchievementsActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

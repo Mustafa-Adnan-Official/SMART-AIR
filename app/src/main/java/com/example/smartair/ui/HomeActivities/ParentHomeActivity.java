@@ -1,5 +1,6 @@
 package com.example.smartair.ui.HomeActivities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -20,6 +21,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -31,6 +33,9 @@ import com.example.smartair.models.users.Child;
 import com.example.smartair.repositories.ChildRepository;
 import com.example.smartair.repositories.ParentRepository;
 import com.example.smartair.services.CheckinService;
+import com.example.smartair.services.AlertService;
+import com.example.smartair.services.InAppAlertsListener;
+import com.example.smartair.services.LocalNotificationHelper;
 import com.example.smartair.ui.ActivitySettingsChild;
 import com.example.smartair.ui.ActivitySettingsProvider;
 import com.example.smartair.ui.checkin.DailyCheckinActivityParent;
@@ -48,47 +53,46 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Parent home screen.
- */
 public class ParentHomeActivity extends AppCompatActivity {
 
-    // Chart + toggle buttons
     private LineChart lineChartTriggers;
     private Button toggle1W;
     private Button toggle1M;
     private ImageButton btnSettings;
     private Button checkInButton;
     private Button btnChildSelector;
-
     private Button historyBrowserButton;
-
     private TextView parentNameText;
     private String parentName;
     private String uid;
-
     private String selectedChildUid;
-
+    private InAppAlertsListener alertsListener;
+    private LocalNotificationHelper notificationHelper;
+    private AlertService alertService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen_activity_parent);
 
-        // --- Find views from XML ---
         lineChartTriggers = findViewById(R.id.linechart_triggers);
         toggle1W = findViewById(R.id.toggle_1w);
         toggle1M = findViewById(R.id.toggle_1m);
         btnSettings = findViewById(R.id.btn_settings);
-
         parentNameText = findViewById(R.id.text_parent_name);
-        
+        checkInButton = findViewById(R.id.btn_daily_checkin_parent);
+        historyBrowserButton = findViewById(R.id.btn_view_history_parent);
+        btnChildSelector = findViewById(R.id.btn_child_selector);
+
+        alertsListener = new InAppAlertsListener();
+        notificationHelper = new LocalNotificationHelper(this);
+        alertService = new AlertService();
+
         parentNameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
         try {
             parentNameText.setTypeface(ResourcesCompat.getFont(this, R.font.garet_heavy), Typeface.BOLD);
@@ -98,11 +102,6 @@ public class ParentHomeActivity extends AppCompatActivity {
         parentNameText.setTextColor(Color.parseColor("#000000"));
         parentNameText.setAlpha(1.0f);
 
-        checkInButton = findViewById(R.id.btn_daily_checkin_parent);
-        historyBrowserButton = findViewById(R.id.btn_view_history_parent);
-        btnChildSelector = findViewById(R.id.btn_child_selector);
-
-        // Fetch Child Name (Async) - Move here so we can update UI inside callback
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             uid = user.getUid();
@@ -120,15 +119,11 @@ public class ParentHomeActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> Toast.makeText(ParentHomeActivity.this, "Failed to load name", Toast.LENGTH_SHORT).show());
         }
 
-        // --- Basic chart styling ---
         setupTriggersChart();
-
-        // Default: show last 7 days (1W)
         updateChartData();
-        toggle1W.setAlpha(1.0f);   // selected
-        toggle1M.setAlpha(0.5f);   // not selected
+        toggle1W.setAlpha(1.0f);
+        toggle1M.setAlpha(0.5f);
 
-        // --- Toggle listeners ---
         toggle1W.setOnClickListener(v -> {
             toggle1W.setAlpha(1.0f);
             toggle1M.setAlpha(0.5f);
@@ -142,45 +137,31 @@ public class ParentHomeActivity extends AppCompatActivity {
         });
 
         if (historyBrowserButton != null) {
-            historyBrowserButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ParentHomeActivity.this, HistoryBrowserActivity.class);
-                    intent.putExtra("childUid", selectedChildUid);
-                    startActivity(intent);
-                }
-
+            historyBrowserButton.setOnClickListener(v -> {
+                Intent intent = new Intent(ParentHomeActivity.this, HistoryBrowserActivity.class);
+                intent.putExtra("childUid", selectedChildUid);
+                startActivity(intent);
             });
-
         }
 
         if (checkInButton != null) {
-            checkInButton.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 // Use DailyCheckinActivityParent for parents
-                 Intent intent = new Intent(ParentHomeActivity.this, DailyCheckinActivityParent.class);
-                 intent.putExtra("USER_ROLE", "Parent");
-                 intent.putExtra("USER_NAME", parentName);
-                 intent.putExtra("CHILD_UID", selectedChildUid);
-                 startActivity(intent);
-             }
+            checkInButton.setOnClickListener(v -> {
+                Intent intent = new Intent(ParentHomeActivity.this, DailyCheckinActivityParent.class);
+                intent.putExtra("USER_ROLE", "Parent");
+                intent.putExtra("USER_NAME", parentName);
+                intent.putExtra("CHILD_UID", selectedChildUid);
+                startActivity(intent);
             });
         }
 
-        // --- Settings Button Listener ---
         if (btnSettings != null) {
-            btnSettings.setOnClickListener(v-> {
-                showSettingsMenu(v);
-            });
+            btnSettings.setOnClickListener(this::showSettingsMenu);
         }
 
-        // --- Child Selector Listener ---
         if (btnChildSelector != null) {
             btnChildSelector.setOnClickListener(v -> showSelectChildDialog());
         }
 
-        // --- Auto-select first child if available ---
         if (uid != null) {
             ChildRepository childRepo = new ChildRepository();
             childRepo.getChildrenForParent(uid, new ResultCallback<List<Child>>() {
@@ -189,35 +170,87 @@ public class ParentHomeActivity extends AppCompatActivity {
                     if (children != null && !children.isEmpty() && selectedChildUid == null) {
                         Child firstChild = children.get(0);
                         selectedChildUid = firstChild.getChildUid();
-                        if (btnChildSelector != null) {
-                            btnChildSelector.setText(firstChild.getName() + " ▼");
-                        }
+                        btnChildSelector.setText(firstChild.getName() + " ▼");
                         updateChartData();
+                        restartAlertsListener();
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    // Handle error or keep default state
                 }
             });
         }
     }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        restartAlertsListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (alertsListener != null) alertsListener.stopListening();
+        if (alertService != null) alertService.stop();
+    }
+
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    private void restartAlertsListener() {
+        if (selectedChildUid == null) return;
+
+        if (alertsListener != null) alertsListener.stopListening();
+        if (alertService != null) alertService.stop();
+
+        alertService.start(selectedChildUid);
+
+        alertsListener.startListening(selectedChildUid, alertData -> {
+            Boolean red = getBoolean(alertData, "redZoneDay");
+            Boolean rapid = getBoolean(alertData, "rapidRescueRepeats");
+            Boolean triage = getBoolean(alertData, "triageEscalation");
+            Boolean worse = getBoolean(alertData, "worseAfterDose");
+            Boolean inventory = getBoolean(alertData, "inventoryLowOrExpired");
+
+            String title = "SmartAir Alert";
+            String body = "There is a new alert for your child.";
+
+            if (red != null && red) {
+                title = "Red Zone Alert";
+                body = "Your child is in the red zone today.";
+            } else if (rapid != null && rapid) {
+                title = "Frequent Rescue Use";
+                body = "Your child used their rescue inhaler several times recently.";
+            } else if (triage != null && triage) {
+                title = "Triage Alert";
+                body = "Your child's triage has escalated.";
+            } else if (worse != null && worse) {
+                title = "Worsening Symptoms";
+                body = "Your child feels worse after their dose.";
+            } else if (inventory != null && inventory) {
+                title = "Medication Inventory";
+                body = "Your child's medication inventory is low or expired.";
+            }
+
+            notificationHelper.show(title, body);
+        });
+    }
+
+    private Boolean getBoolean(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Boolean) return (Boolean) value;
+        return null;
+    }
+
     private void updateChartData() {
-        // Check which toggle is active to decide days
         int days = (toggle1W.getAlpha() == 1.0f) ? 7 : 30;
-        
-        if (selectedChildUid != null) {
-            loadRealSymptomData(days);
-        } else {
-            loadDummyTriggersData(days);
-        }
+        if (selectedChildUid != null) loadRealSymptomData(days);
+        else loadDummyTriggersData(days);
     }
 
     private void loadRealSymptomData(int days) {
         if (selectedChildUid == null) return;
-
         CheckinService checkinService = new CheckinService();
         checkinService.getCheckins(selectedChildUid, new CheckinListCallback() {
             @Override
@@ -234,51 +267,37 @@ public class ParentHomeActivity extends AppCompatActivity {
 
     private void processCheckinDataForChart(List<Checkin> checkins, int days) {
         Map<Integer, Integer> dayCounts = new HashMap<>();
-        // Initialize all days to 0
-        for(int i=0; i<days; i++) dayCounts.put(i, 0);
+        for (int i = 0; i < days; i++) dayCounts.put(i, 0);
 
         long nowMillis = System.currentTimeMillis();
-        
+
         for (Checkin checkin : checkins) {
             if (checkin.getCreatedAt() == null) continue;
-            
             long time = checkin.getCreatedAt().toDate().getTime();
             long diff = nowMillis - time;
             long diffDays = TimeUnit.MILLISECONDS.toDays(diff);
-            
             if (diffDays < days && diffDays >= 0) {
-                // Index 0 = oldest day, Index (days-1) = today
-                // diffDays 0 = today -> index = days-1
-                // diffDays days-1 = oldest -> index = 0
-                
-                int index = (days - 1) - (int)diffDays; 
-                
+                int index = (days - 1) - (int) diffDays;
                 int currentCount = dayCounts.get(index);
                 int symptomCount = (checkin.getSymptoms() != null) ? checkin.getSymptoms().size() : 0;
                 dayCounts.put(index, currentCount + symptomCount);
             }
         }
-        
+
         List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < days; i++) {
-            entries.add(new Entry(i, dayCounts.get(i)));
-        }
+        for (int i = 0; i < days; i++) entries.add(new Entry(i, dayCounts.get(i)));
 
         LineDataSet dataSet = new LineDataSet(entries, "Symptoms per day");
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(3f);
-        dataSet.setDrawValues(false); 
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); 
+        dataSet.setDrawValues(false);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         LineData lineData = new LineData(dataSet);
-        
-        if (lineChartTriggers != null) {
-            lineChartTriggers.setData(lineData);
-            lineChartTriggers.invalidate(); 
-        }
+        lineChartTriggers.setData(lineData);
+        lineChartTriggers.invalidate();
     }
 
-    // ===================== POPUP MENU ======================
     private void showSettingsMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         popup.getMenuInflater().inflate(R.menu.settings_menu, popup.getMenu());
@@ -295,7 +314,7 @@ public class ParentHomeActivity extends AppCompatActivity {
             } else if (id == R.id.action_sign_out) {
                 Intent intent = new Intent(this, ParentLoginActivity.class);
                 startActivity(intent);
-                finish(); // Close this activity
+                finish();
                 return true;
             } else if (id == R.id.action_code_generator_parent) {
                 showAccessCodeDialog();
@@ -306,66 +325,42 @@ public class ParentHomeActivity extends AppCompatActivity {
         popup.show();
     }
 
-    // ===================== MPAndroidChart setup ======================
-
     private void setupTriggersChart() {
-        if (lineChartTriggers == null) {
-            return; // defensive in case XML id mismatch
-        }
-
-        // Turn off default description text
         lineChartTriggers.getDescription().setEnabled(false);
-
-        // No legend for now
         lineChartTriggers.getLegend().setEnabled(false);
 
-        // X axis (bottom)
         XAxis xAxis = lineChartTriggers.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // step = 1 day
+        xAxis.setGranularity(1f);
         xAxis.setAxisMinimum(0f);
 
-        // Left Y axis
         YAxis leftAxis = lineChartTriggers.getAxisLeft();
-        leftAxis.setAxisMinimum(0f); // triggers can't be negative
+        leftAxis.setAxisMinimum(0f);
         leftAxis.setGranularity(1f);
 
-        // Disable right Y axis
         YAxis rightAxis = lineChartTriggers.getAxisRight();
         rightAxis.setEnabled(false);
 
-        // Simple X animation
         lineChartTriggers.animateX(600);
     }
 
     private void loadDummyTriggersData(int days) {
-        if (lineChartTriggers == null) {
-            return; // defensive
-        }
-
-        // Later: replace this with real Firestore data.
         List<Entry> entries = new ArrayList<>();
-
         for (int i = 0; i < days; i++) {
-            // x = day index (0,1,2,...)
-            // y = number of triggers that day (0–5 for now)
             float triggersCount = (float) (Math.random() * 5.0);
             entries.add(new Entry(i, triggersCount));
         }
-
         LineDataSet dataSet = new LineDataSet(entries, "Symptoms per day");
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(3f);
-        dataSet.setDrawValues(false); // no value labels on each point
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // smooth line
+        dataSet.setDrawValues(false);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         LineData lineData = new LineData(dataSet);
         lineChartTriggers.setData(lineData);
-        lineChartTriggers.invalidate(); // refresh/redraw
+        lineChartTriggers.invalidate();
     }
-
-    // ===================== MENU (existing logic) ======================
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -376,14 +371,13 @@ public class ParentHomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_manage_children) {
-             Intent intent = new Intent(this, ActivitySettingsChild.class);
-             startActivity(intent);
+            Intent intent = new Intent(this, ActivitySettingsChild.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_manage_providers) {
-             Intent intent = new Intent(this, ActivitySettingsProvider.class);
-             startActivity(intent);
+            Intent intent = new Intent(this, ActivitySettingsProvider.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_sign_out) {
             Intent intent = new Intent(this, ParentLoginActivity.class);
@@ -393,7 +387,6 @@ public class ParentHomeActivity extends AppCompatActivity {
             showAccessCodeDialog();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -409,24 +402,16 @@ public class ParentHomeActivity extends AppCompatActivity {
 
         ParentRepository repo = new ParentRepository();
         String uid = FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
-
         PacGenerator pacGenerator = new PacGenerator();
-
-
         String initialCode = pacGenerator.getPacCode();
         tvCode.setText(initialCode);
 
-        // Update in DB if user is logged in
-        if (uid != null) {
-            repo.updateAccessCode(uid, initialCode);
-        }
+        if (uid != null) repo.updateAccessCode(uid, initialCode);
 
         btnRefresh.setOnClickListener(v -> {
             String newCode = pacGenerator.getPacCode();
             tvCode.setText(newCode);
-            if (uid != null) {
-                repo.regenerateAccessCode(uid, newCode);
-            }
+            if (uid != null) repo.regenerateAccessCode(uid, newCode);
         });
 
         btnCopy.setOnClickListener(v -> {
@@ -450,43 +435,41 @@ public class ParentHomeActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         if (uid == null) {
-             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-             if (user != null) uid = user.getUid();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) uid = user.getUid();
         }
 
         if (uid != null) {
-             ChildRepository childRepo = new ChildRepository();
-             childRepo.getChildrenForParent(uid, new ResultCallback<List<Child>>() {
-                 @Override
-                 public void onSuccess(List<Child> children) {
-                     // Clear any existing views just in case, though it's a new dialog instance
-                     container.removeAllViews();
-                     
-                     for (Child child : children) {
-                         Button childBtn = new Button(ParentHomeActivity.this);
-                         childBtn.setText(child.getName());
-                         childBtn.setTextSize(18f);
-                         childBtn.setPadding(20, 20, 20, 20);
-                         // Optional: Style the button
-                         
-                         childBtn.setOnClickListener(v -> {
-                             btnChildSelector.setText(child.getName() + " ▼");
-                             selectedChildUid = child.getChildUid();
-                             Toast.makeText(ParentHomeActivity.this, "Selected: " + child.getName(), Toast.LENGTH_SHORT).show();
-                             updateChartData(); // <-- Add this line to update chart
-                             dialog.dismiss();
-                         });
-                         container.addView(childBtn);
-                     }
-                 }
+            ChildRepository childRepo = new ChildRepository();
+            childRepo.getChildrenForParent(uid, new ResultCallback<List<Child>>() {
+                @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+                @Override
+                public void onSuccess(List<Child> children) {
+                    container.removeAllViews();
+                    for (Child child : children) {
+                        Button childBtn = new Button(ParentHomeActivity.this);
+                        childBtn.setText(child.getName());
+                        childBtn.setTextSize(18f);
+                        childBtn.setPadding(20, 20, 20, 20);
+                        childBtn.setOnClickListener(v -> {
+                            btnChildSelector.setText(child.getName() + " ▼");
+                            selectedChildUid = child.getChildUid();
+                            Toast.makeText(ParentHomeActivity.this, "Selected: " + child.getName(), Toast.LENGTH_SHORT).show();
+                            updateChartData();
+                            restartAlertsListener();
+                            dialog.dismiss();
+                        });
+                        container.addView(childBtn);
+                    }
+                }
 
-                 @Override
-                 public void onError(Exception e) {
-                     Toast.makeText(ParentHomeActivity.this, "Error loading children", Toast.LENGTH_SHORT).show();
-                 }
-             });
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(ParentHomeActivity.this, "Error loading children", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
-             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
         }
 
         dialog.show();
