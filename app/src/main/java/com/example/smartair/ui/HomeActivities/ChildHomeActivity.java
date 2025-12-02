@@ -20,13 +20,17 @@ import com.example.smartair.models.childcollections.Checkin;
 import com.example.smartair.models.childcollections.MedLog;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.services.ZoneService;
+import com.example.smartair.ui.checkin.DailyCheckinActivity;
+import com.example.smartair.ui.meds.ControllerSessionActivity;
+import com.example.smartair.ui.meds.RescueSessionActivity;
+import com.example.smartair.ui.motivation.ChildAchievementsActivity;
+import com.example.smartair.ui.triage.TriageStep1Activity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.example.smartair.ui.checkin.DailyCheckinActivity;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -38,9 +42,9 @@ import java.util.Map;
  *
  * Responsibilities:
  * - Greet child by name.
- * - Show today's PEF zone tile from latest PEF of today (medLogs or checkins).
+ * - Show today's PEF zone tile from latest PEF of today (medLogs, checkins, or incidents).
  * - Show controller streak and technique streak.
- * - Navigate to Rescue / Controller sessions and Achievements screen.
+ * - Navigate to Rescue / Controller sessions, Triage, and Achievements screen.
  * - Gate med logging based on inventory for children under a parent.
  */
 public class ChildHomeActivity extends AppCompatActivity {
@@ -129,10 +133,8 @@ public class ChildHomeActivity extends AppCompatActivity {
         }
     }
 
-
     // ---------------- Binding & Clicks ----------------
 
-    FirebaseUser user;
     private void bindViews() {
         // Fetch Child Name
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -143,6 +145,9 @@ public class ChildHomeActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             childName = documentSnapshot.getString("name");
+                            if (childName != null && !childName.trim().isEmpty()) {
+                                textChildName.setText(childName);
+                            }
                         }
                     })
                     .addOnFailureListener(e -> Toast.makeText(ChildHomeActivity.this, "Failed to load name", Toast.LENGTH_SHORT).show());
@@ -169,81 +174,59 @@ public class ChildHomeActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: open child settings screen
-                // startActivity(new Intent(ChildHomeActivity.this, ActivitySettingsChild.class));
-            }
+        btnSettings.setOnClickListener(v -> {
+            // TODO: open child settings screen
+            // startActivity(new Intent(ChildHomeActivity.this, ActivitySettingsChild.class));
         });
 
-        btnProfilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: open profile popup later
-            }
+        btnProfilePicture.setOnClickListener(v -> {
+            // TODO: open profile popup later
         });
 
-        btnViewHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: go to history screen
-            }
+        btnViewHistory.setOnClickListener(v -> {
+            // TODO: go to history screen
         });
 
-        btnDailyCheckin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChildHomeActivity.this, DailyCheckinActivity.class);
-                intent.putExtra("USER_ROLE", "Child");
-                intent.putExtra("USER_NAME", childName);
-                intent.putExtra("USER_ID", user.getUid());
-                startActivity(intent);
+        btnDailyCheckin.setOnClickListener(v -> {
+            FirebaseUser current = auth.getCurrentUser();
+            if (current == null) {
+                Toast.makeText(ChildHomeActivity.this, "No logged-in child.", Toast.LENGTH_SHORT).show();
+                return;
             }
+            Intent intent = new Intent(ChildHomeActivity.this, DailyCheckinActivity.class);
+            intent.putExtra("USER_ROLE", "Child");
+            intent.putExtra("USER_NAME", childName);
+            intent.putExtra("USER_ID", current.getUid());
+            startActivity(intent);
         });
 
-        btnTroubleBreathing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Will open triage flow in R4 (Module C).
-            }
+        btnTroubleBreathing.setOnClickListener(v -> {
+            Intent i = new Intent(ChildHomeActivity.this, TriageStep1Activity.class);
+            startActivity(i);
         });
 
-        // Rescue + Controller now go through inventory gate if child is under parent
-        btnRescueInhaler.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleMedButtonClick("rescue");
+        // Rescue + Controller go through inventory gate if child is under parent
+        btnRescueInhaler.setOnClickListener(v -> handleMedButtonClick("rescue"));
+
+        btnControllerMedicine.setOnClickListener(v -> handleMedButtonClick("controller"));
+
+        btnAchievements.setOnClickListener(v -> {
+            AuthService authService = new AuthService();
+            String currentChildUid = authService.getCurrentUserUid();
+
+            if (currentChildUid == null || currentChildUid.trim().isEmpty()) {
+                Toast.makeText(ChildHomeActivity.this,
+                        "No logged-in child found.",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        btnControllerMedicine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleMedButtonClick("controller");
-            }
-        });
-
-        btnAchievements.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AuthService authService = new AuthService();
-                String currentChildUid = authService.getCurrentUserUid();
-
-                if (currentChildUid == null || currentChildUid.trim().isEmpty()) {
-                    Toast.makeText(ChildHomeActivity.this,
-                            "No logged-in child found.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Intent intent = new Intent(
-                        ChildHomeActivity.this,
-                        com.example.smartair.ui.motivation.ChildAchievementsActivity.class
-                );
-                intent.putExtra("childUid", currentChildUid);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(
+                    ChildHomeActivity.this,
+                    ChildAchievementsActivity.class
+            );
+            intent.putExtra("childUid", currentChildUid);
+            startActivity(intent);
         });
     }
 
@@ -343,10 +326,10 @@ public class ChildHomeActivity extends AppCompatActivity {
 
     private void openMedScreen(String medicineType) {
         if ("rescue".equals(medicineType)) {
-            Intent i = new Intent(ChildHomeActivity.this, com.example.smartair.ui.meds.RescueSessionActivity.class);
+            Intent i = new Intent(ChildHomeActivity.this, RescueSessionActivity.class);
             startActivity(i);
         } else {
-            Intent i = new Intent(ChildHomeActivity.this, com.example.smartair.ui.meds.ControllerSessionActivity.class);
+            Intent i = new Intent(ChildHomeActivity.this, ControllerSessionActivity.class);
             startActivity(i);
         }
     }
@@ -354,7 +337,7 @@ public class ChildHomeActivity extends AppCompatActivity {
     // ---------------- Today's PEF Zone logic ----------------
 
     /**
-     * Finds the latest PEF of today (from medLogs or checkins) and updates the banner.
+     * Finds the latest PEF of today (from medLogs, checkins, or incidents) and updates the banner.
      * If there is no PEF today or PB is not set, shows N/A and keeps banner safe.
      */
     private void loadTodaysPefZone() {
@@ -369,6 +352,7 @@ public class ChildHomeActivity extends AppCompatActivity {
 
         final String todayKey = getTodayKey();
 
+        // 1) Try medLogs
         db.collection("children")
                 .document(childUid)
                 .collection("medLogs")
@@ -401,7 +385,8 @@ public class ChildHomeActivity extends AppCompatActivity {
                     loadTodaysPefZoneFromCheckins(todayKey, latestMedPef, latestMedTime);
                 })
                 .addOnFailureListener(e -> {
-                    showPefZoneUnknown("N/A", "No PEF today");
+                    // If medLogs query fails, still try checkins and incidents
+                    loadTodaysPefZoneFromCheckins(todayKey, null, null);
                 });
     }
 
@@ -428,7 +413,7 @@ public class ChildHomeActivity extends AppCompatActivity {
                         if (ts == null) continue;
                         if (!toDateKey(ts).equals(todayKey)) continue;
 
-                        Long pef = checkin.getPeakFlow();
+                        Long pef = (long) checkin.getPeakFlow();
                         if (pef == null) continue;
 
                         if (latestCheckinTime == null || ts.compareTo(latestCheckinTime) > 0) {
@@ -446,7 +431,8 @@ public class ChildHomeActivity extends AppCompatActivity {
                     }
 
                     if (latestPef == null) {
-                        showPefZoneUnknown("N/A", "No PEF today");
+                        // No PEF in medLogs or checkins → fallback to incidents
+                        loadTodaysPefZoneFromIncidents(todayKey);
                         return;
                     }
 
@@ -454,11 +440,67 @@ public class ChildHomeActivity extends AppCompatActivity {
                             ZoneService.computeZone(latestPef, personalBest);
 
                     if (result.getZone() == ZoneService.PefZone.UNKNOWN) {
-                        showPefZoneUnknown("N/A", "No PEF today");
+                        loadTodaysPefZoneFromIncidents(todayKey);
                         return;
                     }
 
                     showPefZone(result);
+                })
+                .addOnFailureListener(e -> {
+                    // checkins query failed → still try incidents
+                    loadTodaysPefZoneFromIncidents(todayKey);
+                });
+    }
+
+    /**
+     * Final fallback: look at incidents for today's PEF (e.g., immediate emergency from Step 1).
+     */
+    private void loadTodaysPefZoneFromIncidents(String todayKey) {
+        db.collection("children")
+                .document(childUid)
+                .collection("incidents")
+                .orderBy("timeOfIncident", Query.Direction.DESCENDING)
+                .limit(20)
+                .get()
+                .addOnSuccessListener(incidentSnapshot -> {
+
+                    Long latestIncidentPef = null;
+                    Timestamp latestIncidentTime = null;
+
+                    for (QueryDocumentSnapshot doc : incidentSnapshot) {
+                        Timestamp ts = doc.getTimestamp("timeOfIncident");
+                        if (ts == null) continue;
+                        if (!toDateKey(ts).equals(todayKey)) continue;
+
+                        Long pef = null;
+                        Object raw = doc.get("peakFlow");
+                        if (raw instanceof Long) {
+                            pef = (Long) raw;
+                        } else if (raw instanceof Integer) {
+                            pef = ((Integer) raw).longValue();
+                        }
+
+                        if (pef == null) continue;
+
+                        if (latestIncidentTime == null || ts.compareTo(latestIncidentTime) > 0) {
+                            latestIncidentTime = ts;
+                            latestIncidentPef = pef;
+                        }
+                    }
+
+                    if (latestIncidentPef == null) {
+                        showPefZoneUnknown("N/A", "No PEF today");
+                        return;
+                    }
+
+                    ZoneService.ZoneResult result =
+                            ZoneService.computeZone(latestIncidentPef, personalBest);
+
+                    if (result.getZone() == ZoneService.PefZone.UNKNOWN) {
+                        showPefZoneUnknown("N/A", "No PEF today");
+                    } else {
+                        showPefZone(result);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     showPefZoneUnknown("N/A", "No PEF today");
@@ -499,7 +541,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         textPefSubtitle.setTextColor(COLOR_TEXT_WHITE);
     }
 
-    // ---------------- Streak Logic (unchanged) ----------------
+    // ---------------- Streak Logic ----------------
 
     private void loadStreaksForChild() {
         if (childUid == null) return;

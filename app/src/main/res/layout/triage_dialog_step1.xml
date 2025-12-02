@@ -31,6 +31,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <TextView
+            android:id="@+id/textDisclaimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is guidance, not a diagnosis. If in doubt, call emergency."
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:fontFamily="@font/garet_book"
+            android:gravity="center"
+            android:layout_marginTop="16dp"/>
+
+
         <!-- RED TRIAGE LABEL -->
         <TextView
             android:id="@+id/textTriageLabelStep1"
