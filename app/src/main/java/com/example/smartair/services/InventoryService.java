@@ -28,18 +28,16 @@ public class InventoryService {
         this.db = FirebaseFirestore.getInstance();
     }
 
-    // ---------------------------------------------------------------------
-    // Callback interface used by existing code
-    // ---------------------------------------------------------------------
+    // Callback interface used by existing cod
 
     public interface InventoryCallback {
         void onSuccess(@Nullable InventoryItem item, @Nullable Alert alert);
         void onError(Exception e);
     }
 
-    // ---------------------------------------------------------------------
+
     // Public API used by ChildMedLogPresenter + InventoryPresenter
-    // ---------------------------------------------------------------------
+
 
     /**
      * Update inventory after a dose.
@@ -73,9 +71,9 @@ public class InventoryService {
                 .addOnFailureListener(callback::onError);
     }
 
-    // ---------------------------------------------------------------------
+
     // Internal helpers
-    // ---------------------------------------------------------------------
+
 
     private void handleChildDoc(
             String childUid,
@@ -87,14 +85,14 @@ public class InventoryService {
         // Default behaviour if field is missing: treat as standalone child
         Boolean hasOwnEmail = childSnap.getBoolean("hasOwnEmail");
 
-        // Standalone child → NO parent-managed inventory → skip check
+        // Standalone child -> No parent-managed inventory -> skip check
         if (hasOwnEmail == null || hasOwnEmail) {
             // We just say "success, no inventory change".
             callback.onSuccess(null, null);
             return;
         }
 
-        // Child under a parent → enforce inventory
+        // Child under a parent -> enforce inventory
         DocumentReference invRef = db.collection("children")
                 .document(childUid)
                 .collection("inventory")

@@ -202,7 +202,7 @@ public class ControllerSessionActivity extends AppCompatActivity
         );
     }
 
-    // ------------ ChildMedLogPresenter.View ------------
+    //  ChildMedLogPresenter.View
 
     @Override
     public void showLoading() {

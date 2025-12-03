@@ -201,7 +201,7 @@ public class RescueSessionActivity extends AppCompatActivity
         );
     }
 
-    // ---------------- ChildMedLogPresenter.View ----------------
+    //  ChildMedLogPresenter.View
 
     @Override
     public void showLoading() {

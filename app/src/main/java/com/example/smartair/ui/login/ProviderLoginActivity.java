@@ -70,7 +70,7 @@ public class ProviderLoginActivity extends AppCompatActivity implements LoginCon
         passwordRequirementsText.setVisibility(View.GONE);
     }
 
-    // -------- LoginContract.View --------
+    //  LoginContract.View
 
     @Override
     public String getEmail() {
