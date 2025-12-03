@@ -47,7 +47,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
     private final List<String> allCheckedSymptoms = new ArrayList<>();
     private final List<String> allCheckedTriggers = new ArrayList<>();
-    
+
 
     private static final String ARG_CHILD_UID = "childUid";
 
@@ -69,7 +69,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         if (getArguments() != null) {
             childUid = getArguments().getString(ARG_CHILD_UID);
         }
-        
+
         // Handle fallback if childUid is missing from arguments but passed via intent extras (legacy/activity context)
         if (childUid == null && getActivity() != null && getActivity().getIntent() != null) {
             if (getActivity().getIntent().hasExtra("childUid")) {
@@ -79,9 +79,9 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
         // Fallback to current user if not provided
         if ((childUid == null || childUid.isEmpty()) && FirebaseAuth.getInstance().getCurrentUser() != null) {
-             childUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            childUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
-        
+
         try {
             historyService = new HistoryService();
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         try {
-            return inflater.inflate(R.layout.history_activity_browser, container, false);
+            return inflater.inflate(R.layout.fragment_parent_history_browser, container, false);
         } catch (Exception e) {
             Log.e(TAG, "Error inflating layout", e);
             return null;
@@ -110,9 +110,9 @@ public class FragmentParentHistoryBrowser extends Fragment {
                 Log.e(TAG, "RecyclerView not found with ID R.id.historyRecyclerView");
                 return;
             }
-            
+
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            
+
             adapter = new HistoryAdapter(historyList);
             recyclerView.setAdapter(adapter);
 
@@ -139,14 +139,14 @@ public class FragmentParentHistoryBrowser extends Fragment {
             // Default: Load last 1 year of history
             Calendar cal = Calendar.getInstance();
             Date endDate = cal.getTime();
-            cal.add(Calendar.YEAR, -1); 
+            cal.add(Calendar.YEAR, -1);
             Date startDate = cal.getTime();
 
             historyService.getAllHistoryLogs(childUid, startDate, endDate, new ResultCallback<List<HistoryEntry>>() {
                 @Override
                 public void onSuccess(List<HistoryEntry> entries) {
                     if (getContext() == null) {
-                        return; 
+                        return;
                     }
 
                     try {
@@ -168,8 +168,8 @@ public class FragmentParentHistoryBrowser extends Fragment {
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "getAllHistoryLogs onError", e);
-                    if (getContext() == null) return; 
-                    
+                    if (getContext() == null) return;
+
                     // Fallback to mock data on error
                     Toast.makeText(getContext(), "Error loading history, showing mock data", Toast.LENGTH_SHORT).show();
                     loadMockData();
@@ -244,7 +244,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
             historyList.addAll(mockEntries);
             fullHistoryList.addAll(mockEntries);
-            
+
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
@@ -261,7 +261,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         allCheckedTriggers.clear();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_symptoms, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_symptoms, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -353,7 +353,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         });
         dialog.show();
     }
-    
+
     private void addDynamicSymptomSwitch(Context context, View dialogView, String symptom) {
         ViewGroup container = dialogView.findViewById(R.id.containerSymptoms);
 
@@ -387,7 +387,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         if (context == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.manage_toggle_triggers, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.select_triggers, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
@@ -410,7 +410,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         List<String> allDistinctTriggers = new ArrayList<>(Arrays.asList("Dust Mites", "Pets", "Smoke", "Strong Odors/ Perfumes", "Cold Air", "Illness", "Exercise"));
         List<String> allExtraTriggers = new ArrayList<>();
         List<String> addedExtraTriggers = new ArrayList<>();
-        
+
         // Manually add triggers from fullHistoryList as well
         // This ensures that even if CheckinService.getTriggers fails or is empty, we see local data triggers
         for (HistoryEntry entry : fullHistoryList) {
@@ -422,13 +422,13 @@ public class FragmentParentHistoryBrowser extends Fragment {
                 }
             }
         }
-        
+
         // Add extracted local triggers immediately
         for (String trigger : allExtraTriggers) {
-             if (!addedExtraTriggers.contains(trigger) && !allDistinctTriggers.contains(trigger)) {
+            if (!addedExtraTriggers.contains(trigger) && !allDistinctTriggers.contains(trigger)) {
                 addedExtraTriggers.add(trigger);
                 addDynamicTriggerSwitch(context, dialogView, trigger);
-             }
+            }
         }
 
         CheckinService checkinService = new CheckinService();
@@ -436,7 +436,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
             @Override
             public void onSuccess(List<String> distinctTriggersList) {
                 if (dialog.isShowing()) {
-                    
+
                     for (String trigger : distinctTriggersList) {
                         // Only add if not already in standard list AND not already added from local history
                         if (!addedExtraTriggers.contains(trigger) && !allDistinctTriggers.contains(trigger)) {
@@ -518,7 +518,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
         dialog.show();
     }
-    
+
     private void addDynamicTriggerSwitch(Context context, View dialogView, String trigger) {
         ViewGroup container = dialogView.findViewById(R.id.containerTriggers);
         if (container != null) {
@@ -547,17 +547,17 @@ public class FragmentParentHistoryBrowser extends Fragment {
     }
 
     private void applyFilters() {
-        
-        // If no filters selected, maybe show all? 
+
+        // If no filters selected, maybe show all?
         // But the user requirement is "filter to only shows those symptoms and triggers".
         // HistoryService.filterSymptomsTriggers logic: if entry has ALL selected symptoms AND ALL selected triggers.
-        
+
         List<HistoryEntry> filtered = HistoryService.filterSymptomsTriggers(fullHistoryList, allCheckedSymptoms, allCheckedTriggers);
-        
+
         historyList.clear();
         historyList.addAll(filtered);
         adapter.notifyDataSetChanged();
-        
+
     }
 
     // --- Inner Adapter Class ---
@@ -572,7 +572,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.history_item_parent_row, parent, false);
+                    .inflate(R.layout.item_history_row, parent, false);
             return new ViewHolder(view);
         }
 
@@ -580,7 +580,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             try {
                 HistoryEntry entry = entries.get(position);
-                
+
                 if (entry.getDate() != null) {
                     holder.dateText.setText(entry.getDate());
                 } else {
@@ -616,9 +616,9 @@ public class FragmentParentHistoryBrowser extends Fragment {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
-                View dialogView = inflater.inflate(R.layout.history_dialog_day_details, null);
+                View dialogView = inflater.inflate(R.layout.dialog_history_day_details, null);
                 builder.setView(dialogView);
-                
+
                 // Bind views
                 TextView textDate = dialogView.findViewById(R.id.textDetailDate);
                 TextView textRescue = dialogView.findViewById(R.id.textDetailRescueItems);
@@ -673,7 +673,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
                 AlertDialog dialog = builder.create();
 
-                
+
                 dialog.show();
 
             } catch (Exception e) {
