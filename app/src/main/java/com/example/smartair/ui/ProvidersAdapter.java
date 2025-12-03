@@ -35,6 +35,7 @@ import com.example.smartair.callbacks.StringListCallback;
 import com.example.smartair.models.childcollections.HistoryEntry;
 import com.example.smartair.services.IncidentService;
 import com.example.smartair.services.ReportService;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -652,18 +653,32 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         Button yesButton = dialogView.findViewById(R.id.dialog_yesdeleteprovider_button);
         Button noButton = dialogView.findViewById(R.id.dialog_nodeleteprovider_button);
 
-        // CRITICAL CHECK for NullPointerException
         if (yesButton == null || noButton == null) {
             Toast.makeText(context, "ERROR: Missing button ID in dialog_delete_provider.xml!", Toast.LENGTH_LONG).show();
             return;
         }
 
         yesButton.setOnClickListener(v -> {
+            String providerUidToDelete = providersList.get(position).getProviderUid();
+            String parentUid = parent.getParentUid(); // REPLACE WITH YOUR AUTHENTICATION LOGIC
+
+            if (providerUidToDelete != null && parentUid != null) {
+                FirebaseFirestore.getInstance().collection("providers")
+                        .document(providerUidToDelete)
+                        .collection("parentLinks")
+                        .document(parentUid)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(context, "SUCCESS: Provider link deleted from Firestore.", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(context, "ERROR: Failed to delete provider link.", Toast.LENGTH_LONG).show();
+                        });
+            }
+
             providersList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, providersList.size());
-
-            //TODO: DELETE PROVIDER FROM DATABASE
 
             Toast.makeText(context, "Provider Removed", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
@@ -674,7 +689,6 @@ public class ProvidersAdapter extends RecyclerView.Adapter<ProvidersAdapter.Prov
         dialog.show();
         Toast.makeText(context, "DEBUG: Delete Dialog Shown", Toast.LENGTH_SHORT).show();
     }
-
     private void sendRealtimeReport(Provider currentProvider, int duration) {
         Toast.makeText(context, "DEBUG: Running sendRealtimeReport logic for " + duration + " months", Toast.LENGTH_SHORT).show();
 

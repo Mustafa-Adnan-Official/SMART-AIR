@@ -21,6 +21,7 @@ import com.example.smartair.models.childcollections.MedLog;
 import com.example.smartair.services.AuthService;
 import com.example.smartair.services.ZoneService;
 import com.example.smartair.ui.checkin.DailyCheckinActivity;
+import com.example.smartair.ui.historyBrowser.HistoryBrowserActivity;
 import com.example.smartair.ui.meds.ControllerSessionActivity;
 import com.example.smartair.ui.meds.RescueSessionActivity;
 import com.example.smartair.ui.motivation.ChildAchievementsActivity;
@@ -183,8 +184,14 @@ public class ChildHomeActivity extends AppCompatActivity {
             // TODO: open profile popup later
         });
 
-        btnViewHistory.setOnClickListener(v -> {
-            // TODO: go to history screen
+        btnViewHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChildHomeActivity.this, HistoryBrowserActivity.class);
+                intent.putExtra("childUid", childUid);
+                startActivity(intent);
+            }
+
         });
 
         btnDailyCheckin.setOnClickListener(v -> {
