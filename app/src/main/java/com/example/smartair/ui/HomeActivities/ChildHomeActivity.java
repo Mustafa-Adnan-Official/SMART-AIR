@@ -133,7 +133,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------- Binding & Clicks ----------------
+    //  Binding & Clicks
 
     private void bindViews() {
         // Fetch Child Name
@@ -230,7 +230,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         });
     }
 
-    // ---------------- Load Child Name + flags + PB ----------------
+    //  Load Child Name + flags + PB
 
     /**
      * Reads children/{childUid}:
@@ -277,7 +277,7 @@ public class ChildHomeActivity extends AppCompatActivity {
                 });
     }
 
-    // ---------------- Inventory gating ----------------
+    //  Inventory gating
 
     private void handleMedButtonClick(String medicineType) {
         if (!Boolean.FALSE.equals(hasOwnEmail)) {
@@ -334,7 +334,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         }
     }
 
-    // ---------------- Today's PEF Zone logic ----------------
+    //  Today's PEF Zone logic
 
     /**
      * Finds the latest PEF of today (from medLogs, checkins, or incidents) and updates the banner.

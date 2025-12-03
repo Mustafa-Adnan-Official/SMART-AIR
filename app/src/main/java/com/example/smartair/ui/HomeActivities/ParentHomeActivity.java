@@ -278,7 +278,7 @@ public class ParentHomeActivity extends AppCompatActivity {
         }
     }
 
-    // ===================== POPUP MENU ======================
+    //  POPUP MENU
     private void showSettingsMenu(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         popup.getMenuInflater().inflate(R.menu.settings_menu, popup.getMenu());
@@ -306,7 +306,7 @@ public class ParentHomeActivity extends AppCompatActivity {
         popup.show();
     }
 
-    // ===================== MPAndroidChart setup ======================
+    //  MPAndroidChart setup
 
     private void setupTriggersChart() {
         if (lineChartTriggers == null) {
@@ -365,7 +365,7 @@ public class ParentHomeActivity extends AppCompatActivity {
         lineChartTriggers.invalidate(); // refresh/redraw
     }
 
-    // ===================== MENU (existing logic) ======================
+    //  MENU (existing logic)
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

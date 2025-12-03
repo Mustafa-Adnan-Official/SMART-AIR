@@ -189,7 +189,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
 
             List<HistoryEntry> mockEntries = new ArrayList<>();
 
-            // --- Existing Mock Data (2 entries) ---
+            //  Existing Mock Data (2 entries)
             List<String> mockSymptoms1 = new ArrayList<>(Arrays.asList("Coughing/Wheezing"));
             List<String> mockTriggers1 = new ArrayList<>(Arrays.asList("Dust", "Pollen"));
             mockEntries.add(new HistoryEntry("2023-10-27", null, null, mockSymptoms1, mockTriggers1));
@@ -197,7 +197,7 @@ public class FragmentParentHistoryBrowser extends Fragment {
             List<String> mockTriggers2 = new ArrayList<>(Arrays.asList("Cold Air"));
             mockEntries.add(new HistoryEntry("2023-10-26", null, null, new ArrayList<>(), mockTriggers2));
 
-            // --- New Mock Data (40 entries starting from 2023-10-25 and going backwards) ---
+            // New Mock Data (40 entries starting from 2023-10-25 and going backwards)
 
             // Helper lists for rotation
             List<List<String>> symptomSets = Arrays.asList(

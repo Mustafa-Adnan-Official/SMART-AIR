@@ -93,7 +93,7 @@ public class TriageService {
                 .collection("incidents")
                 .add(incident);
 
-        // MEDLOGS: only if inventory exists for that type (per requirement #7)
+        // medlogs: only if inventory exists for that type (per requirement #7)
         if (rescuePuffs > 0) {
             maybeCreateMedLog(
                     childUid,

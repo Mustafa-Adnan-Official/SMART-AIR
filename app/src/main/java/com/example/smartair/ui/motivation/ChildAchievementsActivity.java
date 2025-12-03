@@ -187,7 +187,7 @@ public class ChildAchievementsActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // ---------------- Helpers ----------------
+    //  Helpers
 
     private void setCardUnlocked(boolean unlocked,
                                  ImageView icon,
